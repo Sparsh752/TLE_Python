@@ -94,7 +94,7 @@ async def get_all_atcoder_handles():
     return atcoder_handles
 
 
-# solved problems on stage (atconder or codeforses)
+# solved problems on stage (atconder or codeforces)
 async def solved_problems(ctx,stage):
     discord_name = ctx.message.author.name
 
