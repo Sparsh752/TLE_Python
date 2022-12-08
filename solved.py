@@ -1,5 +1,5 @@
 import requests
-from db.py import update_last_checked_codeforces, update_last_checked_atcoder
+from db import update_last_checked_codeforces, update_last_checked_atcoder
 import datetime
 import time
 # This function is used to find the solved problems of a codeforces handle

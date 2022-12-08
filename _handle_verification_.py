@@ -3,7 +3,7 @@ import requests
 import random
 import string
 import asyncio
-
+from db import add_user, add_codeforces_handle, add_atcoder_handle
 #Check whether handle exists or not
 def check_cf(username, message):
     url = "https://codeforces.com/profile/" + username
@@ -31,8 +31,8 @@ def firstname(cf_handle):
         return ""
 
 
-async def handle_verification(message):
-
+async def handle_verification(ctx):
+    message = ctx.message
     username = str(message.author.name)
     user_message = str(message.content)
 
@@ -52,8 +52,7 @@ async def handle_verification(message):
                 await asyncio.sleep(2)
                 first_name = firstname(cf_handle)
                 if first_name == random_string:
-
-
+                    await add_codeforces_handle(ctx, cf_handle)
                     #########################
                     # store in database if successfull then print
 
