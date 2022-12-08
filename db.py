@@ -50,7 +50,7 @@ async def add_user(ctx):
 async def add_codeforces_handle(ctx, codeforces_handle):
     handle_number_codeforces = await codeforces_handle_to_number(codeforces_handle)
     last_checked_codeforces = datetime.datetime.now()
-    solved_codeforces = await find_solved_codeforces(codeforces_handle)
+    solved_codeforces = await find_solved_codeforces(ctx,[],0)
     await db.collection('users').document(ctx.message.author.id).update({
         'codeforces_handle': codeforces_handle,
         'handle_number_codeforces': handle_number_codeforces,
@@ -61,7 +61,7 @@ async def add_codeforces_handle(ctx, codeforces_handle):
 async def add_atcoder_handle(ctx, atcoder_handle):
     handle_number_atcoder = await atcoder_handle_to_number(atcoder_handle)
     last_checked_atcoder = datetime.datetime.now()
-    solved_atcoder = await find_solved_atcoder(atcoder_handle)
+    solved_atcoder = await find_solved_atcoder(ctx,[],datetime.datetime.now()-datetime.timedelta(years=50))
     await db.collection('users').document(ctx.message.author.id).update({
         'atcoder_handle': atcoder_handle,
         'handle_number_atcoder': handle_number_atcoder,
@@ -108,6 +108,17 @@ async def solved_problems(ctx,stage):
     else:
         return (docs['last_checked_codeforces'],docs['solved_codeforces'])
 
+async def update_last_checked_codeforces(ctx, solved_codeforces, last_checked_codeforces):
+    await db.collection('users').document(ctx.message.author.id).update({
+        'last_checked_codeforces': last_checked_codeforces,
+        'solved_codeforces': solved_codeforces,
+    })
+
+async def update_last_checked_atcoder(ctx, solved_atcoder, last_checked_atcoder):
+    await db.collection('users').document(ctx.message.author.id).update({
+        'last_checked_atcoder': last_checked_atcoder,
+        'solved_atcoder': solved_atcoder,
+    })
 
 #This is for testing purposes
 """async def main():
