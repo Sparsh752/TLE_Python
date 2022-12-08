@@ -1,11 +1,13 @@
 # Description: This file is used to connect to the firebase database
 # Importing the required libraries
+import requests
 import firebase_admin
 import datetime
 import asyncio
 from firebase_admin import firestore_async,credentials
 from clist_api import codeforces_handle_to_number, atcoder_handle_to_number
-from solved import find_solved_codeforces, find_solved_atcoder
+import time
+# from solved import find_solved_codeforces, find_solved_atcoder
 
 # This is an object which is used to authenticate while connecting to the database
 # Please don't change the path of the file or delete it
@@ -42,16 +44,16 @@ db = firestore_async.client()
 # 3. find_solved_codeforces
 # 4. find_solved_atcoder
 async def add_user(ctx):
-    discord_name = ctx.message.author.name
-    await db.collection('users').document(ctx.message.author.id).set({
+    discord_name = ctx.author.name
+    await db.collection('users').document(str(ctx.author.id)).set({
         'discord_name': discord_name,
     })
 
 async def add_codeforces_handle(ctx, codeforces_handle):
-    handle_number_codeforces = await codeforces_handle_to_number(codeforces_handle)
+    handle_number_codeforces = codeforces_handle_to_number(codeforces_handle)
     last_checked_codeforces = datetime.datetime.now()
-    solved_codeforces = await find_solved_codeforces(ctx,[],0)
-    await db.collection('users').document(ctx.message.author.id).update({
+    solved_codeforces = await find_solved_codeforces(ctx,codeforces_handle,[],0)
+    await db.collection('users').document(str(ctx.author.id)).update({
         'codeforces_handle': codeforces_handle,
         'handle_number_codeforces': handle_number_codeforces,
         'last_checked_codeforces': last_checked_codeforces,
@@ -59,10 +61,10 @@ async def add_codeforces_handle(ctx, codeforces_handle):
     })
 
 async def add_atcoder_handle(ctx, atcoder_handle):
-    handle_number_atcoder = await atcoder_handle_to_number(atcoder_handle)
+    handle_number_atcoder = atcoder_handle_to_number(atcoder_handle)
     last_checked_atcoder = datetime.datetime.now()
     solved_atcoder = await find_solved_atcoder(ctx,[],datetime.datetime.now()-datetime.timedelta(years=50))
-    await db.collection('users').document(ctx.message.author.id).update({
+    await db.collection('users').document(str(ctx.author.id)).update({
         'atcoder_handle': atcoder_handle,
         'handle_number_atcoder': handle_number_atcoder,
         'last_checked_atcoder': last_checked_atcoder,
@@ -72,7 +74,7 @@ async def add_atcoder_handle(ctx, atcoder_handle):
 #Function to remove a user from the database
 # Note that this function should only be called when the user has identified so do the error handling their itself
 async def remove_user(ctx):
-    await db.collection('users').document(ctx.message.author.id).delete()
+    await db.collection('users').document(str(ctx.author.id)).delete()
 
 # Function to get the list of all codeforces handles in the database
 async def get_all_codeforces_handles():
@@ -97,9 +99,9 @@ async def get_all_atcoder_handles():
 
 # solved problems on stage (atconder or codeforces)
 async def solved_problems(ctx,stage):
-    discord_name = ctx.message.author.name
+    discord_name = ctx.author.name
 
-    doc_ref=await db.collection('users').document(ctx.message.author.id).get()
+    doc_ref=await db.collection('users').document(str(ctx.author.id)).get()
 
     docs=doc_ref.to_dict()
 
@@ -109,13 +111,13 @@ async def solved_problems(ctx,stage):
         return (docs['last_checked_codeforces'],docs['solved_codeforces'])
 
 async def update_last_checked_codeforces(ctx, solved_codeforces, last_checked_codeforces):
-    await db.collection('users').document(ctx.message.author.id).update({
+    await db.collection('users').document(str(ctx.author.id)).update({
         'last_checked_codeforces': last_checked_codeforces,
         'solved_codeforces': solved_codeforces,
     })
 
 async def update_last_checked_atcoder(ctx, solved_atcoder, last_checked_atcoder):
-    await db.collection('users').document(ctx.message.author.id).update({
+    await db.collection('users').document(str(ctx.author.id)).update({
         'last_checked_atcoder': last_checked_atcoder,
         'solved_atcoder': solved_atcoder,
     })
@@ -145,3 +147,29 @@ async def update_last_checked_atcoder(ctx, solved_atcoder, last_checked_atcoder)
 
 if __name__ == '__main__':
     asyncio.run(main())"""
+
+async def find_solved_codeforces(ctx,codeforces_handle, last_solved_codeforces, last_checked_codeforces):
+    url = "https://codeforces.com/api/user.status?handle="+str(codeforces_handle)+"&from="+str(last_checked_codeforces+1)
+    response = requests.get(url).json()
+    data=response['result']
+    for obj in data:
+        if obj['verdict']=='OK':
+            last_solved_codeforces.append(str(obj['problem']['contestId'])+':'+str(obj['problem']['index']))
+    last_checked_codeforces += len(data)
+    await update_last_checked_codeforces(ctx, last_solved_codeforces, last_checked_codeforces)
+    return last_solved_codeforces
+    
+# This function is used to find the solved problems of a atcoder handle
+# It returns a list of solved problems
+# It also updates the last_checked_atcoder and last_solved_atcoder field in the database
+
+async def find_solved_atcoder(atcoder_handle, last_solved_atcoder, last_checked_atcoder):
+    mytime = time.mktime(last_checked_atcoder.timetuple())
+    url = "https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions?user="+ atcoder_handle+"&from_second="+str(int(mytime))
+    response = requests.get(url).json()
+    for obj in response:
+        if(obj['result']=='AC'):
+            last_solved_atcoder.append(obj['problem_id'])
+    last_checked_atcoder = datetime.datetime.now()
+    await update_last_checked_atcoder(atcoder_handle, last_solved_atcoder, last_checked_atcoder)
+    return last_solved_atcoder

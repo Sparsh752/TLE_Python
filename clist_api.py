@@ -23,7 +23,7 @@ def codeforces_handle_to_number(handle_name):                    #function to co
     if(handle_name==None):                                                    #if handle is none, return none
         return None
     try:            
-        resp=requests.get(url)                                              #fetching response
+        resp= requests.get(url)                                              #fetching response
         return resp.json()['objects'][0]['id']                              #returning id
     except Exception as e:                                                  #tackiling errors    
         return None
@@ -33,7 +33,7 @@ def atcoder_handle_to_number(handle_name):           #function to convert atcode
     if(handle_name==None):
         return None
     try:
-        resp=requests.get(url)
+        resp= requests.get(url)
         return resp.json()['objects'][0]['id']
     except Exception as e:
         return None
@@ -43,7 +43,7 @@ def codechef_handle_to_number(handle_name):        #function to convert codechef
     if(handle_name==None):
         return None
     try:
-        resp=requests.get(url)
+        resp= requests.get(url)
         return resp.json()['objects'][0]['id']
     except Exception as e:
         return None

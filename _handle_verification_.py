@@ -32,10 +32,10 @@ def firstname(cf_handle):
 
 
 async def handle_verification(ctx):
-    message = ctx.message
+    message = ctx
     username = str(message.author.name)
     user_message = str(message.content)
-
+    await add_user(ctx)
     msg_data = user_message.split()
     if (len(msg_data) != 2):
         await message.channel.send(f"{message.author.mention} Command format is incorrect")

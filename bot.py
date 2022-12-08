@@ -4,12 +4,12 @@ from _handle_verification_ import handle_verification
 
 async def send_message(ctx,user_message,is_private):                                      #giving back response to the user
     try:
-        response=responses.handle_response(str(user_message),ctx)                            #fetching response
+        response= await responses.handle_response(str(user_message),ctx)                            #fetching response
         await ctx.author.send(response) if is_private else await ctx.channel.send(response)     #sending response in dm if private or in channel if not
     except Exception as e:
         print(e)
 
-def run_discord_bot():
+async def run_discord_bot():
     TOKEN='MTA0ODIzNTAxMjcxMTAxMDM2NA.G6wi4q.6AE7Q3otjPtQ-Hu9JJ0C6hNnVDEc_M9xSsmLTc'    #bot id
     print('hello')
     client = discord.Client(intents=discord.Intents.all())                              #giving permissions and intents to the bot

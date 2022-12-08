@@ -1,7 +1,8 @@
 import clist_api
+import _handle_verification_
 
 import random 
-def handle_response(message,ctx):
+async def handle_response(message,ctx):
     p_message=message.lower()                   #to maintain uniformity
     if p_message=="hello":
         return "Hey there "+ctx.author.name
