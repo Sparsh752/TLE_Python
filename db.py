@@ -55,3 +55,27 @@ async def add_user(ctx, codeforces_handle, atcoder_handle):
         'solved_codeforces': solved_codeforces,
         'solved_atcoder': solved_atcoder
     })
+
+#This is for testing purposes
+"""async def main():
+    discord_name = 'discord_name'
+    codeforces_handle = 'codeforces_handle'
+    atcoder_handle = 'atcoder_handle'
+    handle_number_codeforces = 'handle_number_codeforces'
+    handle_number_atcoder = 'handle_number_atcoder'
+    last_check = datetime.datetime.now()
+    solved_codeforces = ['solved_codeforces', 'solved_codeforces1']
+    solved_atcoder = ['solved_atcoder', 'solved_atcoder1']
+    await db.collection('users').document(discord_name).set({
+        'discord_name': discord_name,
+        'codeforces_handle': codeforces_handle,
+        'atcoder_handle': atcoder_handle,
+        'handle_number_codeforces': handle_number_codeforces,
+        'handle_number_atcoder': handle_number_atcoder,
+        'last_check': last_check,
+        'solved_codeforces': solved_codeforces,
+        'solved_atcoder': solved_atcoder
+    })
+
+if __name__ == '__main__':
+    asyncio(main())"""
