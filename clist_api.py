@@ -1,9 +1,9 @@
 import requests
 
 URL_BASE=URL_BASE = 'https://clist.by/api/v2/'
+clist_token="username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
 
 def nextcontests():
-    clist_token="username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
     url=URL_BASE+'contest/?'+clist_token+'&resource_id=1&limit=5&start__gte=2022-12-05%2012:00:00&order_by=start'           #url of the list of contests on codeforces
     try:
         resp=requests.get(url)                                                                                              #fetches response from the url
