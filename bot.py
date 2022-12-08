@@ -1,5 +1,7 @@
 import discord
 import responses
+from _handle_verification_ import handle_verification
+
 async def send_message(ctx,user_message,is_private):                                      #giving back response to the user
     try:
         response=responses.handle_response(str(user_message),ctx)                            #fetching response
@@ -23,6 +25,8 @@ def run_discord_bot():
         if ctx.author == client.user:                                               #will keep messaging itself without this
             return
         user_message=str(ctx.content)
+        if (user_message.startswith(';identify')):
+            await handle_verification(ctx)
         if user_message[0]=='?':                                                        #checking if message is private
             user_message=user_message[1:]
             await send_message(ctx,user_message,is_private=True) #message is private
