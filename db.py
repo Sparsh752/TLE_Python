@@ -101,7 +101,8 @@ async def get_all_atcoder_handles():
     atcoder_handle = 'atcoder_handle'
     handle_number_codeforces = 'handle_number_codeforces'
     handle_number_atcoder = 'handle_number_atcoder'
-    last_check = datetime.datetime.now()
+    last_checked_codeforces = datetime.datetime.now()
+    last_checked_atcoder = datetime.datetime.now()
     solved_codeforces = ['solved_codeforces', 'solved_codeforces1']
     solved_atcoder = ['solved_atcoder', 'solved_atcoder1']
     await db.collection('users').document(discord_name).set({
@@ -110,7 +111,8 @@ async def get_all_atcoder_handles():
         'atcoder_handle': atcoder_handle,
         'handle_number_codeforces': handle_number_codeforces,
         'handle_number_atcoder': handle_number_atcoder,
-        'last_check': last_check,
+        'last_checked_codeforces': last_checked_codeforces,
+        'last_checked_atcoder': last_checked_atcoder,
         'solved_codeforces': solved_codeforces,
         'solved_atcoder': solved_atcoder
     })
