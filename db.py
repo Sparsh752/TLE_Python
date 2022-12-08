@@ -4,6 +4,7 @@ import firebase_admin
 import datetime
 import asyncio
 from firebase_admin import firestore_async,credentials
+from clist_api import codeforces_handle_to_number, atcoder_handle_to_number, codechef_handle_to_number
 
 # This is an object which is used to authenticate while connecting to the database
 # Please don't change the path of the file or delete it
