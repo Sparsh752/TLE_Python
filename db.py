@@ -78,4 +78,4 @@ async def add_user(ctx, codeforces_handle, atcoder_handle):
     })
 
 if __name__ == '__main__':
-    asyncio(main())"""
+    asyncio.run(main())"""
