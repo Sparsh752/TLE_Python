@@ -18,8 +18,9 @@ db = firestore_async.client()
 # TODO, README 
 # 1. Add a function to add a new user to the database
 # 2. Add a function to get the user details from the database
-# 3. Note that the discord name of the user will be the primary key
-# 4. Database structure is as follows:
+# 3. Add a function to get the solved problems of a user from the database
+# 4. Note that the discord name of the user will be the primary key
+# 5. Database structure is as follows:
 #    There is a collection named "users" which contains documents of the users
 #    Each document has the following fields:
 #    1. discord_name: string PRIMARY KEY
@@ -66,6 +67,32 @@ async def add_atcoder_handle(ctx, atcoder_handle):
         'last_checked_atcoder': last_checked_atcoder,
         'solved_atcoder': solved_atcoder,
     })
+
+#Function to remove a user from the database
+# Note that this function should only be called when the user has identified so do the error handling their itself
+async def remove_user(ctx):
+    await db.collection('users').document(ctx.message.author.id).delete()
+
+# Function to get the list of all codeforces handles in the database
+async def get_all_codeforces_handles():
+    users = await db.collection('users').get()
+    codeforces_handles = []
+    for user in users:
+        user = user.to_dict()
+        if 'codeforces_handle' in user:
+            codeforces_handles.append(user['codeforces_handle'])
+    return codeforces_handles
+
+# Function to get the list of all atcoder handles in the database
+async def get_all_atcoder_handles():
+    users = await db.collection('users').get()
+    atcoder_handles = []
+    for user in users:
+        user = user.to_dict()
+        if 'atcoder_handle' in user:
+            atcoder_handles.append(user['atcoder_handle'])
+    return atcoder_handles
+
 
 #This is for testing purposes
 """async def main():
