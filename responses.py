@@ -1,10 +1,10 @@
 import clist_api
 
 import random 
-def handle_response(message,author):
+def handle_response(message,ctx):
     p_message=message.lower()                   #to maintain uniformity
     if p_message=="hello":
-        return "Hey there "+author.name
+        return "Hey there "+ctx.author.name
     if p_message=="roll":
         return str(random.randint(1,6))
     if p_message=="!help":
