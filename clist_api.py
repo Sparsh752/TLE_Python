@@ -24,7 +24,6 @@ def codeforces_handle_to_number(handle_name):
         return None
     try:
         resp=requests.get(url)
-        list=resp.json()['objects']
         return resp.json()['objects'][0]['id']
     except Exception as e:
         return None
@@ -35,7 +34,6 @@ def atcoder_handle_to_number(handle_name):
         return None
     try:
         resp=requests.get(url)
-        list=resp.json()['objects']
         return resp.json()['objects'][0]['id']
     except Exception as e:
         return None
@@ -46,7 +44,6 @@ def codechef_handle_to_number(handle_name):
         return None
     try:
         resp=requests.get(url)
-        list=resp.json()['objects']
         return resp.json()['objects'][0]['id']
     except Exception as e:
         return None
