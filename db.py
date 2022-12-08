@@ -39,22 +39,32 @@ db = firestore_async.client()
 # 2. atcoder_handle_to_number
 # 3. find_solved_codeforces
 # 4. find_solved_atcoder
-async def add_user(ctx, codeforces_handle, atcoder_handle):
+async def add_user(ctx):
     discord_name = ctx.message.author.name
-    handle_number_codeforces = codeforces_handle_to_number(codeforces_handle)
-    handle_number_atcoder = atcoder_handle_to_number(atcoder_handle)
-    solved_codeforces = find_solved_codeforces(codeforces_handle, None) # The second aregument is last_checked
-    solved_atcoder = find_solved_atcoder(atcoder_handle, None)
-    # Since we are creating a new user, we don't have any last_checked so it is set to None
     await db.collection('users').document(ctx.message.author.id).set({
         'discord_name': discord_name,
+    })
+
+async def add_codeforces_handle(ctx, codeforces_handle):
+    handle_number_codeforces = await codeforces_handle_to_number(codeforces_handle)
+    last_checked_codeforces = datetime.datetime.now()
+    solved_codeforces = await find_solved_codeforces(codeforces_handle)
+    await db.collection('users').document(ctx.message.author.id).update({
         'codeforces_handle': codeforces_handle,
-        'atcoder_handle': atcoder_handle,
         'handle_number_codeforces': handle_number_codeforces,
-        'handle_number_atcoder': handle_number_atcoder,
-        'last_check': datetime.datetime.now(),
+        'last_checked_codeforces': last_checked_codeforces,
         'solved_codeforces': solved_codeforces,
-        'solved_atcoder': solved_atcoder
+    })
+
+async def add_atcoder_handle(ctx, atcoder_handle):
+    handle_number_atcoder = await atcoder_handle_to_number(atcoder_handle)
+    last_checked_atcoder = datetime.datetime.now()
+    solved_atcoder = await find_solved_atcoder(atcoder_handle)
+    await db.collection('users').document(ctx.message.author.id).update({
+        'atcoder_handle': atcoder_handle,
+        'handle_number_atcoder': handle_number_atcoder,
+        'last_checked_atcoder': last_checked_atcoder,
+        'solved_atcoder': solved_atcoder,
     })
 
 #This is for testing purposes
