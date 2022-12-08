@@ -94,6 +94,20 @@ async def get_all_atcoder_handles():
     return atcoder_handles
 
 
+# solved problems on stage (atconder or codeforses)
+async def solved_problems(ctx,stage):
+    discord_name = ctx.message.author.name
+
+    doc_ref=await db.collection('users').document(ctx.message.author.id).get()
+
+    docs=doc_ref.to_dict()
+
+    if stage=='atcoder':
+        return (docs['last_checked_atcoder'],docs['solved_atcoder'])
+    else:
+        return (docs['last_checked_codeforces'],docs['solved_codeforces'])
+
+
 #This is for testing purposes
 """async def main():
     discord_name = 'discord_name'
