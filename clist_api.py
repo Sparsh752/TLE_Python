@@ -18,17 +18,17 @@ def nextcontests():
         print(e)
         return "Error"
     
-def codeforces_handle_to_number(handle_name):
-    url=URL_BASE+'account/?'+clist_token+'&resource_id=1'+'&handle='+handle_name
-    if(handle_name==None):
+def codeforces_handle_to_number(handle_name):                    #function to convert codeforces handle to codeforces id
+    url=URL_BASE+'account/?'+clist_token+'&resource_id=1'+'&handle='+handle_name   #url of the to be fetched
+    if(handle_name==None):                                                    #if handle is none, return none
         return None
-    try:
-        resp=requests.get(url)
-        return resp.json()['objects'][0]['id']
-    except Exception as e:
+    try:            
+        resp=requests.get(url)                                              #fetching response
+        return resp.json()['objects'][0]['id']                              #returning id
+    except Exception as e:                                                  #tackiling errors    
         return None
 
-def atcoder_handle_to_number(handle_name):
+def atcoder_handle_to_number(handle_name):           #function to convert atcoder handle to atcoder id similar to codeforces
     url=URL_BASE+'account/?'+clist_token+'&resource_id=93'+'&handle='+handle_name
     if(handle_name==None):
         return None
@@ -38,7 +38,7 @@ def atcoder_handle_to_number(handle_name):
     except Exception as e:
         return None
 
-def codechef_handle_to_number(handle_name):
+def codechef_handle_to_number(handle_name):        #function to convert codechef handle to codechef id similar to codeforces
     url=URL_BASE+'account/?'+clist_token+'&resource_id=2'+'&handle='+handle_name
     if(handle_name==None):
         return None
