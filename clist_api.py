@@ -17,3 +17,36 @@ def nextcontests():
     except Exception as e:                                                                                                  #in case of any error, code doesn't crash but tells about it in the terminal
         print(e)
         return "Error"
+    
+def codeforces_handle_to_number(handle_name):
+    url=URL_BASE+'account/?'+clist_token+'&resource_id=1'+'&handle='+handle_name
+    if(handle_name==None):
+        return None
+    try:
+        resp=requests.get(url)
+        list=resp.json()['objects']
+        return resp.json()['objects'][0]['id']
+    except Exception as e:
+        return None
+
+def atcoder_handle_to_number(handle_name):
+    url=URL_BASE+'account/?'+clist_token+'&resource_id=93'+'&handle='+handle_name
+    if(handle_name==None):
+        return None
+    try:
+        resp=requests.get(url)
+        list=resp.json()['objects']
+        return resp.json()['objects'][0]['id']
+    except Exception as e:
+        return None
+
+def codechef_handle_to_number(handle_name):
+    url=URL_BASE+'account/?'+clist_token+'&resource_id=2'+'&handle='+handle_name
+    if(handle_name==None):
+        return None
+    try:
+        resp=requests.get(url)
+        list=resp.json()['objects']
+        return resp.json()['objects'][0]['id']
+    except Exception as e:
+        return None
