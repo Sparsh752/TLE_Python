@@ -46,7 +46,7 @@ async def add_user(ctx, codeforces_handle, atcoder_handle):
     solved_codeforces = find_solved_codeforces(codeforces_handle, None) # The second aregument is last_checked
     solved_atcoder = find_solved_atcoder(atcoder_handle, None)
     # Since we are creating a new user, we don't have any last_checked so it is set to None
-    await db.collection('users').document(discord_name).set({
+    await db.collection('users').document(ctx.message.author.id).set({
         'discord_name': discord_name,
         'codeforces_handle': codeforces_handle,
         'atcoder_handle': atcoder_handle,
