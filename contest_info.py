@@ -13,14 +13,16 @@ async def codeforces_rating_changes():                     # function to get the
             response = requests.get(url).json()
             if response['objects']:
                 if 'CONTESTANT' in response['objects'][0]['more_fields']['participant_type']:
+                    print(handle[1])
                     data=response['objects'][0]
-                    data_dict={'handle':handle[0],'position':data['place'],'rating_change':data['rating_change'],'old_rating':data['old_rating'],'new_rating':data['new_rating']}
+                    data_dict={'handle':handle[0],'position':data['place'],'score':data['score'],'rating_change':data['rating_change'],'old_rating':data['old_rating'],'new_rating':data['new_rating']}
                     for i in data['problems']:
                         if 'upsolving' in data['problems'][i].keys():
                             continue
                         data_dict[i]=data['problems'][i]['result']
                     returnlist.append(data_dict)
         print(returnlist)
+        return returnlist
         
     except Exception as e:
         print(e)
