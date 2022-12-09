@@ -40,9 +40,14 @@ db = firestore_async.client()
 # Output: None
 async def add_user(ctx):
     discord_name = ctx.author.name
-    await db.collection('users').document(str(ctx.author.id)).update({ #TODO
-        'discord_name': discord_name,   
-    })
+    if(await db.collection('users').document(str(ctx.author.id)).get()).exists:
+        await db.collection('users').document(str(ctx.author.id)).update({ #TODO
+            'discord_name': discord_name,   
+        })
+    else:
+        await db.collection('users').document(str(ctx.author.id)).set({
+            'discord_name': discord_name,
+        })
 
 async def add_codeforces_handle(ctx, codeforces_handle):
     handle_number_codeforces = codeforces_handle_to_number(codeforces_handle)
@@ -56,7 +61,7 @@ async def add_codeforces_handle(ctx, codeforces_handle):
 
 async def add_atcoder_handle(ctx, atcoder_handle):
     handle_number_atcoder = atcoder_handle_to_number(atcoder_handle)
-    solved_atcoder = await find_solved_atcoder(ctx,atcoder_handle,[],datetime.datetime.now()-datetime.datetime.now())
+    solved_atcoder = await find_solved_atcoder(ctx,atcoder_handle,[],datetime.datetime.now(datetime.timezone.utc))
     await db.collection('users').document(str(ctx.author.id)).update({
         'atcoder_handle': atcoder_handle,
         'handle_number_atcoder': handle_number_atcoder,
@@ -158,13 +163,14 @@ async def find_solved_codeforces(ctx,codeforces_handle, last_solved_codeforces, 
 # It also updates the last_checked_atcoder and last_solved_atcoder field in the database
 
 async def find_solved_atcoder(ctx,atcoder_handle, last_solved_atcoder, last_checked_atcoder):
-    mytime = time.mktime(last_checked_atcoder.timetuple())
+    last_checked_atcoder = last_checked_atcoder - datetime.datetime(2010, 1 ,1 ,0,0,0,0, datetime.timezone.utc)
+    mytime = int(last_checked_atcoder.total_seconds())
     url = "https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions?user="+ atcoder_handle+"&from_second="+str(int(mytime))
     response = requests.get(url).json()
     for obj in response:
         if(obj['result']=='AC'):
             last_solved_atcoder.append(obj['problem_id'])
-    last_checked_atcoder = datetime.datetime.now()
+    last_checked_atcoder = datetime.datetime.now(datetime.timezone.utc)
     await update_last_checked_atcoder(ctx, last_solved_atcoder, last_checked_atcoder)
     return last_solved_atcoder
 

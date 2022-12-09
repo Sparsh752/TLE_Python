@@ -67,18 +67,19 @@ def ac_get_random_question(contest_type, question_type):
         'https://kenkoooo.com/atcoder/resources/problems.json').json()
     q_list = []
     for problem in q:
-        u = 0
-        for data in problem:
-            if (data == 'id'):
-                if ((problem[data][:3] == contest_type)):
-                    if (ok(problem)):
-                        u = u+1
-            if (data == 'problem_index'):
-                if (problem[data] == question_type):
-                    u = u+1
-            if (u == 2):
-                q_list.append(problem)
-                break
+        # u = 0
+        # for data in problem:
+        #     if (data == 'id'):
+        #         if ((problem[data][:3] == contest_type)):
+        #             if (ok(problem)):
+        #                 u = u+1
+        #     if (data == 'problem_index'):
+        #         if (problem[data] == question_type):
+        #             u = u+1
+        #     if (u == 2):
+        #         q_list.append(problem)
+        #         break
+        q_list.append(problem)
     q_index = random.randint(0, len(q_list)-1)
     problem = q_list[q_index]
     prob_link = 'https://atcoder.jp/contests/' + \

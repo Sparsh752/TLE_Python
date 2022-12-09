@@ -1,7 +1,7 @@
 import requests
 import discord
 from db import get_last_solved_problems, find_solved_codeforces, get_codeforces_handle, get_atcoder_handle
-from db import problem_solving_cf, problem_solving_ac
+from db import problem_solving_cf, problem_solving_ac, find_solved_atcoder
 from codeforces_scraping import cf_get_random_question_rating, ac_get_random_question
 async def get_user_rating(codeforces_handle):
     url = f'https://codeforces.com/api/user.rating?handle={codeforces_handle}'
@@ -59,7 +59,7 @@ async def gitgud(ctx):
             await ctx.channel.send(f"{ctx.author.mention} For example `;gitgud ac abc e` for 'E' problem of 'ABC' contest")
             return
         last_checked, last_solved_problems = await get_last_solved_problems(ctx,'atcoder')
-        solved_problems = await find_solved_codeforces(ctx,ac_handle,last_solved_problems,last_checked)
+        solved_problems = await find_solved_atcoder(ctx,ac_handle,last_solved_problems,last_checked)
         random_problem = ac_get_random_question(user_message[2], user_message[3])
         iter=0
         while(iter < 50 and random_problem in solved_problems):
