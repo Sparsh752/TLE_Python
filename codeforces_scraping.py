@@ -20,8 +20,8 @@ def q_based_on_rating(rating):
     q_index = random.randint(0, len(q_list)-1)
     problem = q_list[q_index]
     prob_link = 'https://codeforces.com/problemset/problem/' + \
-        str(problem['contestId'])+'/'+problem['index']
-    prob_id = problem['contestId']+':' + problem['index']
+        str(problem['contestId'])+'/'+str(problem['index'])
+    prob_id = str(problem['contestId'])+':' + str(problem['index'])
     prob_name = problem['name']
     prob_rating = problem['rating']
     prob_info = {'problem': problem, 'prob_link': prob_link,
