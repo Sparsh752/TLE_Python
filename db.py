@@ -185,3 +185,21 @@ async def get_atcoder_handle(ctx):
         return user_dict['atcoder_handle']
     else:
         return None
+
+async def update_point_cf(ctx,points):
+    Id=ctx.author.id
+    old=await db.collection('users').document(str(Id)).get(field_paths={'score_codeforces'}).to_dict()['score_codeforces']
+    new=old+points
+    await db.collection('users').document(str(Id)).update({
+        'score_codeforces':new
+    }
+    )
+
+async def update_point_at(ctx,points):
+    Id=ctx.author.id
+    old=await db.collection('users').document(str(Id)).get(field_paths={'score_atcoder'}).to_dict()['score_atcoder']
+    new=old+points
+    await db.collection('users').document(str(Id)).update({
+        'score_atcoder':new
+    }
+    )
