@@ -95,7 +95,7 @@ async def get_all_atcoder_handles():
 
 
 # solved problems on stage (atconder or codeforces)
-async def solved_problems(ctx,stage):
+async def get_last_solved_problems(ctx,stage):
     
     doc_ref=await db.collection('users').document(str(ctx.author.id)).get()
 
