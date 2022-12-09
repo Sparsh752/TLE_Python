@@ -169,11 +169,15 @@ async def find_solved_atcoder(atcoder_handle, last_solved_atcoder, last_checked_
     return last_solved_atcoder
 
 async def get_codeforces_handle(ctx):
-    cf_handle=await db.collection('users').document(str(ctx.author.id)).get(field_paths={'codeforces_handle'}).to_dict()['codeforces_handle']
-    
-    return cf_handle
+    user_dict=await db.collection('users').document(str(ctx.author.id)).get().to_dict()
+    if 'codeforces_handle' in user_dict.keys():
+        return user_dict['codeforces_handle']
+    else:
+        return None
 
 async def get_atcoder_handle(ctx):
-    at_handle=await db.collection('users').document(str(ctx.author.id)).get(field_paths={'codeforces_handle'}).to_dict()['atcoder_handle']
-    
-    return at_handle
+    user_dict=await db.collection('users').document(str(ctx.author.id)).get().to_dict()
+    if 'atcoder_handle' in user_dict.keys():
+        return user_dict['atcoder_handle']
+    else:
+        return None
