@@ -200,11 +200,11 @@ async def update_point_at(ctx,points):
     }
     )
 async def problem_solving_cf(ctx,problem):
-    await db.collection('users').document(str(ctx.author.id)).set({
+    await db.collection('users').document(str(ctx.author.id)).update({
         'problem_solving_cf': (problem,datetime.datetime.now()),
     })
 async def problem_solving_ac(ctx,problem):
-    await db.collection('users').document(str(ctx.author.id)).set({
+    await db.collection('users').document(str(ctx.author.id)).update({
         'problem_solving_atcoder': (problem,datetime.datetime.now()),
     })
     
