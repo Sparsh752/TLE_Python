@@ -8,7 +8,7 @@ import requests
 # function for getting random question from codeforces
 
 # question based on rating
-def q_based_on_rating(rating):
+def cf_get_random_question_rating(rating):
     p = requests.get('https://codeforces.com/api/problemset.problems')
     data = p.json()['result']['problems']
     q_list = []
@@ -29,7 +29,7 @@ def q_based_on_rating(rating):
     return prob_info
 
 # question based on tags
-def q_based_on_tags(tag_list):
+def cf_get_random_question_tag(tag_list):
     p = requests.get('https://codeforces.com/api/problemset.problems')
     data = p.json()['result']['problems']
     q_list = []
@@ -60,7 +60,7 @@ def ok(problem):
         return True
     return False
 
-def random_atcoder_question(contest_type, question_type):
+def ac_get_random_question(contest_type, question_type):
     contest_type = contest_type.lower()
     question_type = question_type.upper()
     q = requests.get(

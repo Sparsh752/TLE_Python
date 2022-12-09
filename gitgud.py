@@ -1,6 +1,7 @@
 import requests
 import discord
 from db import get_last_solved_problems, find_solved_codeforces, get_codeforces_handle
+from codeforces_scraping import cf_get_random_question_rating, ac_get_random_question
 async def get_user_rating(codeforces_handle):
     url = f'https://codeforces.com/api/user.rating?handle={codeforces_handle}'
     data = requests.get(url).json()
@@ -28,15 +29,16 @@ async def gitgud(ctx):
         cf_rating = (cf_rating//100)*100
         last_checked,last_solved_problems = await get_last_solved_problems(ctx,'codeforces')
         solved_problems = await find_solved_codeforces(ctx,cf_handle,last_solved_problems,last_checked)
-        random_problem = get_random_problem(cf_rating)
+        random_problem = cf_get_random_question_rating(cf_rating)
         iter=0
         while(iter < 50 and random_problem in solved_problems):
-            random_problem = get_random_problem(cf_rating)
+            random_problem = cf_get_random_question_rating(cf_rating)
             iter+=1
         if(iter==50):
             await ctx.channel.send(f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later :( ")
             return
-        title = f"{random_problem['index']}.{random_problem['name']}"
-        url = f"{random_problem['url']}"
-        embed = discord.Embed(title=title, url=url)
+        title = f"Contest {random_problem['prob_id']} {random_problem['prob_name']}"
+        url = f"{random_problem['prob_link']}"
+        description = f"Rating: {random_problem['prob_rating']}"
+        embed = discord.Embed(title=title, url=url, description=description)
         await ctx.channel.send(f"Challenge problem for `{cf_handle}`", embed = embed)
