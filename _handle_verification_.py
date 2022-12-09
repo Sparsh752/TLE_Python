@@ -4,6 +4,7 @@ import random
 import string
 import asyncio
 from bs4 import BeautifulSoup
+from db import add_user, add_codeforces_handle, add_atcoder_handle
 
 ##Codeforces
 #Check whether handle exists or not
@@ -81,11 +82,11 @@ def check_Affiliation(ac_handle, random_string):
     else:
         return False
 
-async def handle_verification(message):
-
+async def handle_verification(ctx):
+    message=ctx
     username = str(message.author.name)
     user_message = str(message.content)
-
+    await add_user(ctx)
     msg_data = user_message.split()
     if (len(msg_data) != 2):
         await message.channel.send(f"{message.author.mention} Command format is incorrect")
@@ -102,7 +103,7 @@ async def handle_verification(message):
                 await asyncio.sleep(2)
                 first_name = firstname(cf_handle)
                 if first_name == random_string:
-
+                    await add_codeforces_handle(ctx, cf_handle)
 
                     #########################
                     # store in database if successfull then print
