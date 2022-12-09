@@ -53,6 +53,7 @@ async def add_codeforces_handle(ctx, codeforces_handle):
         'handle_number_codeforces': handle_number_codeforces,
         'last_checked_codeforces': last_checked_codeforces,
         'solved_codeforces': solved_codeforces,
+        'score_codeforces':0,
     })
 
 async def add_atcoder_handle(ctx, atcoder_handle):
@@ -64,6 +65,7 @@ async def add_atcoder_handle(ctx, atcoder_handle):
         'handle_number_atcoder': handle_number_atcoder,
         'last_checked_atcoder': last_checked_atcoder,
         'solved_atcoder': solved_atcoder,
+        'score_atcoder':0,
     })
 
 #Function to remove a user from the database
