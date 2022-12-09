@@ -46,7 +46,6 @@ async def add_user(ctx):
 
 async def add_codeforces_handle(ctx, codeforces_handle):
     handle_number_codeforces = codeforces_handle_to_number(codeforces_handle)
-    last_checked_codeforces = 0
     solved_codeforces = await find_solved_codeforces(ctx,codeforces_handle,[],0)
     await db.collection('users').document(str(ctx.author.id)).update({
         'codeforces_handle': codeforces_handle,
@@ -57,12 +56,10 @@ async def add_codeforces_handle(ctx, codeforces_handle):
 
 async def add_atcoder_handle(ctx, atcoder_handle):
     handle_number_atcoder = atcoder_handle_to_number(atcoder_handle)
-    last_checked_atcoder = datetime.datetime.now()
-    solved_atcoder = await find_solved_atcoder(ctx,[],datetime.datetime.now()-datetime.timedelta(years=50))
+    solved_atcoder = await find_solved_atcoder(ctx,atcoder_handle,[],0)
     await db.collection('users').document(str(ctx.author.id)).update({
         'atcoder_handle': atcoder_handle,
         'handle_number_atcoder': handle_number_atcoder,
-        'last_checked_atcoder': last_checked_atcoder,
         'solved_atcoder': solved_atcoder,
         'score_atcoder':0,
     })
