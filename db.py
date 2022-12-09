@@ -77,7 +77,7 @@ async def get_all_codeforces_handles():
     codeforces_handles = []
     for user in users:
         user = user.to_dict()
-        if user['codeforces_handle']:
+        if 'codeforces_handle' in user.keys():
             codeforces_handles.append((user['codeforces_handle'],user['handle_number_codeforces']))
     return codeforces_handles
 
@@ -87,7 +87,7 @@ async def get_all_atcoder_handles():
     atcoder_handles = []
     for user in users:
         user = user.to_dict()
-        if user['atcoder_handle']:
+        if 'atcoder_handle' in user.keys():
             atcoder_handles.append((user['atcoder_handle'],user['handle_number_atcoder']))
     return atcoder_handles
 
