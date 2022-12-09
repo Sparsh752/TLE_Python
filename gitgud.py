@@ -30,6 +30,11 @@ async def gitgud(ctx):
         cf_rating = (cf_rating//100)*100
         last_checked,last_solved_problems = await get_last_solved_problems(ctx,'codeforces')
         solved_problems = await find_solved_codeforces(ctx,cf_handle,last_solved_problems,last_checked)
+        if(len(user_message)==3):
+            if(user_message[2] not in ['+100','+200','+300','+400']):
+                await ctx.channel.send(f"{ctx.author.mention} Please specify the rating with +100, +200, +300 or +400 only")
+                return
+            rating+=(int(user_message[2][1:]))
         random_problem = cf_get_random_question_rating(cf_rating)
         iter=0
         while(iter < 50 and random_problem in solved_problems):
