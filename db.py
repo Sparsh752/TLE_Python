@@ -94,8 +94,7 @@ async def get_all_atcoder_handles():
 
 # solved problems on stage (atconder or codeforces)
 async def solved_problems(ctx,stage):
-    discord_name = ctx.author.name
-
+    
     doc_ref=await db.collection('users').document(str(ctx.author.id)).get()
 
     docs=doc_ref.to_dict()
@@ -169,3 +168,12 @@ async def find_solved_atcoder(atcoder_handle, last_solved_atcoder, last_checked_
     await update_last_checked_atcoder(atcoder_handle, last_solved_atcoder, last_checked_atcoder)
     return last_solved_atcoder
 
+async def get_codeforces_handle(ctx):
+    cf_handle=await db.collection('users').document(str(ctx.author.id)).get(field_paths={'codeforces_handle'}).to_dict()['codeforces_handle']
+    
+    return cf_handle
+
+async def get_atcoder_handle(ctx):
+    at_handle=await db.collection('users').document(str(ctx.author.id)).get(field_paths={'codeforces_handle'}).to_dict()['atcoder_handle']
+    
+    return at_handle
