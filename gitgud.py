@@ -1,4 +1,5 @@
 import requests
+import discord
 from db import get_last_solved_problems, find_solved_codeforces, get_codeforces_handle
 async def get_user_rating(codeforces_handle):
     url = f'https://codeforces.com/api/user.rating?handle={codeforces_handle}'
@@ -35,4 +36,7 @@ async def gitgud(ctx):
         if(iter==50):
             await ctx.channel.send(f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later :( ")
             return
-        
+        title = f"{random_problem['index']}.{random_problem['name']}"
+        url = f"{random_problem['url']}"
+        embed = discord.Embed(title=title, url=url)
+        await ctx.channel.send(f"Challenge problem for `{cf_handle}`", embed = embed)
