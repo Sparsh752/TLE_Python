@@ -22,6 +22,7 @@ async def contest_id_finder(event_name):                    #function to convert
 async def codeforces_rating_changes(event_name):                     # function to get the rating changes of all users in codeforces
     codeforces_handle = await db.get_all_codeforces_handles()       # get all the codeforces handles from the database
     contest_id=await contest_id_finder(event_name)
+    print(str(contest_id))
     try: 
         returnlist=[]
         for handle in codeforces_handle:                                # iterate over all the handles
@@ -29,11 +30,16 @@ async def codeforces_rating_changes(event_name):                     # function 
             response = requests.get(url).json()
             if response['objects']:
                 if 'CONTESTANT' in response['objects'][0]['more_fields']['participant_type']:
-                    print(handle[1])
+                    # print(handle[1])
                     data=response['objects'][0]
                     data_dict={'handle':handle[0],'position':data['place'],'score':data['score'],'rating_change':data['rating_change'],'old_rating':data['old_rating'],'new_rating':data['new_rating']}
                     for i in data['problems']:
                         if 'upsolving' in data['problems'][i].keys():
+                            continue
+                        if data['problems'][i]['result']=='+':
+                            data_dict[i]=data['problems'][i]['result']
+                            continue
+                        if int(data['problems'][i]['result'])<=0:
                             continue
                         data_dict[i]=data['problems'][i]['result']
                     returnlist.append(data_dict)
