@@ -40,8 +40,8 @@ db = firestore_async.client()
 # Output: None
 async def add_user(ctx):
     discord_name = ctx.author.name
-    await db.collection('users').document(str(ctx.author.id)).set({
-        'discord_name': discord_name,
+    await db.collection('users').document(str(ctx.author.id)).update({ #TODO
+        'discord_name': discord_name,   
     })
 
 async def add_codeforces_handle(ctx, codeforces_handle):
@@ -56,7 +56,7 @@ async def add_codeforces_handle(ctx, codeforces_handle):
 
 async def add_atcoder_handle(ctx, atcoder_handle):
     handle_number_atcoder = atcoder_handle_to_number(atcoder_handle)
-    solved_atcoder = await find_solved_atcoder(ctx,atcoder_handle,[],0)
+    solved_atcoder = await find_solved_atcoder(ctx,atcoder_handle,[],datetime.datetime.now()-datetime.datetime.now())
     await db.collection('users').document(str(ctx.author.id)).update({
         'atcoder_handle': atcoder_handle,
         'handle_number_atcoder': handle_number_atcoder,
@@ -157,7 +157,7 @@ async def find_solved_codeforces(ctx,codeforces_handle, last_solved_codeforces, 
 # It returns a list of solved problems
 # It also updates the last_checked_atcoder and last_solved_atcoder field in the database
 
-async def find_solved_atcoder(atcoder_handle, last_solved_atcoder, last_checked_atcoder):
+async def find_solved_atcoder(ctx,atcoder_handle, last_solved_atcoder, last_checked_atcoder):
     mytime = time.mktime(last_checked_atcoder.timetuple())
     url = "https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions?user="+ atcoder_handle+"&from_second="+str(int(mytime))
     response = requests.get(url).json()
@@ -165,18 +165,20 @@ async def find_solved_atcoder(atcoder_handle, last_solved_atcoder, last_checked_
         if(obj['result']=='AC'):
             last_solved_atcoder.append(obj['problem_id'])
     last_checked_atcoder = datetime.datetime.now()
-    await update_last_checked_atcoder(atcoder_handle, last_solved_atcoder, last_checked_atcoder)
+    await update_last_checked_atcoder(ctx, last_solved_atcoder, last_checked_atcoder)
     return last_solved_atcoder
 
 async def get_codeforces_handle(ctx):
-    user_dict=await db.collection('users').document(str(ctx.author.id)).get().to_dict()
+    user_dict=await db.collection('users').document(str(ctx.author.id)).get()
+    user_dict=user_dict.to_dict()
     if 'codeforces_handle' in user_dict.keys():
         return user_dict['codeforces_handle']
     else:
         return None
 
 async def get_atcoder_handle(ctx):
-    user_dict=await db.collection('users').document(str(ctx.author.id)).get().to_dict()
+    user_dict=await db.collection('users').document(str(ctx.author.id)).get()
+    user_dict=user_dict.to_dict()
     if 'atcoder_handle' in user_dict.keys():
         return user_dict['atcoder_handle']
     else:

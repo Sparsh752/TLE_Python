@@ -128,6 +128,7 @@ async def handle_verification(ctx):
                 if check_Affiliation(ac_handle, random_string):
                     #########################
                     # store in database if successfull then print
+                    await add_atcoder_handle(ctx, ac_handle)
                     await message.channel.send(f"{message.author.mention} you are successfully identifiedon on atcoder... >_<")
                     break
             else:

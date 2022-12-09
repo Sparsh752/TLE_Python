@@ -15,7 +15,7 @@ async def gitgud(ctx):
     discord_id = str(ctx.author.id)
     user_message = ctx.content
     user_message = user_message.split()
-    if(user_message<2):
+    if(len(user_message)<2):
         await ctx.channel.send(f"{ctx.author.mention} Command format is incorrect")
         return
     if(user_message[1] not in ['cf','ac']):
@@ -34,7 +34,7 @@ async def gitgud(ctx):
             if(user_message[2] not in ['+100','+200','+300','+400']):
                 await ctx.channel.send(f"{ctx.author.mention} Please specify the rating with +100, +200, +300 or +400 only")
                 return
-            rating+=(int(user_message[2][1:]))
+            cf_rating+=(int(user_message[2][1:]))
         random_problem = cf_get_random_question_rating(cf_rating)
         iter=0
         while(iter < 50 and random_problem in solved_problems):
