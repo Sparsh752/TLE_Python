@@ -138,7 +138,9 @@ async def update_last_checked_atcoder(ctx, solved_atcoder, last_checked_atcoder)
         'last_checked_codeforces': last_checked_codeforces,
         'last_checked_atcoder': last_checked_atcoder,
         'solved_codeforces': solved_codeforces,
-        'solved_atcoder': solved_atcoder
+        'solved_atcoder': solved_atcoder,
+        'score_atcoder':0,
+        'score_codeforces':0,
     })
 
 if __name__ == '__main__':
