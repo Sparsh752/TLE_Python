@@ -51,7 +51,6 @@ async def add_codeforces_handle(ctx, codeforces_handle):
     await db.collection('users').document(str(ctx.author.id)).update({
         'codeforces_handle': codeforces_handle,
         'handle_number_codeforces': handle_number_codeforces,
-        'last_checked_codeforces': last_checked_codeforces,
         'solved_codeforces': solved_codeforces,
         'score_codeforces':0,
     })
