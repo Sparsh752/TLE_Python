@@ -199,3 +199,12 @@ async def update_point_at(ctx,points):
         'score_atcoder':new
     }
     )
+   
+async def problem_solving_cf(ctx,problem):
+    await db.collection('users').document(str(ctx.author.id)).set({
+        'problem_solving_cf': problem,
+    })
+async def problem_solving_atcoder(ctx,problem):
+    await db.collection('users').document(str(ctx.author.id)).set({
+        'problem_solving_atcoder': problem,
+    })
