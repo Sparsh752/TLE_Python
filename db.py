@@ -38,11 +38,6 @@ db = firestore_async.client()
 # Function to add a new user to the database
 # Input: discord_name, codeforces_handle, atcoder_handle
 # Output: None
-# NEEDED FUNCTIONS THAT ARE NOT YET IMPLEMENTED:
-# 1. codeforces_handle_to_number
-# 2. atcoder_handle_to_number
-# 3. find_solved_codeforces
-# 4. find_solved_atcoder
 async def add_user(ctx):
     discord_name = ctx.author.name
     await db.collection('users').document(str(ctx.author.id)).set({
@@ -51,7 +46,7 @@ async def add_user(ctx):
 
 async def add_codeforces_handle(ctx, codeforces_handle):
     handle_number_codeforces = codeforces_handle_to_number(codeforces_handle)
-    last_checked_codeforces = datetime.datetime.now()
+    last_checked_codeforces = 0
     solved_codeforces = await find_solved_codeforces(ctx,codeforces_handle,[],0)
     await db.collection('users').document(str(ctx.author.id)).update({
         'codeforces_handle': codeforces_handle,
@@ -83,7 +78,7 @@ async def get_all_codeforces_handles():
     for user in users:
         user = user.to_dict()
         if user['codeforces_handle']:
-            codeforces_handles.append(user['codeforces_handle'])
+            codeforces_handles.append((user['codeforces_handle'],user['handle_number_codeforces']))
     return codeforces_handles
 
 # Function to get the list of all atcoder handles in the database
@@ -93,7 +88,7 @@ async def get_all_atcoder_handles():
     for user in users:
         user = user.to_dict()
         if user['atcoder_handle']:
-            atcoder_handles.append(user['atcoder_handle'])
+            atcoder_handles.append((user['atcoder_handle'],user['handle_number_atcoder']))
     return atcoder_handles
 
 
@@ -173,3 +168,4 @@ async def find_solved_atcoder(atcoder_handle, last_solved_atcoder, last_checked_
     last_checked_atcoder = datetime.datetime.now()
     await update_last_checked_atcoder(atcoder_handle, last_solved_atcoder, last_checked_atcoder)
     return last_solved_atcoder
+
