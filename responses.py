@@ -25,5 +25,5 @@ async def handle_response(message,ctx):
     if msg_data[0]==";nogud":
         if msg_data[1]=="cf":
             return await gitgud.nogud_cf(ctx)
-        elif msg_data[0]=="atcoder":
+        elif msg_data[1]=="atcoder":
             return await gitgud.nogud_atcoder(ctx)

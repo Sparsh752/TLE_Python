@@ -212,6 +212,7 @@ async def nogud_atcoder(ctx):
 
     date_time= datetime.datetime.now()
     try:
+        print('hello')
         problem = await get_current_question( ctx.author.id,'atcoder')
         time_date=str(problem[1])
         date_time =datetime.datetime.now() - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]) , int(time_date[8:10]) ,int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19],0))
