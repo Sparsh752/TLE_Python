@@ -1,10 +1,9 @@
 import requests
 import discord
-from db import get_last_solved_problems, find_solved_codeforces, get_codeforces_handle, get_atcoder_handle, get_current_question
+from db import get_last_solved_problems, find_solved_codeforces, get_codeforces_handle, get_atcoder_handle, get_current_question,delete_current_question
 from db import problem_solving_cf, problem_solving_ac, find_solved_atcoder, update_point_cf, update_point_at
 from codeforces_scraping import cf_get_random_question_rating, ac_get_random_question
 import asyncio
-from firebase_admin import firestore
 import datetime
 async def get_cf_user_rating(codeforces_handle):
     url = f'https://codeforces.com/api/user.rating?handle={codeforces_handle}'
@@ -200,10 +199,8 @@ async def nogud_cf(ctx):
 
     print(date_time.total_seconds())
     if date_time.total_seconds()>7200:
-        await db.collection('users').document(str(ctx.author.id)).update({
-            'problem_solving_cf': firestore.DELETE_FIELD
-        }
-        )
+        await delete_current_question(ctx.author.id,'cf')
+        return 'challenge skipped'
     else:
         return 'you have not worked on the problem of cf for 2h'
 
@@ -222,10 +219,8 @@ async def nogud_atcoder(ctx):
 
  
     if date_time.total_seconds()>3600:
-        await db.collection('users').document(str(ctx.author.id)).update({
-            'problem_solving_atcoder': firestore.DELETE_FIELD
-        }
-        )
+        await delete_current_question(ctx.author.id,'atcoder')
+        return 'challenge skipped'
     else:
         return 'you have not worked on the problem of atcoder for 1h'
 

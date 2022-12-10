@@ -4,7 +4,7 @@ import requests
 import firebase_admin
 import datetime
 import asyncio
-from firebase_admin import firestore_async,credentials
+from firebase_admin import firestore_async,credentials,firestore
 from clist_api import codeforces_handle_to_number, atcoder_handle_to_number
 import time
 # from solved import find_solved_codeforces, find_solved_atcoder
@@ -234,3 +234,15 @@ async def get_current_question(id, platform):
         problem = await db.collection('users').document(str(id)).get(field_paths={'problem_solving_atcoder'})
         problem = problem.to_dict()['problem_solving_atcoder']
         return problem
+
+async def delete_current_question(id,platform):
+    if platform == 'cf':
+        await db.collection('users').document(str(id)).update({
+            'problem_solving_cf': firestore.DELETE_FIELD
+        }
+        )
+    else:
+        await db.collection('users').document(str(id)).update({
+            'problem_solving_atcoder': firestore.DELETE_FIELD
+        }
+        )
