@@ -178,7 +178,7 @@ async def gotgud(ctx):
         check = await check_if_solved(ctx,ac_handle,current_question,'ac')
         if(check):
             await update_point_at(ctx,current_question[2])
-            time = datetime.datetime.now() - current_question[0]
+            time = datetime.datetime.now() - current_question[1]
             await ctx.channel.send(f"{ctx.author.mention} Congratulations! You have solved the problem. You have been awarded {current_question[2]} points and it took you {time.hours} hours {time.minutes} minutes {time.seconds} seconds")
             return
         else:
