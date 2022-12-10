@@ -21,3 +21,9 @@ async def handle_response(message,ctx):
         return await gitgud.gitgud(ctx)
     if msg_data[0]==";gotgud":
         return await gitgud.gotgud(ctx)
+    
+    if msg_data[0]==";nogud":
+        if msg_data[1]=="cf":
+            return await gitgud.nogud_cf(ctx)
+        elif msg_data[0]=="atcoder":
+            return await gitgud.nogud_atcoder(ctx)
