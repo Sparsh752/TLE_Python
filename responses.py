@@ -19,3 +19,5 @@ async def handle_response(message,ctx):
             return await contest_info.codeforces_rating_changes(msg_data[1])
     if msg_data[0]=="gitgud":
         return await gitgud.gitgud(ctx)
+    if msg_data[0]==";gotgud":
+        return await gitgud.gotgud(ctx)

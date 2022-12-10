@@ -192,28 +192,40 @@ async def get_atcoder_handle(ctx):
 
 async def update_point_cf(ctx,points):
     Id=ctx.author.id
-    old=await db.collection('users').document(str(Id)).get(field_paths={'score_codeforces'}).to_dict()['score_codeforces']
+    old=await db.collection('users').document(str(Id)).get(field_paths={'score_codeforces'})
+    old=old.to_dict()['score_codeforces']
     new=old+points
     await db.collection('users').document(str(Id)).update({
-        'score_codeforces':new
+        'score_codeforces':new,
+        'problem_solving_cf': None,
     }
     )
 
 async def update_point_at(ctx,points):
     Id=ctx.author.id
-    old=await db.collection('users').document(str(Id)).get(field_paths={'score_atcoder'}).to_dict()['score_atcoder']
+    old=await db.collection('users').document(str(Id)).get(field_paths={'score_atcoder'})
+    old=old.to_dict()['score_atcoder']
     new=old+points
     await db.collection('users').document(str(Id)).update({
-        'score_atcoder':new
+        'score_atcoder':new,
+        'problem_solving_atcoder': None,
     }
     )
-async def problem_solving_cf(ctx,problem):
+async def problem_solving_cf(ctx,problem,points):
     await db.collection('users').document(str(ctx.author.id)).update({
-        'problem_solving_cf': (problem,datetime.datetime.now()),
+        'problem_solving_cf': (problem,datetime.datetime.now(),points),
     })
-async def problem_solving_ac(ctx,problem):
+async def problem_solving_ac(ctx,problem,points):
     await db.collection('users').document(str(ctx.author.id)).update({
-        'problem_solving_atcoder': (problem,datetime.datetime.now()),
+        'problem_solving_atcoder': (problem,datetime.datetime.now(),points),
     })
     
-    
+async def get_current_question(id, platform):
+    if platform == 'cf':
+        problem = await db.collection('users').document(str(id)).get(field_paths={'problem_solving_cf'})
+        problem = problem.to_dict()['problem_solving_cf']
+        return problem
+    else:
+        problem = await db.collection('users').document(str(id)).get(field_paths={'problem_solving_atcoder'})
+        problem = problem.to_dict()['problem_solving_atcoder']
+        return problem
