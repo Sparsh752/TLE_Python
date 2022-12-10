@@ -53,12 +53,12 @@ def cf_get_random_question_tag(tag_list):
 # function for getting random question from atcoder
 
 # function to discard japanese problems
-def ok(problem):
-    if((problem['id'][:3] == 'abc') & int(problem['contest_id'][3:6]) > 41):
-        return True
-    if((problem['id'][:3] == 'arc') & (int(problem['contest_id'][3:6]) > 57)):
-        return True
-    return False
+def is_english_problem(problem):
+    if((str(problem['id'][:3]) == 'abc') and int(problem['contest_id'][3:6]) <= 41):
+        return False
+    if((problem['id'][:3] == 'arc') and (int(problem['contest_id'][3:6]) <= 57)):
+        return False
+    return True
 
 def ac_get_random_question(contest_type, question_type):
     contest_type = contest_type.lower()
@@ -67,19 +67,11 @@ def ac_get_random_question(contest_type, question_type):
         'https://kenkoooo.com/atcoder/resources/problems.json').json()
     q_list = []
     for problem in q:
-        # u = 0
-        # for data in problem:
-        #     if (data == 'id'):
-        #         if ((problem[data][:3] == contest_type)):
-        #             if (ok(problem)):
-        #                 u = u+1
-        #     if (data == 'problem_index'):
-        #         if (problem[data] == question_type):
-        #             u = u+1
-        #     if (u == 2):
-        #         q_list.append(problem)
-        #         break
-        q_list.append(problem)
+        if ((problem['id'][:3] == contest_type) & (problem['problem_index'] == question_type)):
+            q_list.append(problem)
+            if((is_english_problem(problem))):
+                pass
+                
     q_index = random.randint(0, len(q_list)-1)
     problem = q_list[q_index]
     prob_link = 'https://atcoder.jp/contests/' + \
