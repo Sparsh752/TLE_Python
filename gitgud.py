@@ -200,7 +200,7 @@ async def nogud_cf(ctx):
         print("you don't have any problem")
         return
  
-    if date_time.total_seconds>7200:
+    if float(str(date_time.total_seconds))>7200:
         await db.collection('users').document(str(ctx.author.id)).update({
             'problem_solving_cf': firestore.DELETE_FIELD
         }
@@ -222,7 +222,7 @@ async def nogud_atcoder(ctx):
         print("you don't have any problem")
         return
  
-    if date_time.total_seconds>3600:
+    if float(str(date_time.total_seconds))>3600:
         await db.collection('users').document(str(ctx.author.id)).update({
             'problem_solving_atcoder': firestore.DELETE_FIELD
         }
