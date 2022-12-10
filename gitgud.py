@@ -4,6 +4,7 @@ from db import get_last_solved_problems, find_solved_codeforces, get_codeforces_
 from db import problem_solving_cf, problem_solving_ac, find_solved_atcoder, update_point_cf, update_point_at
 from codeforces_scraping import cf_get_random_question_rating, ac_get_random_question
 import asyncio
+from firebase_admin import firestore
 import datetime
 async def get_cf_user_rating(codeforces_handle):
     url = f'https://codeforces.com/api/user.rating?handle={codeforces_handle}'
