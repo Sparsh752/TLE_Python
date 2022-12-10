@@ -151,10 +151,11 @@ async def find_solved_codeforces(ctx,codeforces_handle, last_solved_codeforces, 
     url = "https://codeforces.com/api/user.status?handle="+str(codeforces_handle)+"&from="+str(1)
     response = requests.get(url).json()
     total=len(response['result'])
+    if total == last_checked_codeforces:
+        return last_solved_codeforces
     url = "https://codeforces.com/api/user.status?handle="+str(codeforces_handle)+"&count="+str(total-last_checked_codeforces)
     response = requests.get(url).json()
     data=response['result']
-    print(data)
     for obj in data:
         if obj['verdict']=='OK':
             last_solved_codeforces.append(str(obj['problem']['contestId'])+':'+str(obj['problem']['index']))
