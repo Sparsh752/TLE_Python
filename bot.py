@@ -13,7 +13,7 @@ async def run_discord_bot():
     TOKEN='MTA0ODIzNTAxMjcxMTAxMDM2NA.G6wi4q.6AE7Q3otjPtQ-Hu9JJ0C6hNnVDEc_M9xSsmLTc'    #bot id
     print('hello')
     client = discord.Client(intents=discord.Intents.all())                              #giving permissions and intents to the bot
-    guild_id=1048212913539784805
+    guild_id=1048212913539784805        #guild id
     guild=client.get_guild(guild_id)
     @client.event
     async def on_ready():                                                               #logged in successfully
