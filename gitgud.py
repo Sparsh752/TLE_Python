@@ -187,8 +187,9 @@ async def gotgud(ctx):
         if(check):
             await update_point_cf(ctx,current_question[2])
             await add_in_gitgud_list(id, 'cf', current_question)
-            time = datetime.datetime.now() - current_question[1]
-            await ctx.channel.send(f"{ctx.author.mention} Congratulations! You have solved the problem. You have been awarded {current_question[2]} points and it took you {time.hours} hours {time.minutes} minutes {time.seconds} seconds")
+            time_date = str(current_question[1])
+            time = datetime.datetime.now() - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]) , int(time_date[8:10]) ,int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19],0))
+            await ctx.channel.send(f"{ctx.author.mention} Congratulations! You have solved the problem. You have been awarded {current_question[2]} points and it took you {int(time.total_seconds()/3600)} hours {int((time.total_seconds()%3600)/60)} minutes {int(time.seconds%60)} seconds")
             return
         else:
             await ctx.channel.send(f"{ctx.author.mention} You have not solved the problem yet. Please try again later")
