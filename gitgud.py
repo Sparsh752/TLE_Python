@@ -6,6 +6,27 @@ from db import add_in_gitgud_list, get_gitgud_list
 from codeforces_scraping import cf_get_random_question_rating, ac_get_random_question
 import asyncio
 import datetime
+async def get_problem_cf(contest_id, problem_index):
+    url = 'https://codeforces.com/api/problemset.problems'
+    response = requests.get(url)
+    data = response.json()
+    problems = data['result']['problems']
+    for problem in problems:
+        if problem['contestId'] == int(contest_id) and problem['index'] == str(problem_index):
+            return (problem['name'],problem['rating'],'https://codeforces.com/contest/'+str(contest_id)+'/problem/'+str(problem_index))
+    return None
+
+async def get_problem_atcoder(contest_id, problem_index):
+    url = 'https://kenkoooo.com/atcoder/resources/problems.json'
+    response = requests.get(url)
+    data = response.json()
+    problem_id=str(contest_id)+'_'+str(problem_index)
+    for problem in data:
+        if problem['contest_id']==str(contest_id) and str(problem['problem_index']).capitalize() == str(problem_index).capitalize():
+            url = f'https://kenkoooo.com/atcoder/resources/problem-models.json'
+            rating_problem = requests.get(url).json()
+            return (problem['name'],rating_problem[str(problem_id)]['difficulty'],'https://atcoder.jp/contests/'+str(contest_id)+'/tasks/'+str(problem_id))
+
 async def get_cf_user_rating(codeforces_handle):
     url = f'https://codeforces.com/api/user.rating?handle={codeforces_handle}'
     data = requests.get(url).json()
