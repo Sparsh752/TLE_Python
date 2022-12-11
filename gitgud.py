@@ -326,5 +326,6 @@ async def Leaderboard_list(ctx , msg):
             elif 'atcoder_handle' in user.keys():
                 score = user['score_atcoder']
                 handles.append({'discord_id':ctx.author.id,'score': score})
+        handles = sorted(handles, key=lambda d:d['score'] , reverse=True)
         return handles
 
