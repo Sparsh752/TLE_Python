@@ -2,6 +2,7 @@ import requests
 import discord
 from db import get_last_solved_problems, find_solved_codeforces, get_codeforces_handle, get_atcoder_handle, get_current_question,delete_current_question
 from db import problem_solving_cf, problem_solving_ac, find_solved_atcoder, update_point_cf, update_point_at
+from db import add_in_gitgud_list, get_gitgud_list
 from codeforces_scraping import cf_get_random_question_rating, ac_get_random_question
 import asyncio
 import datetime
@@ -162,6 +163,7 @@ async def gotgud(ctx):
         check = await check_if_solved(ctx,cf_handle,current_question,'cf')
         if(check):
             await update_point_cf(ctx,current_question[2])
+            await add_in_gitgud_list(id, 'cf', current_question)
             time = datetime.datetime.now() - current_question[0]
             await ctx.channel.send(f"{ctx.author.mention} Congratulations! You have solved the problem. You have been awarded {current_question[2]} points and it took you {time.hours} hours {time.minutes} minutes {time.seconds} seconds")
             return
@@ -178,6 +180,7 @@ async def gotgud(ctx):
         check = await check_if_solved(ctx,ac_handle,current_question,'ac')
         if(check):
             await update_point_at(ctx,current_question[2])
+            await add_in_gitgud_list(id, 'ac', current_question)
             time = datetime.datetime.now() - current_question[1]
             await ctx.channel.send(f"{ctx.author.mention} Congratulations! You have solved the problem. You have been awarded {current_question[2]} points and it took you {time.hours} hours {time.minutes} minutes {time.seconds} seconds")
             return
@@ -224,3 +227,38 @@ async def nogud_atcoder(ctx):
     else:
         return 'you have not worked on the problem of atcoder for 1h'
 
+async def gitlog(ctx):
+    user_message = ctx.content
+    user_message = user_message.split()
+    if(len(user_message)<2):
+        await ctx.channel.send(f"{ctx.author.mention} Command format is incorrect")
+        return
+    if(user_message[1] not in ['cf','ac']):
+        await ctx.channel.send(f"{ctx.author.mention} Please specify the judge correctly. It can be either `cf` or `ac`")
+        return
+    if(user_message[1]=='cf'):
+        id = ctx.author.id
+        problems = await get_gitgud_list(id, 'cf')
+        if(len(problems)==0):
+            await ctx.channel.send(f"{ctx.author.mention} You have not been given any problem yet. Please use ;gitgud cf to get a problem")
+            return
+        all_problems = []
+        for problem in problems:
+            contest_id = problem[0][:-2]
+            problem_index = problem[0][-1]
+            # my_problem = await get_problem_cf(contest_id,problem_index)
+            # all_problems.append((my_problem,problem[1],problem[2]))
+        await ctx.channel.send(f"{problems}")
+    else:
+        id = ctx.author.id
+        problems = await get_gitgud_list(id, 'ac')
+        if(len(problems)==0):
+            await ctx.channel.send(f"{ctx.author.mention} You have not been given any problem yet. Please use ;gitgud ac to get a problem")
+            return
+        all_problems = []
+        for problem in problems:
+            contest_id = problem[0][:-2]
+            problem_index = problem[0][-1]
+            # my_problem = await get_problem_ac(contest_id,problem_index)
+            # all_problems.append((my_problem,problem[1],problem[2]))
+        await ctx.channel.send(f"{problems}")

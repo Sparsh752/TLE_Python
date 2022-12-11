@@ -56,6 +56,7 @@ async def add_codeforces_handle(ctx, codeforces_handle):
         'codeforces_handle': codeforces_handle,
         'handle_number_codeforces': handle_number_codeforces,
         'solved_codeforces': solved_codeforces,
+        'gitgud_cf': [],
         'score_codeforces':0,
     })
 
@@ -66,6 +67,7 @@ async def add_atcoder_handle(ctx, atcoder_handle):
         'atcoder_handle': atcoder_handle,
         'handle_number_atcoder': handle_number_atcoder,
         'solved_atcoder': solved_atcoder,
+        'gitgud_ac':[],
         'score_atcoder':0,
     })
 
@@ -246,3 +248,25 @@ async def delete_current_question(id,platform):
             'problem_solving_atcoder': firestore.DELETE_FIELD
         }
         )
+
+async def add_in_gitgud_list(id, platform, problem):
+    if platform == 'cf':
+        await db.collection('users').document(str(id)).update({
+            'gitgud_cf': firestore.ArrayUnion([problem])
+        }
+        )
+    else:
+        await db.collection('users').document(str(id)).update({
+            'gitgud_ac': firestore.ArrayUnion([problem])
+        }
+        )
+
+async def get_gitgud_list(id, platform):
+    if platform == 'cf':
+        problem = await db.collection('users').document(str(id)).get(field_paths={'gitgud_cf'})
+        problem = problem.to_dict()['gitgud_cf']
+        return problem
+    else:
+        problem = await db.collection('users').document(str(id)).get(field_paths={'gitgud_ac'})
+        problem = problem.to_dict()['gitgud_ac']
+        return problem
