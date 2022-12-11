@@ -2,6 +2,7 @@ import clist_api
 import _handle_verification_
 import contest_info
 import gitgud
+import db
 import random 
 async def handle_response(message,ctx):
     p_message=message.lower()                   #to maintain uniformity
@@ -21,7 +22,8 @@ async def handle_response(message,ctx):
         return await gitgud.gitgud(ctx)
     if msg_data[0]==";gotgud":
         return await gitgud.gotgud(ctx)
-    
+    if msg_data[0]==";gitlog":
+        return await gitgud.gitlog(ctx)
     if msg_data[0]==";nogud":
         if len(msg_data)==2:
             if msg_data[1]=="cf":
@@ -29,6 +31,6 @@ async def handle_response(message,ctx):
             elif msg_data[1]=="atcoder":
                 return await gitgud.nogud_atcoder(ctx)
         
-    if msg_data[0]=="!leaderboard":
+    if msg_data[0]==";leaderboard":
         if len(msg_data)==2:
-            return await gitgud.Leaderboard_list(ctx,msg_data[1])
+            return await db.Leaderboard_list(ctx,msg_data[1])

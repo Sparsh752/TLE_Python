@@ -160,7 +160,9 @@ async def check_if_solved(ctx, cf_handle, problem, platform):
     else:
         last_checked, last_solved_problems = await get_last_solved_problems(ctx,'atcoder')
         solved_problems = await find_solved_atcoder(ctx,cf_handle,last_solved_problems,last_checked)
-        if(problem[0] in solved_problems):
+        print(problem[0])
+        print(solved_problems)
+        if(str(problem[0]) in solved_problems):
             return True
         else:
             return False
@@ -200,10 +202,11 @@ async def gotgud(ctx):
         ac_handle = await get_atcoder_handle(ctx)
         check = await check_if_solved(ctx,ac_handle,current_question,'ac')
         if(check):
-            await update_point_at(ctx,current_question[2])
+            # await update_point_at(ctx,current_question[2])
+            await ctx.channel.send("Hello world1")
             await add_in_gitgud_list(id, 'ac', current_question)
-            time = datetime.datetime.now() - current_question[1]
-            await ctx.channel.send(f"{ctx.author.mention} Congratulations! You have solved the problem. You have been awarded {current_question[2]} points and it took you {time.hours} hours {time.minutes} minutes {time.seconds} seconds")
+            await ctx.channel.send("Hello world2")
+            await ctx.channel.send(f"{ctx.author.mention} Congratulations! You have solved the problem. You have been awarded {current_question[2]}")
             return
         else:
             await ctx.channel.send(f"{ctx.author.mention} You have not solved the problem yet. Please try again later")
@@ -267,65 +270,19 @@ async def gitlog(ctx):
         for problem in problems:
             contest_id = problem[0][:-2]
             problem_index = problem[0][-1]
-            # my_problem = await get_problem_cf(contest_id,problem_index)
-            # all_problems.append((my_problem,problem[1],problem[2]))
+            my_problem = await get_problem_cf(contest_id,problem_index)
+            all_problems.append((my_problem,problem[1],problem[2]))
         await ctx.channel.send(f"{problems}")
     else:
         id = ctx.author.id
         problems = await get_gitgud_list(id, 'ac')
         if(len(problems)==0):
-            await ctx.channel.send(f"{ctx.author.mention} You have not been given any problem yet. Please use ;gitgud ac to get a problem")
+            await ctx.channel.send(f"{ctx.author.mention} You have not solved any problem yet. Please use ;gitgud ac to get a problem")
             return
         all_problems = []
         for problem in problems:
             contest_id = problem[0][:-2]
             problem_index = problem[0][-1]
-            # my_problem = await get_problem_ac(contest_id,problem_index)
-            # all_problems.append((my_problem,problem[1],problem[2]))
+            my_problem = await get_problem_atcoder(contest_id,problem_index)
+            all_problems.append((my_problem,problem[1],problem[2]))
         await ctx.channel.send(f"{problems}")
-
-        
-        
-        
-
-async def Leaderboard_list(ctx , msg):
-    if msg == 'cf':
-        users = db.collection(u'users')
-        a=users.order_by('score_codeforces', direction=firestore.Query.DESCENDING).stream()
-        data = [item async for item in a]
-        codeforces_handles = []
-        for user in data:
-            user=user.to_dict()
-            if ('codeforces_handle' in user.keys()):
-                score = user['score_codeforces']
-                codeforces_handles.append({'discord_id':ctx.author.id,'score': score , 'codeforces_handle': user['codeforces_handle']})
-        return codeforces_handles
-
-    elif msg == 'atcoder':
-        users = db.collection(u'users')
-        a=users.order_by('score_atcoder', direction=firestore.Query.DESCENDING).stream()
-        data = [item async for item in a]
-        atcoder_handles = []
-        for user in data:
-            user=user.to_dict()
-            if ('atcoder_handle' in user.keys()):
-                score = user['score_atcoder']
-                atcoder_handles.append({'discord_id':ctx.author.id,'score': score , 'atcoder_handle': user['atcoder_handle'] } )
-        return atcoder_handles
-    elif msg == 'both':
-        users = await db.collection('users').get()
-        handles = []
-        for user in users:
-            user=user.to_dict()
-            if ('codeforces_handle' in user.keys()) and ('atcoder_handle' in user.keys()):
-                score = user['score_codeforces'] + user['score_atcoder']
-                handles.append({'discord_id':ctx.author.id,'score': score})
-            elif 'codeforces_handle' in user.keys():
-                score = user['score_codeforces'] 
-                handles.append({'discord_id':ctx.author.id,'score': score})
-            elif 'atcoder_handle' in user.keys():
-                score = user['score_atcoder']
-                handles.append({'discord_id':ctx.author.id,'score': score})
-        handles = sorted(handles, key=lambda d:d['score'] , reverse=True)
-        return handles
-

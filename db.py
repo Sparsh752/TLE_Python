@@ -62,7 +62,7 @@ async def add_codeforces_handle(ctx, codeforces_handle):
 
 async def add_atcoder_handle(ctx, atcoder_handle):
     handle_number_atcoder = atcoder_handle_to_number(atcoder_handle)
-    solved_atcoder = await find_solved_atcoder(ctx,atcoder_handle,[],datetime.datetime.now(datetime.timezone.utc))
+    solved_atcoder = await find_solved_atcoder(ctx,atcoder_handle,[],datetime.datetime(2010,1,1,0,0,0,0,datetime.timezone.utc))
     await db.collection('users').document(str(ctx.author.id)).update({
         'atcoder_handle': atcoder_handle,
         'handle_number_atcoder': handle_number_atcoder,
@@ -170,8 +170,9 @@ async def find_solved_codeforces(ctx,codeforces_handle, last_solved_codeforces, 
 # It also updates the last_checked_atcoder and last_solved_atcoder field in the database
 
 async def find_solved_atcoder(ctx,atcoder_handle, last_solved_atcoder, last_checked_atcoder):
-    last_checked_atcoder = last_checked_atcoder - datetime.datetime(2010, 1 ,1 ,0,0,0,0, datetime.timezone.utc)
+    last_checked_atcoder = last_checked_atcoder - datetime.datetime(1970,1,1,0,0,0,0,datetime.timezone.utc)
     mytime = int(last_checked_atcoder.total_seconds())
+    await ctx.channel.send(mytime)
     url = "https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions?user="+ atcoder_handle+"&from_second="+str(int(mytime))
     response = requests.get(url).json()
     for obj in response:
@@ -252,12 +253,12 @@ async def delete_current_question(id,platform):
 async def add_in_gitgud_list(id, platform, problem):
     if platform == 'cf':
         await db.collection('users').document(str(id)).update({
-            'gitgud_cf': firestore.ArrayUnion([problem])
+            'gitgud_cf': firestore.ArrayUnion(problem)
         }
         )
     else:
         await db.collection('users').document(str(id)).update({
-            'gitgud_ac': firestore.ArrayUnion([problem])
+            'gitgud_ac': firestore.ArrayUnion(problem)
         }
         )
 
@@ -270,3 +271,46 @@ async def get_gitgud_list(id, platform):
         problem = await db.collection('users').document(str(id)).get(field_paths={'gitgud_ac'})
         problem = problem.to_dict()['gitgud_ac']
         return problem
+
+   
+
+async def Leaderboard_list(ctx , msg):
+    if msg == 'cf':
+        users = db.collection(u'users')
+        a=users.order_by('score_codeforces', direction=firestore.Query.DESCENDING).stream()
+        data = [item async for item in a]
+        codeforces_handles = []
+        for user in data:
+            user=user.to_dict()
+            if ('codeforces_handle' in user.keys()):
+                score = user['score_codeforces']
+                codeforces_handles.append({'discord_id':ctx.author.id,'score': score , 'codeforces_handle': user['codeforces_handle']})
+        return codeforces_handles
+
+    elif msg == 'atcoder':
+        users = db.collection(u'users')
+        a=users.order_by('score_atcoder', direction=firestore.Query.DESCENDING).stream()
+        data = [item async for item in a]
+        atcoder_handles = []
+        for user in data:
+            user=user.to_dict()
+            if ('atcoder_handle' in user.keys()):
+                score = user['score_atcoder']
+                atcoder_handles.append({'discord_id':ctx.author.id,'score': score , 'atcoder_handle': user['atcoder_handle'] } )
+        return atcoder_handles
+    elif msg == 'both':
+        users = await db.collection('users').get()
+        handles = []
+        for user in users:
+            user=user.to_dict()
+            if ('codeforces_handle' in user.keys()) and ('atcoder_handle' in user.keys()):
+                score = user['score_codeforces'] + user['score_atcoder']
+                handles.append({'discord_id':ctx.author.id,'score': score})
+            elif 'codeforces_handle' in user.keys():
+                score = user['score_codeforces'] 
+                handles.append({'discord_id':ctx.author.id,'score': score})
+            elif 'atcoder_handle' in user.keys():
+                score = user['score_atcoder']
+                handles.append({'discord_id':ctx.author.id,'score': score})
+        handles = sorted(handles, key=lambda d:d['score'] , reverse=True)
+        return handles
