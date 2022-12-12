@@ -75,9 +75,9 @@ async def run_discord_bot():
         if user_message.split()[0]==";ratingchange":
             if len(user_message.split())==3:
                 if(user_message.split()[1]=="cf"):
-                    header,mylist=await contest_info.codeforces_rating_changes(str(user_message.split()[2]))
-                    if mylist=="error":
-                        await ctx.channel.send(f"{ctx.author.mention} No contest found")
+                    mylist,header=await contest_info.codeforces_rating_changes(str(user_message.split()[2]))
+                    if header=="error":
+                        await ctx.channel.send(f"{ctx.author.mention} Some error occurred")
                     elif(len(mylist)==0):
                         await ctx.channel.send(f"{ctx.author.mention} No user found")
                     else:

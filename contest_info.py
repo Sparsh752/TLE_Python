@@ -29,7 +29,7 @@ async def codeforces_rating_changes(event_name):            # function to get th
     response = requests.get(question_url)                        # fetching response
     response=response.json()                                    # converting to json
     problemlist=[]
-    header=[]
+    header=['handle', 'position', 'score', 'rating_change', 'old_rating', 'new_rating']
     for i in response['objects'][0]['problems']:                # iterating over all the problems
         problemlist.append(i)                                          # appending the problem codes to a list
     try: 
@@ -42,7 +42,6 @@ async def codeforces_rating_changes(event_name):            # function to get th
                 if 'CONTESTANT' in response['objects'][0]['more_fields']['participant_type']: # if the user is a contestant
                     data=response['objects'][0]                     # get the data of the user
                     data_dict={'handle':handle[0],'position':data['place'],'score':data['score'],'rating_change':data['rating_change'],'old_rating':data['old_rating'],'new_rating':data['new_rating']} # create a dictionary of the data
-                    header.extend(data_dict.keys())                  # add the keys to the header list
                     for i in problemlist:  # adding the solved problems to the dictionary
                         if i in data['problems'].keys():
                             if 'upsolving' in data['problems'][i].keys():
@@ -58,7 +57,10 @@ async def codeforces_rating_changes(event_name):            # function to get th
                         else:
                             data_dict[i]=""
                     returnlist.append(data_dict) # append the dictionary to the return list
-        header.extend(problemlist) # add the problem codes to the header list
+        if(len(returnlist)==0):
+            return returnlist,header
+        header.extend(problemlist)
+        print(header)
         print(returnlist)
         return returnlist,header  # returning the list
         
