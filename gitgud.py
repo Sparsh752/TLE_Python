@@ -24,9 +24,9 @@ async def get_problem_atcoder(contest_id, problem_index):
     problem_id=str(contest_id)+'_'+str(problem_index)
     for problem in data:
         if problem['contest_id']==str(contest_id) and str(problem['problem_index']).capitalize() == str(problem_index).capitalize():
-            url = f'https://kenkoooo.com/atcoder/resources/problem-models.json'
-            rating_problem = requests.get(url).json()
-            return (problem['name'],rating_problem[str(problem_id)]['difficulty'],'https://atcoder.jp/contests/'+str(contest_id)+'/tasks/'+str(problem_id))
+            difficulty = await get_ac_problem_difficulty(problem_id)
+            difficulty = int(difficulty)
+            return (problem['name'],difficulty,'https://atcoder.jp/contests/'+str(contest_id)+'/tasks/'+str(problem_id))
 
 async def get_cf_user_rating(codeforces_handle):
     url = f'https://codeforces.com/api/user.rating?handle={codeforces_handle}'
@@ -276,7 +276,6 @@ async def gitlog(ctx):
             await ctx.channel.send(f"{ctx.author.mention} You have not been given any problem yet. Please use ;gitgud cf to get a problem")
             return
         all_problems = []
-        # for problem in problems:
         i=0
         while i<len(problems):
             problem=[problems[i],problems[i+1],problems[i+2]]
@@ -285,7 +284,14 @@ async def gitlog(ctx):
             my_problem = await get_problem_cf(contest_id,problem_index)
             all_problems.append((my_problem,problem[1],problem[2]))
             i=i+3
-        await ctx.channel.send(f"{all_problems}")
+        l=[]
+        for problem in all_problems:
+            mydict = {}
+            mydict['Problem Name']=problem[0][0]
+            mydict['Problem Rating']=problem[0][1]
+            mydict['Points'] = problem[2]
+            l.append(mydict)
+        return l
     else:
         id = ctx.author.id
         problems = await get_gitgud_list(id, 'ac')
@@ -300,4 +306,13 @@ async def gitlog(ctx):
             problem_index = problem[0][-1]
             my_problem = await get_problem_atcoder(contest_id,problem_index)
             all_problems.append((my_problem,problem[1],problem[2]))
-        await ctx.channel.send(f"{all_problems}")
+            i+=3
+        l=[]
+        ctx.channel.send(all_problems)
+        for problem in all_problems:
+            mydict = {}
+            mydict['Problem Name']=problem[0][0]
+            mydict['Problem Rating']=problem[0][1]
+            mydict['Points'] = problem[2]
+            l.append(mydict)
+        return l

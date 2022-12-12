@@ -22,8 +22,6 @@ async def handle_response(message,ctx):
         return await gitgud.gitgud(ctx)
     if msg_data[0]==";gotgud":
         return await gitgud.gotgud(ctx)
-    if msg_data[0]==";gitlog":
-        return await gitgud.gitlog(ctx)
     if msg_data[0]==";nogud":
         if len(msg_data)==2:
             if msg_data[1]=="cf":

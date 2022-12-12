@@ -35,7 +35,7 @@ async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=
 
     ##if message requires Title then make an embed and print here------
 
-    msg =  await ctx.send(f"```\n{output[current]}\npage: {current+1}/{len(output)}\n```")
+    msg =  await ctx.channel.send(f"```\n{output[current]}\npage: {current+1}/{len(output)}\n```")
     
     if len(output) < 2:
         return
