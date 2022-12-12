@@ -1,6 +1,6 @@
 import requests
 from operator import itemgetter
-from datetime import datetime
+from datetime import datetime,timezone
 
 async def stalk_user(ctx,codeforces_handle,hardest=False,R=None):
     url = "https://codeforces.com/api/user.status?handle="+str(codeforces_handle)+"&from="+str(1)
@@ -12,7 +12,16 @@ async def stalk_user(ctx,codeforces_handle,hardest=False,R=None):
     n_dict=[]
     for obj in data:
         if obj['verdict']=='OK':
-            n_dict.append({'Problem':str(obj['problem']['name']),'Rating':int(obj['problem']['rating']),'Time':(datetime.now()-datetime.fromtimestamp(obj['creationTimeSeconds'])).days+1})
+            time_delta=(datetime.now(timezone.utc)-datetime.fromtimestamp(obj['creationTimeSeconds'],timezone.utc)).days
+            if time_delta==0:
+                days="Today"
+            elif time_delta==1:
+                days="Yesterday"
+            else:
+                days=str(time_delta)+" Days Ago"
+            if 'rating' not in obj['problem']:
+                obj['problem']['rating']='---'
+            n_dict.append({'Problem':str(obj['problem']['name']),'Rating':str(obj['problem']['rating']),'Time': days})
     if hardest==True:
         n_dict = sorted(n_dict, key=itemgetter('Rating'),reverse=True)
     if R!=None:
