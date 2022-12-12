@@ -5,6 +5,7 @@ import gitgud
 from paginator import table
 import clist_api
 import db
+import stalk
 client = None
 async def send_message(ctx,user_message,is_private):                                      #giving back response to the user
     try:
@@ -61,6 +62,15 @@ async def run_discord_bot():
                     await ctx.channel.send(f"{ctx.author.mention} Please enter a valid platform")
             else:
                 await ctx.channel.send(f"{ctx.author.mention} Please enter a valid platform")
+        if user_message.split()[0]==";stalk":
+            if len(user_message.split())==2:
+                header,mylist = await stalk.stalk_user(ctx,user_message.split()[1])
+                if(len(mylist)==0):
+                    await ctx.channel.send(f"{ctx.author.mention} No user found")
+                else:
+                    await table(ctx,client,header,mylist)
+            else:
+                await ctx.channel.send(f"{ctx.author.mention} Please follow the message format")
         else:
             await send_message(ctx,user_message,is_private=False)#message is not private
 
