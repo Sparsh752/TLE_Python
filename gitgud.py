@@ -1,5 +1,6 @@
 import requests
 import discord
+from bs4 import BeautifulSoup
 from db import get_last_solved_problems, find_solved_codeforces, get_codeforces_handle, get_atcoder_handle, get_current_question,delete_current_question
 from db import problem_solving_cf, problem_solving_ac, find_solved_atcoder, update_point_cf, update_point_at
 from db import add_in_gitgud_list, get_gitgud_list
@@ -167,6 +168,15 @@ async def check_if_solved(ctx, cf_handle, problem, platform):
         else:
             return False
 
+def check_if_solved_ac(ctx,ac_handle,current_question):
+    url= "https://atcoder.jp/contests/"+str(current_question[0][:-2])+"/submissions?f.Task="+str(current_question[0])+"&f.LanguageName=&f.Status=AC&f.User="+str(ac_handle)
+    response=requests.get(url)
+    S=BeautifulSoup(response.text,'lxml')
+    if len(S.find_all('td',class_='no-break'))==0:
+        return False
+    else:
+        return True
+    
 async def gotgud(ctx):
     user_message = ctx.content
     user_message = user_message.split()
@@ -201,7 +211,7 @@ async def gotgud(ctx):
             await ctx.channel.send(f"{ctx.author.mention} You have not been given any problem yet. Please use ;gitgud ac to get a problem")
             return
         ac_handle = await get_atcoder_handle(ctx)
-        check = await check_if_solved(ctx,ac_handle,current_question,'ac')
+        check = await check_if_solved_ac(ctx,ac_handle,current_question)
         if(check):
             # await update_point_at(ctx,current_question[2])
             await ctx.channel.send("Hello world1")
