@@ -5,7 +5,6 @@ from db import get_last_solved_problems, find_solved_codeforces, get_codeforces_
 from db import problem_solving_cf, problem_solving_ac, find_solved_atcoder, update_point_cf, update_point_at
 from db import add_in_gitgud_list, get_gitgud_list
 from codeforces_scraping import cf_get_random_question_rating, ac_get_random_question
-import asyncio
 import datetime
 async def get_problem_cf(contest_id, problem_index):
     url = 'https://codeforces.com/api/problemset.problems'
@@ -272,9 +271,6 @@ async def gitlog(ctx):
     if(user_message[1]=='cf'):
         id = ctx.author.id
         problems = await get_gitgud_list(id, 'cf')
-        if(len(problems)==0):
-            await ctx.channel.send(f"{ctx.author.mention} You have not been given any problem yet. Please use ;gitgud cf to get a problem")
-            return
         all_problems = []
         i=0
         while i<len(problems):
@@ -295,9 +291,6 @@ async def gitlog(ctx):
     else:
         id = ctx.author.id
         problems = await get_gitgud_list(id, 'ac')
-        if(len(problems)==0):
-            await ctx.channel.send(f"{ctx.author.mention} You have not solved any problem yet. Please use ;gitgud ac to get a problem")
-            return
         all_problems = []
         i=0
         while i<len(problems):

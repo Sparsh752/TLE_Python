@@ -3,6 +3,8 @@ import responses
 from _handle_verification_ import handle_verification
 import gitgud
 from paginator import table
+import clist_api
+import db
 client = None
 async def send_message(ctx,user_message,is_private):                                      #giving back response to the user
     try:
@@ -36,7 +38,29 @@ async def run_discord_bot():
             await send_message(ctx,user_message,is_private=True) #message is private
         if user_message.split()[0]==";gitlog":
              mydict =  await gitgud.gitlog(ctx)
-             await table(ctx,client,['Problem Name','Problem Rating','Points'], mydict)
+             if(len(mydict)==0):
+                await ctx.channel.send(f"{ctx.author.mention} You have not been given any problem yet. Please use ;gitgud cf to get a problem")
+             else:   
+                await table(ctx,client,['Problem Name','Problem Rating','Points'], mydict)
+        if user_message.split()[0]==";next":
+            mylist = await clist_api.nextcontests()
+            if(len(mylist)==0):
+                await ctx.channel.send(f"{ctx.author.mention} No contest to display :(")
+            else:
+                await table(ctx,client,['Sr No.','Name','Start Time (dd-mm-yyyy)','Duration(in min.)'], mylist)
+        if user_message.split()[0]==";leaderboard":
+            if len(user_message.split())==2:
+                mylist = await db.Leaderboard_list(ctx,user_message.split()[1])
+                if(user_message.split()[1]=="cf"):
+                    await table(ctx,client,['Discord id','Score','Codeforces Handle'], mylist)
+                elif(user_message.split()[1]=="ac"):
+                    await table(ctx,client,['Discord id','Score','Atcoder Handle'], mylist)
+                elif(user_message.split()[1]=="both"):
+                    await table(ctx,client,['Discord id','Total Score'], mylist)
+                else:
+                    await ctx.channel.send(f"{ctx.author.mention} Please enter a valid platform")
+            else:
+                await ctx.channel.send(f"{ctx.author.mention} Please enter a valid platform")
         else:
             await send_message(ctx,user_message,is_private=False)#message is not private
 
