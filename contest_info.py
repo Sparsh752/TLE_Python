@@ -5,7 +5,7 @@ import json
 URL_BASE = 'https://clist.by/api/v2/'
 clist_token="username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
 
-async def contest_id_finder(event_name):                    #function to convert cf contest name to contest id
+async def codeforces_contest_id_finder(event_name):                    #function to convert cf contest name to contest id
     url=URL_BASE+'contest/?'+clist_token+'&resource_id=1'+'&order_by=-start'+'&limit=100'  #url to be fetched
     if(event_name==None):                                                    #if event is none, return none
         return None 
@@ -21,7 +21,7 @@ async def contest_id_finder(event_name):                    #function to convert
 
 async def codeforces_rating_changes(event_name):            # function to get the rating changes of all users in codeforces
     codeforces_handle = await db.get_all_codeforces_handles()       # get all the codeforces handles from the database
-    contest_id=await contest_id_finder(event_name)                  # get the contest id of the contest 
+    contest_id=await codeforces_contest_id_finder(event_name)                  # get the contest id of the contest 
     try: 
         returnlist=[]
         for handle in codeforces_handle:                                # iterate over all the handles
