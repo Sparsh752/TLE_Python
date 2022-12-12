@@ -172,7 +172,6 @@ async def find_solved_codeforces(ctx,codeforces_handle, last_solved_codeforces, 
 async def find_solved_atcoder(ctx,atcoder_handle, last_solved_atcoder, last_checked_atcoder):
     last_checked_atcoder = last_checked_atcoder - datetime.datetime(1970,1,1,0,0,0,0,datetime.timezone.utc)
     mytime = int(last_checked_atcoder.total_seconds())
-    await ctx.channel.send(mytime)
     url = "https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions?user="+ atcoder_handle+"&from_second="+str(int(mytime))
     response = requests.get(url).json()
     for obj in response:
