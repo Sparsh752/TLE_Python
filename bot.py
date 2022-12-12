@@ -39,7 +39,7 @@ async def run_discord_bot():
         if user_message.split()[0]==";gitlog":
              mydict =  await gitgud.gitlog(ctx)
              if(len(mydict)==0):
-                await ctx.channel.send(f"{ctx.author.mention} You have not been given any problem yet. Please use ;gitgud cf to get a problem")
+                await ctx.channel.send(f"{ctx.author.mention} You have not solved any problem yet. use ;gitgud to get a problem")
              else:   
                 await table(ctx,client,['Problem Name','Problem Rating','Points'], mydict)
         if user_message.split()[0]==";next":
