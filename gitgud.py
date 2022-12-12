@@ -213,7 +213,7 @@ async def gotgud(ctx):
         ac_handle = await get_atcoder_handle(ctx)
         check = await check_if_solved_ac(ctx,ac_handle,current_question)
         if(check):
-            # await update_point_at(ctx,current_question[2])
+            await update_point_at(ctx,current_question[2])
             await add_in_gitgud_list(id, 'ac', current_question)
             await ctx.channel.send(f"{ctx.author.mention} Congratulations! You have solved the problem. You have been awarded {current_question[2]}")
             return
