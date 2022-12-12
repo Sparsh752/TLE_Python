@@ -12,7 +12,9 @@ async def stalk_user(ctx,codeforces_handle,hardest=False,R=None):
     n_dict=[]
     for obj in data:
         if obj['verdict']=='OK':
-            time_delta=(datetime.now(timezone.utc)-datetime.fromtimestamp(obj['creationTimeSeconds'],timezone.utc)).days
+            rounded_dt1 = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+            rounded_dt2 = datetime.fromtimestamp(obj['creationTimeSeconds'],timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+            time_delta=(rounded_dt1-rounded_dt2).days
             if time_delta==0:
                 days="Today"
             elif time_delta==1:
