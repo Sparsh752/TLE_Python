@@ -252,13 +252,22 @@ async def delete_current_question(id,platform):
 
 async def add_in_gitgud_list(id, platform, problem):
     if platform == 'cf':
+        gitgud_cf_list= await get_gitgud_list(id,platform)
+        gitgud_cf_list.append(problem[0])
+        gitgud_cf_list.append(problem[1])
+        gitgud_cf_list.append(problem[2])
+
         await db.collection('users').document(str(id)).update({
-            'gitgud_cf': firestore.ArrayUnion(problem)
+            'gitgud_cf': gitgud_cf_list
         }
         )
     else:
+        gitgud_ac_list= await get_gitgud_list(id,platform)
+        gitgud_ac_list.append(problem[0])
+        gitgud_ac_list.append(problem[1])
+        gitgud_ac_list.append(problem[2])
         await db.collection('users').document(str(id)).update({
-            'gitgud_ac': firestore.ArrayUnion(problem)
+            'gitgud_ac': gitgud_ac_list
         }
         )
 

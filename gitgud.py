@@ -268,12 +268,16 @@ async def gitlog(ctx):
             await ctx.channel.send(f"{ctx.author.mention} You have not been given any problem yet. Please use ;gitgud cf to get a problem")
             return
         all_problems = []
-        for problem in problems:
+        # for problem in problems:
+        i=0
+        while i<len(problems):
+            problem=[problems[i],problems[i+1],problems[i+2]]
             contest_id = problem[0][:-2]
             problem_index = problem[0][-1]
             my_problem = await get_problem_cf(contest_id,problem_index)
             all_problems.append((my_problem,problem[1],problem[2]))
-        await ctx.channel.send(f"{problems}")
+            i=i+3
+        await ctx.channel.send(f"{all_problems}")
     else:
         id = ctx.author.id
         problems = await get_gitgud_list(id, 'ac')
@@ -281,9 +285,11 @@ async def gitlog(ctx):
             await ctx.channel.send(f"{ctx.author.mention} You have not solved any problem yet. Please use ;gitgud ac to get a problem")
             return
         all_problems = []
-        for problem in problems:
+        i=0
+        while i<len(problems):
+            problem=[problems[i],problems[i+1],problems[i+2]]
             contest_id = problem[0][:-2]
             problem_index = problem[0][-1]
             my_problem = await get_problem_atcoder(contest_id,problem_index)
             all_problems.append((my_problem,problem[1],problem[2]))
-        await ctx.channel.send(f"{problems}")
+        await ctx.channel.send(f"{all_problems}")
