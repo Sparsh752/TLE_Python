@@ -168,7 +168,7 @@ async def check_if_solved(ctx, cf_handle, problem, platform):
         else:
             return False
 
-def check_if_solved_ac(ctx,ac_handle,current_question):
+async def check_if_solved_ac(ctx,ac_handle,current_question):
     url= "https://atcoder.jp/contests/"+str(current_question[0][:-2])+"/submissions?f.Task="+str(current_question[0])+"&f.LanguageName=&f.Status=AC&f.User="+str(ac_handle)
     response=requests.get(url)
     S=BeautifulSoup(response.text,'lxml')
@@ -214,9 +214,7 @@ async def gotgud(ctx):
         check = await check_if_solved_ac(ctx,ac_handle,current_question)
         if(check):
             # await update_point_at(ctx,current_question[2])
-            await ctx.channel.send("Hello world1")
             await add_in_gitgud_list(id, 'ac', current_question)
-            await ctx.channel.send("Hello world2")
             await ctx.channel.send(f"{ctx.author.mention} Congratulations! You have solved the problem. You have been awarded {current_question[2]}")
             return
         else:
