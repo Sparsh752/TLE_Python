@@ -21,5 +21,5 @@ async def stalk_user(ctx,codeforces_handle,hardest=False,R=None):
             if i['Rating']>=R:
                 temp.append(i)
         n_dict=temp 
-    head_row=['Problem','Rating']
+    head_row=['Problem','Rating','Time']
     return head_row,n_dict
