@@ -6,6 +6,7 @@ from paginator import table
 import clist_api
 import db
 import stalk
+import contest_info
 client = None
 async def send_message(ctx,user_message,is_private):                                      #giving back response to the user
     try:
@@ -69,6 +70,18 @@ async def run_discord_bot():
                     await ctx.channel.send(f"{ctx.author.mention} No user found")
                 else:
                     await table(ctx,client,header,mylist)
+            else:
+                await ctx.channel.send(f"{ctx.author.mention} Please follow the message format")
+        if user_message.split()[0]==";ratingchange":
+            if len(user_message.split())==3:
+                if(user_message.split()[1]=="cf"):
+                    header,mylist=await contest_info.codeforces_rating_changes(str(user_message.split()[2]))
+                    if mylist=="error":
+                        await ctx.channel.send(f"{ctx.author.mention} No contest found")
+                    elif(len(mylist)==0):
+                        await ctx.channel.send(f"{ctx.author.mention} No user found")
+                    else:
+                        await table(ctx,client,header,mylist)
             else:
                 await ctx.channel.send(f"{ctx.author.mention} Please follow the message format")
         else:
