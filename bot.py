@@ -33,7 +33,7 @@ async def run_discord_bot():
             return
         user_message=str(ctx.content)
         if (user_message.startswith(';challenge')):
-            await challenge.challenge_question_cf(ctx)
+            await challenge.challenge_question_cf(ctx,client)
         if (user_message.startswith(';identify')):
             await handle_verification(ctx)
         if user_message[0]=='?':                                                        #checking if message is private
