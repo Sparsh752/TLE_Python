@@ -82,6 +82,14 @@ async def run_discord_bot():
                         await ctx.channel.send(f"{ctx.author.mention} No user found")
                     else:
                         await table(ctx,client,header,mylist)
+                elif(user_message.split()[1]=="ac"):
+                    mylist,header=await contest_info.atcoder_rating_changes(str(user_message.split()[2]))
+                    if header=="error":
+                        await ctx.channel.send(f"{ctx.author.mention} Some error occurred")
+                    elif(len(mylist)==0):
+                        await ctx.channel.send(f"{ctx.author.mention} No user found")
+                    else:
+                        await table(ctx,client,header,mylist)
             else:
                 await ctx.channel.send(f"{ctx.author.mention} Please follow the message format")
         else:

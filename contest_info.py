@@ -19,7 +19,7 @@ async def codeforces_contest_id_finder(event_name):                    #function
                 return contest['id']
     except Exception as e:                                                  #tackiling errors    
         print(e)
-def fun(a):                                                                 #function to sort the list of dictionaries
+def fun(a):                                                                 #function to return -- if a is none
     if a==None:
         return "--"
     else:
@@ -90,11 +90,13 @@ async def atcoder_contest_id_finder(event_name):                    #function to
 async def atcoder_rating_changes(event_name):            # function to get the rating changes of all users in codeforces
     atcoder_handle = await db.get_all_atcoder_handles()       # get all the codeforces handles from the database
     contest_id=await atcoder_contest_id_finder(event_name)                  # get the contest id of the contest
-    print(contest_id)
+    if contest_id==None:                                                    # if the contest id is none, return none
+        return None,"error"
     question_url=URL_BASE+'statistics/?'+clist_token+'&contest_id='+str(contest_id)+'&order_by=place'+'&with_problems=True&limit=1'  # url to be fetched 
     response = requests.get(question_url)                        # fetching response
     response=response.json()                                    # converting to json
     problemlist=[]
+    header=['rank','handle', 'score', 'Δ', 'to']
     for i in response['objects'][0]['problems']:                # iterating over all the problems
         problemlist.append(i)                                          # appending the problem codes to a list
     try: 
@@ -106,7 +108,7 @@ async def atcoder_rating_changes(event_name):            # function to get the r
             if response['objects']:                                # if the response is not empty
                 if response['objects'][0]['more_fields']['is_rated']==True: # if the user is a contestant
                     data=response['objects'][0]                     # get the data of the user
-                    data_dict={'handle':handle[0],'position':data['place'],'score':data['score'],'rating_change':data['rating_change'],'old_rating':data['old_rating'],'new_rating':data['new_rating']} # create a dictionary of the data
+                    data_dict={'rank':data['place'],'handle':handle[0],'score':data['score'],'Δ':fun(data['rating_change']),'to':fun(data['new_rating'])} # create a dictionary of the data
                     for i in problemlist:  # adding the solved problems to the dictionary
                         if i in data['problems'].keys():
                             if data['problems'][i]['verdict']=="AC":
@@ -116,7 +118,12 @@ async def atcoder_rating_changes(event_name):            # function to get the r
                         else:
                             data_dict[i]=""
                     returnlist.append(data_dict) # append the dictionary to the return list
-        print(returnlist)  # returning the list
+        if(len(returnlist)==0):
+            return returnlist,header
+        header.extend(problemlist)
+        returnlist=sorted(returnlist,key=itemgetter('rank'))    # sorting the list according to the rank
+        return returnlist,header # returning the list
         
     except Exception as e:
         print(e)
+        return None,"error"
