@@ -1,4 +1,5 @@
 import discord
+from contest_remin import contest_remi
 import responses
 from _handle_verification_ import handle_verification
 import gitgud
@@ -25,6 +26,7 @@ async def run_discord_bot():
     guild=client.get_guild(guild_id)
     @client.event
     async def on_ready():                                                               #logged in successfully
+        await contest_remi(client)
         print('We have logged in')
     @client.event
     async def on_message(ctx):
