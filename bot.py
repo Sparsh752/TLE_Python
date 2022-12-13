@@ -25,11 +25,9 @@ async def run_discord_bot():
     @client.event
     async def on_ready():                                                               #logged in successfully
         print('We have logged in')
-    
     @client.event
     async def on_message(ctx):
         print(ctx)
-
         if ctx.author == client.user:                                               #will keep messaging itself without this
             return
         user_message=str(ctx.content)
