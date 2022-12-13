@@ -1,5 +1,5 @@
-from db import get_codeforces_handle,get_last_solved_problems,find_solved_codeforces
-from gitgud import get_cf_user_rating
+from db import get_codeforces_handle,get_last_solved_problems,find_solved_codeforces,get_atcoder_handle,find_solved_atcoder
+from gitgud import get_cf_user_rating,get_ac_user_rating
 from codeforces_scraping import cf_get_random_question_rating
 import asyncio
 import discord
@@ -70,4 +70,21 @@ async def challenge_question_cf(ctx,bot):
                 elif reaction.emoji == "❌":
                     await ctx.channel.send(f"{ctx.author.mention} {ctx.mentions[0].mention} has declined the challenge")
                     return
-
+    else:
+        discord_id = ctx.mentions[0].id
+        ctx_second=cttx()
+        ctx_second.author.id=discord_id
+        ac_handle_1 = await get_atcoder_handle(ctx)
+        ac_handle_2 = await get_atcoder_handle(ctx_second)
+        if ac_handle_1 is None:
+            await ctx.channel.send(f"{ctx.author.mention} Please set your Codeforces handle first")
+            return
+        if ac_handle_2 is None:
+            await ctx.channel.send(f"{ctx.mentions[0].mention} Please set your Codeforces handle first")
+            return
+        ac_rating = await get_ac_user_rating(ac_handle_2)
+        ac_rating = (ac_rating//100)*100
+        last_checked_1,last_solved_problems_1 = await get_last_solved_problems(ctx,'atcoder')
+        last_checked_2,last_solved_problems_2 = await get_last_solved_problems(ctx_second,'atcoder')
+        solved_problems_1 = await find_solved_atcoder(ctx,ac_handle_1,last_solved_problems_1,last_checked_1)
+        solved_problems_2 = await find_solved_atcoder(ctx_second,ac_handle_2,last_solved_problems_2,last_checked_2)
