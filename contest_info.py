@@ -2,12 +2,12 @@ import db
 import requests
 import json 
 import asyncio
+from operator import itemgetter
 URL_BASE = 'https://clist.by/api/v2/'
 clist_token="username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
 
 async def codeforces_contest_id_finder(event_name):                    #function to convert cf contest name to contest id
     url=URL_BASE+'contest/?'+clist_token+'&resource_id=1'+'&order_by=-start&limit=1000'  #url to be fetched
-    print(event_name)
     if(event_name==None):                                                    #if event is none, return none
         return None
     try:            
@@ -19,7 +19,11 @@ async def codeforces_contest_id_finder(event_name):                    #function
                 return contest['id']
     except Exception as e:                                                  #tackiling errors    
         print(e)
-
+def fun(a):                                                                 #function to sort the list of dictionaries
+    if a==None:
+        return "--"
+    else:
+        return a
 async def codeforces_rating_changes(event_name):            # function to get the rating changes of all users in codeforces
     codeforces_handle = await db.get_all_codeforces_handles()       # get all the codeforces handles from the database
     contest_id=await codeforces_contest_id_finder(event_name)                  # get the contest id of the contest
@@ -29,7 +33,7 @@ async def codeforces_rating_changes(event_name):            # function to get th
     response = requests.get(question_url)                        # fetching response
     response=response.json()                                    # converting to json
     problemlist=[]
-    header=['handle', 'position', 'score', 'rating_change', 'old_rating', 'new_rating']
+    header=['rank','handle', 'score', 'Δ', 'to']
     for i in response['objects'][0]['problems']:                # iterating over all the problems
         problemlist.append(i)                                          # appending the problem codes to a list
     try: 
@@ -40,8 +44,9 @@ async def codeforces_rating_changes(event_name):            # function to get th
             response=response.json()                        # fetching response
             if response['objects']:                                # if the response is not empty
                 if 'CONTESTANT' in response['objects'][0]['more_fields']['participant_type']: # if the user is a contestant
+                    print(handle[1])
                     data=response['objects'][0]                     # get the data of the user
-                    data_dict={'handle':handle[0],'position':data['place'],'score':data['score'],'rating_change':data['rating_change'],'old_rating':data['old_rating'],'new_rating':data['new_rating']} # create a dictionary of the data
+                    data_dict={'rank':data['place'],'handle':handle[0],'score':data['score'],'Δ':fun(data['rating_change']),'to':fun(data['new_rating'])} # create a dictionary of the data
                     for i in problemlist:  # adding the solved problems to the dictionary
                         if i in data['problems'].keys():
                             if 'upsolving' in data['problems'][i].keys():
@@ -60,8 +65,7 @@ async def codeforces_rating_changes(event_name):            # function to get th
         if(len(returnlist)==0):
             return returnlist,header
         header.extend(problemlist)
-        print(header)
-        print(returnlist)
+        returnlist=sorted(returnlist,key=itemgetter('rank'))
         return returnlist,header  # returning the list
         
     except Exception as e:
