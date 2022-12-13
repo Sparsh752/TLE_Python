@@ -9,11 +9,14 @@ def embed_paginator(head_row, ndict, page_row):
     for i in range(no_pages):
 
         content_body = ''
+        for k in head_row:
+            content_body += str(k) + '\a\a\a\a\a\a\a'
+        content_body += '\n\n'
         for j in range(i * page_row, i * page_row + page_row):
             if j == len(ndict):
                 break
             for head in head_row:
-                content_body += str(ndict[j][head]) + ' '
+                content_body += str(ndict[j][head]) + '\a\a\a\a\a\a\a'
             content_body += '\n'
 
         page = discord.Embed( 
@@ -61,9 +64,9 @@ async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=
 
     ##if message requires Title then make an embed and print here------
     if isEmbed:
-        msg =  await ctx.send(embed=output[current])
+        msg =  await ctx.channel.send(embed=output[current])
     else:
-        msg =  await ctx.send(f"```\n{output[current]}\npage: {current+1}/{len(output)}\n```")
+        msg =  await ctx.channel.send(f"```\n{output[current]}\npage: {current+1}/{len(output)}\n```")
     
     if len(output) < 2:
         return

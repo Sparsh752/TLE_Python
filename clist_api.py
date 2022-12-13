@@ -18,7 +18,8 @@ async def nextcontests():
             mydict={}
             mydict['Sr No.']=count
             if(len(item['event'])>15):
-                mydict['Name']=item['event'][:15]+"..."
+                string=item['event'][:15]+"..."
+                mydict['Name']= f'[{string}]({item["href"]})'
             else:
                 mydict['Name']=item['event']
             mydict['Start Time (dd-mm-yyyy)']=item['start'][8:10]+item['start'][4:8]+item['start'][:4]+" "+item['start'][11:16]

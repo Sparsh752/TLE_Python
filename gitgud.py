@@ -301,7 +301,7 @@ async def gitlog(ctx):
         l = []
         for problem in all_problems:
             mydict = {}
-            mydict['Problem Name'] = problem[0][0]
+            mydict['Problem Name'] = f'[{problem[0][0]}]({problem[0][2]})'
             mydict['Problem Rating'] = problem[0][1]
             mydict['Points'] = problem[2]
             l.append(mydict)
@@ -322,7 +322,7 @@ async def gitlog(ctx):
         ctx.channel.send(all_problems)
         for problem in all_problems:
             mydict = {}
-            mydict['Problem Name'] = problem[0][0]
+            mydict['Problem Name'] =  f'[{problem[0][0]}]({problem[0][2]})'
             mydict['Problem Rating'] = problem[0][1]
             mydict['Points'] = problem[2]
             l.append(mydict)
