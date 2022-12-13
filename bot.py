@@ -7,6 +7,7 @@ import clist_api
 import db
 import stalk
 import contest_info
+import challenge
 client = None
 async def send_message(ctx,user_message,is_private):                                      #giving back response to the user
     try:
@@ -31,6 +32,8 @@ async def run_discord_bot():
         if ctx.author == client.user:                                               #will keep messaging itself without this
             return
         user_message=str(ctx.content)
+        if (user_message.startswith(';challenge')):
+            await challenge.challenge_question_cf(ctx)
         if (user_message.startswith(';identify')):
             await handle_verification(ctx)
         if user_message[0]=='?':                                                        #checking if message is private
