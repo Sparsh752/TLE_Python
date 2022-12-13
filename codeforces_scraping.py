@@ -29,21 +29,24 @@ def cf_get_random_question_rating(rating):
     return prob_info
 
 # question based on tags
-def cf_get_random_question_tag(tag_list):
-    p = requests.get('https://codeforces.com/api/problemset.problems')
+def cf_get_random_question_tag(tag, rating=None):
+    for i in range(0, len(tag)):
+        if tag[i] == '_':
+            tag = tag[0:i] + '%20' + tag[i+1:]
+    p = requests.get('https://codeforces.com/api/problemset.problems?tags='+tag)
     data = p.json()['result']['problems']
     q_list = []
     for problem in data:
-        for d in problem:
-            if (d == 'tags'):
-                for tag in d:
-                    if (tag in tag_list):
-                        q_list.append(problem)
+        if "rating" in problem.keys():
+            if (problem['rating'] == rating):
+                q_list.append(problem)
+    if (len(q_list) == 0):
+        return None
     q_index = random.randint(0, len(q_list)-1)
     problem = q_list[q_index]
     prob_link = 'https://codeforces.com/problemset/problem/' + \
-        str(problem['contestId'])+'/'+problem['index']
-    prob_id = problem['contestId']+':' + problem['index']
+        str(problem['contestId'])+'/'+str(problem['index'])
+    prob_id = str(problem['contestId'])+':' + str(problem['index'])
     prob_name = problem['name']
     prob_rating = problem['rating']
     prob_info = {'problem': problem, 'prob_link': prob_link,
