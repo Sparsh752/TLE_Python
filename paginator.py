@@ -1,7 +1,30 @@
 from table2ascii import table2ascii as t2a
+import discord
 import asyncio
 
-#Building pages
+#Building pages(in embed form i.e. links can be added)
+def embed_paginator(head_row, ndict, page_row):
+    no_pages = len(ndict) // page_row + (len(ndict) % page_row != 0)
+    pages = []
+    for i in range(no_pages):
+
+        content_body = ''
+        for j in range(i * page_row, i * page_row + page_row):
+            if j == len(ndict):
+                break
+            for head in head_row:
+                content_body += str(ndict[j][head]) + ' '
+            content_body += '\n'
+
+        page = discord.Embed( 
+            description=content_body,
+            color = discord.Color.blue()
+        )
+        page.set_footer(text="page: "+str(i + 1)+"/"+str(no_pages))
+        pages.append(page)
+    return pages
+
+#Building pages(in simple text form)
 def paginator(head_row, ndict, line_after_first_col, page_row):
     no_pages = len(ndict) // page_row + (len(ndict) % page_row != 0)
     pages = []
@@ -27,15 +50,20 @@ def paginator(head_row, ndict, line_after_first_col, page_row):
 
 
 #make pages with table
-async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=5):
+async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=5, isEmbed=False):
     buttons = [u"\u23EA", u"\u2B05", u"\u27A1", u"\u23E9"] # skip to start, left, right, skip to end
     current = 0
 
-    output = paginator(head_row, ndict, line_after_first_col, page_row)
+    if isEmbed:
+        output = embed_paginator(head_row, ndict, page_row)
+    else:
+        output = paginator(head_row, ndict, line_after_first_col, page_row)
 
     ##if message requires Title then make an embed and print here------
-
-    msg =  await ctx.channel.send(f"```\n{output[current]}\npage: {current+1}/{len(output)}\n```")
+    if isEmbed:
+        msg =  await ctx.send(embed=output[current])
+    else:
+        msg =  await ctx.send(f"```\n{output[current]}\npage: {current+1}/{len(output)}\n```")
     
     if len(output) < 2:
         return
@@ -72,7 +100,10 @@ async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=
                 await msg.remove_reaction(button, ctx.author)
 
             if current != previous_page:
-                await msg.edit(content=(f"```\n{output[current]}\npage: {current+1}/{len(output)}\n```"))
+                if isEmbed:
+                    await msg.edit(embed=output[current])
+                else:
+                    await msg.edit(content=(f"```\n{output[current]}\npage: {current+1}/{len(output)}\n```"))
 
 
 #=======================================Formate of calling ';help'==========================================
@@ -87,6 +118,15 @@ async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=
 #     await table(ctx, bot, head_row, ndict)
 
 
+# ==============make sure to do isEmbed=True for link type table
+# @bot.command()
+# async def hi(ctx):
+#     await table(ctx, bot, head_row, ndict, isEmbed=True)
+
+
+
+
+#Format for link:   '[text to be printed](https://codeforces.com/)'
 
 #========================================Format of head_row and ndict=====================================
 # head_row = ['#', '=', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
@@ -97,6 +137,7 @@ async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=
 #          {'#': '#', '=': '=', 'A': 'A', 'B': 'B', 'C': 'C', 'D': 'D', 'E':'E', 'F':'F', 'G':'G', 'H':'H'},
 #          {'#': '#', '=': '=', 'A': 'A', 'B': 'B', 'C': 'C', 'D': 'D', 'E':'E', 'F':'F', 'G':'G', 'H':'H'},
 #          {'#': '#', '=': '=', 'A': 'A', 'B': 'B', 'C': 'C', 'D': 'D', 'E':'E', 'F':'F', 'G':'G', 'H':'H'},
+#          {'#': '#', '=': '=', 'A': 1, 'B': '[hi](https://codeforces.com/)', 'C': 'C', 'D': 'D', 'E':'E', 'F':'F', 'G':'G', 'H':'H'},
 #          {'#': '#', '=': '=', 'A': 'A', 'B': 'B', 'C': 'C', 'D': 'D', 'E':'E', 'F':'F', 'G':'G', 'H':'H'},
 #          {'#': '#', '=': '=', 'A': 'A', 'B': 'B', 'C': 'C', 'D': 'D', 'E':'E', 'F':'F', 'G':'G', 'H':'H'},
 #          {'#': '#', '=': '=', 'A': 'A', 'B': 'B', 'C': 'C', 'D': 'D', 'E':'E', 'F':'F', 'G':'G', 'H':'H'},
