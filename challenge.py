@@ -124,7 +124,7 @@ async def challenge_question_cf(ctx,bot):
         random_problem = ac_get_random_question(contest_type,question_type)
         iter=0
         while(iter < 50 and random_problem["problem"]["id"] in solved_problems):
-            random_problem = ac_get_random_question(user_message[2], user_message[3])
+            random_problem = ac_get_random_question(contest_type, question_type)
             difficulty = await get_ac_problem_difficulty(random_problem['problem']['id'])
             if difficulty is None :
                 random_problem = None
@@ -151,21 +151,21 @@ async def challenge_question_cf(ctx,bot):
                     await ctx.channel.send(f"{ctx.author.mention} {ctx.mentions[0].mention} has accepted the challenge")
                     title = f"{random_problem['problem']['title']}"
                     url = f"{random_problem['prob_link']}"
-                    description = f"Dificulty: {equv_cf_prob_rating}"
+                    description = f"Dificulty: {int(equv_cf_prob_rating)}"
                     embed = discord.Embed(title=title, url=url, description=description)
                     await ctx.channel.send(f"Challenge problem for `{ac_handle_1}` and `{ac_handle_2}`, you have 1 hour to complete the challenge", embed = embed)
                     timeout = time.time() + 60*60
                     while True:
-                        check1 = await check_if_solved_ac(ctx,cf_handle_1,[random_problem["problem"]["id"]])
-                        check2 = await check_if_solved_ac(ctx_second,cf_handle_2,[random_problem["problem"]["id"]])
+                        check1 = await check_if_solved_ac(ctx,ac_handle_1,[random_problem["problem"]["id"]])
+                        check2 = await check_if_solved_ac(ctx_second,ac_handle_2,[random_problem["problem"]["id"]])
                         if check1 and check2:
                             await ctx.channel.send(f"{ctx.author.mention} {ctx.mentions[0].mention} both of you have solved the problem at the same time")
                             break
                         elif check1:
-                            await ctx.channel.send(f"{ctx.author.mention} {cf_handle_1} has solved the problem first and won the challenge")
+                            await ctx.channel.send(f"{ctx.author.mention} {ac_handle_1} has solved the problem first and won the challenge")
                             break
                         elif check2:
-                            await ctx.channel.send(f"{ctx.mention[0].mention} {cf_handle_2} has solved the problem first and won the challenge")
+                            await ctx.channel.send(f"{ctx.mention[0].mention} {ac_handle_2} has solved the problem first and won the challenge")
                             break
                         elif time.time() > timeout:
                             await ctx.channel.send(f"{ctx.author.mention} {ctx.mentions[0].mention} both of you have not solved the problem in time")
