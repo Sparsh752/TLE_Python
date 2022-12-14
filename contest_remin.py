@@ -18,7 +18,7 @@ async def next_contest():
     minute=now.minute
     seconds=now.second
 
-    url=URL_BASE+'contest/?'+clist_token+'&resource_id=1&limit=1&start__gte='+str(year)+'-'+str(month)+'-'+str(day)+'%20'+str(hour)+':'+str(minute)+':00&order_by=start'
+    url=URL_BASE+'contest/?'+clist_token+'&resource_id=1&limit=1&start__gte='+str(year)+'-'+str(month)+'-'+str(day)+'%20'+str(hour)+':'+str(minute)+':'+str(seconds)+'&order_by=start'
 
     try:
         resp=requests.get(url)
