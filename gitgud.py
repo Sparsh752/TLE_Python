@@ -89,7 +89,7 @@ async def gitgud(ctx):
             points = 12
         random_problem = cf_get_random_question_rating(cf_rating)
         iter=0
-        while(iter < 50 and random_problem in solved_problems):
+        while(iter < 50 and random_problem['prob_id'] in solved_problems):
             random_problem = cf_get_random_question_rating(cf_rating)
             iter+=1
         if(iter==50):
@@ -115,7 +115,7 @@ async def gitgud(ctx):
         solved_problems = await find_solved_atcoder(ctx,ac_handle,last_solved_problems,last_checked)
         random_problem = ac_get_random_question(user_message[2], user_message[3])
         iter=0
-        while(iter < 50 and random_problem in solved_problems):
+        while(iter < 50 and random_problem["problem"]["id"] in solved_problems):
             random_problem = ac_get_random_question(user_message[2], user_message[3])
             difficulty = await get_ac_problem_difficulty(random_problem['problem']['id'])
             if difficulty is None :
