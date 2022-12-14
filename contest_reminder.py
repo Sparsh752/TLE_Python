@@ -45,8 +45,8 @@ async def contest_reminder(bot):
 
         if dif_time.total_seconds()<7201:
             channel = bot.get_channel(channel_id)
-            embed = discord.Embed(title=event, url=href, description="comtest is comming")
-            await channel.send('contest is comming within 2h @everyone' +str(event),embed=embed )
+            embed = discord.Embed(title=event, url=href, description="contest is coming")
+            await channel.send('contest is coming within 2h @everyone' +str(event),embed=embed )
             await asyncio.sleep(7201)
         else:
             await asyncio.sleep(min(dif_time.total_seconds()-7200,216000))
