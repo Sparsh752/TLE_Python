@@ -32,7 +32,7 @@ async def next_contest():
 
 
 
-async def contest_remi(bot):
+async def contest_reminder(bot):
 
     while(1):
 

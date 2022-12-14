@@ -1,5 +1,5 @@
 import discord
-from contest_remin import contest_remi
+from contest_reminder import contest_remi
 import responses
 from _handle_verification_ import handle_verification
 import gitgud
