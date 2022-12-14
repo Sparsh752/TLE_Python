@@ -38,9 +38,9 @@ async def run_discord_bot():
             await challenge.challenge_question_cf(ctx,client)
         if (user_message.startswith(';identify')):
             await handle_verification(ctx)
-        if user_message[0]=='?':                                                        #checking if message is private
-            user_message=user_message[1:]
-            await send_message(ctx,user_message,is_private=True) #message is private
+        # if user_message[0]=='?':                                                        #checking if message is private
+        #     user_message=user_message[1:]
+        #     await send_message(ctx,user_message,is_private=True) #message is private
         if user_message.split()[0]==";gitlog":
              mydict =  await gitgud.gitlog(ctx)
              if(len(mydict)==0):
