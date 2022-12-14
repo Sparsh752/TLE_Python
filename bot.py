@@ -9,6 +9,7 @@ import db
 import stalk
 import contest_info
 import challenge
+from check_rating_changes import show_standings
 client = None
 async def send_message(ctx,user_message,is_private):                                      #giving back response to the user
     try:
@@ -28,6 +29,7 @@ async def run_discord_bot():
     async def on_ready():                                                               #logged in successfully
         await contest_reminder(client)
         print('We have logged in')
+        await show_standings()
     @client.event
     async def on_message(ctx):
         print(ctx)
