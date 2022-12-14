@@ -322,3 +322,44 @@ async def Leaderboard_list(ctx , msg):
                 handles.append({'Discord id':user['discord_name'],'Total Score': score})
         handles = sorted(handles, key=lambda d:d['Total Score'] , reverse=True)
         return handles
+
+async def Leaderboard_list(ctx , msg):
+    if msg == 'cf':
+        users = db.collection(u'users')
+        a=users.order_by('score_codeforces', direction=firestore.Query.DESCENDING).stream()
+        data = [item async for item in a]
+        codeforces_handles = []
+        for user in data:
+            user=user.to_dict()
+            if ('codeforces_handle' in user.keys()):
+                score = user['score_codeforces']
+                codeforces_handles.append({'discord_id':ctx.author.id,'score': score , 'codeforces_handle': user['codeforces_handle']})
+        return codeforces_handles
+
+    elif msg == 'atcoder':
+        users = db.collection(u'users')
+        a=users.order_by('score_atcoder', direction=firestore.Query.DESCENDING).stream()
+        data = [item async for item in a]
+        atcoder_handles = []
+        for user in data:
+            user=user.to_dict()
+            if ('atcoder_handle' in user.keys()):
+                score = user['score_atcoder']
+                atcoder_handles.append({'discord_id':ctx.author.id,'score': score , 'atcoder_handle': user['atcoder_handle'] } )
+        return atcoder_handles
+    elif msg == 'both':
+        users = await db.collection('users').get()
+        handles = []
+        for user in users:
+            user=user.to_dict()
+            if ('codeforces_handle' in user.keys()) and ('atcoder_handle' in user.keys()):
+                score = user['score_codeforces'] + user['score_atcoder']
+                handles.append({'discord_id':ctx.author.id,'score': score})
+            elif 'codeforces_handle' in user.keys():
+                score = user['score_codeforces'] 
+                handles.append({'discord_id':ctx.author.id,'score': score})
+            elif 'atcoder_handle' in user.keys():
+                score = user['score_atcoder']
+                handles.append({'discord_id':ctx.author.id,'score': score})
+        return handles
+
