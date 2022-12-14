@@ -105,6 +105,9 @@ async def challenge_question_cf(ctx,bot):
         last_checked_2,last_solved_problems_2 = await get_last_solved_problems(ctx_second,'atcoder')
         solved_problems_1 = await find_solved_atcoder(ctx,ac_handle_1,last_solved_problems_1,last_checked_1)
         solved_problems_2 = await find_solved_atcoder(ctx_second,ac_handle_2,last_solved_problems_2,last_checked_2)
+        solved_problems=[]
+        solved_problems.extend(solved_problems_1)
+        solved_problems.extend(solved_problems_2)
         n=random.randint(0,1)
         contest_type=''
         question_type=''
