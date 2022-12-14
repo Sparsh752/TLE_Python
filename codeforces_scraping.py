@@ -71,9 +71,8 @@ def ac_get_random_question(contest_type, question_type):
     q_list = []
     for problem in q:
         if ((problem['id'][:3] == contest_type) & (problem['problem_index'] == question_type)):
-            q_list.append(problem)
             if((is_english_problem(problem))):
-                pass
+                q_list.append(problem)
                 
     q_index = random.randint(0, len(q_list)-1)
     problem = q_list[q_index]
