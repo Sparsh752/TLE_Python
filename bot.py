@@ -1,5 +1,5 @@
 import discord
-from contest_reminder import contest_remi
+from contest_reminder import contest_reminder
 import responses
 from _handle_verification_ import handle_verification
 import gitgud
@@ -26,7 +26,7 @@ async def run_discord_bot():
     guild=client.get_guild(guild_id)
     @client.event
     async def on_ready():                                                               #logged in successfully
-        await contest_remi(client)
+        await contest_reminder(client)
         print('We have logged in')
     @client.event
     async def on_message(ctx):
