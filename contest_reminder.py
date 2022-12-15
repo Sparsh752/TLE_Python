@@ -19,8 +19,8 @@ async def completed_contest(html_):
     return contest_ID
 
 
-async def print_final_standings(): 
-    returnlist,header= await contest_info.codeforces_rating_changes_shower(str(previous_contestId))
+async def print_final_standings(bot): 
+    returnlist,header= await contest_info.codeforces_rating_changes_shower(str(previous_contestId),bot)
     print(returnlist)
 
 URL_BASE = 'https://clist.by/api/v2/'
@@ -57,7 +57,7 @@ async def reminder(bot):
         try:
             bool_ = await check_rating_changed()
             if(bool_):
-                await print_final_standings()
+                await print_final_standings(bot)
             else:
                 print('NO')
             event,start, href = await next_contest()
