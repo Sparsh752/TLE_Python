@@ -177,4 +177,4 @@ async def codeforces_rating_changes_shower(event_name,bot,channel):            #
         
     except Exception as e:
         print(e)
-        return None,"error"
+        return
