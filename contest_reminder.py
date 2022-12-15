@@ -20,10 +20,13 @@ async def completed_contest(html_):
 
 
 async def print_final_standings(bot,channel): 
+    global previous_contestId
     try:
+        print('heyy')
         returnlist,header= await contest_info.codeforces_rating_changes_shower(str(previous_contestId),bot,channel)
         print(returnlist)
-    except:
+    except Exception as e:
+        print(e)
         previous_contestId=""
 
 URL_BASE = 'https://clist.by/api/v2/'
@@ -69,7 +72,6 @@ async def reminder(bot):
             print((str(start[0:4]), str(start[5:7]), str(start[8:10]), str(start[11:13]), str(start[14:16]), str(start[17:19])))
             # print()
             dif_time = datetime.datetime(int(start[0:4]), int(start[5:7]), int(start[8:10]), int(start[11:13]), int(start[14:16]), int(start[17:19], 0)) - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]), int(time_date[8:10]), int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19]))
-
             if dif_time.total_seconds()<7201:
                 
                 embed = discord.Embed(title=event, url=href, description="contest is coming")

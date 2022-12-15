@@ -19,7 +19,7 @@ async def rating_role(id, rating,bot,channel):
         role = get(username.guild.roles, name="Newbie")
         await remove_rating_roles(username)
         await username.add_roles(role)
-        channel.send()
+        await channel.send(f"{username.mention} is a Newbie")
         print("Role added")
         return
     elif (rating < 1400):
@@ -27,52 +27,61 @@ async def rating_role(id, rating,bot,channel):
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
+        await channel.send(f"{username.mention} is a Pupil")
         return
     elif (rating < 1600):
         role = get(username.guild.roles, name="Specialist")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
+        await channel.send(f"{username.mention} is a Specialist")
         return
     elif (rating < 1900):
         role = get(username.guild.roles, name="Expert")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
+        await channel.send(f"{username.mention} is a Expert")
         return
     elif (rating < 2100):
         role = get(username.guild.roles, name="Candidate_Master")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
+        await channel.send(f"{username.mention} is a Candidate_Master")
         return
     elif (rating < 2300):
         role = get(username.guild.roles, name="Master")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
+        await channel.send(f"{username.mention} is a Master")
         return
     elif (rating < 2400):
         role = get(username.guild.roles, name="International_Master")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
+        await channel.send(f"{username.mention} is a International_Master")
         return
     elif (rating < 2600):
         role = get(username.guild.roles, name="Grandmaster")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
+        await channel.send(f"{username.mention} is a Grandmaster")
         return
     elif (rating < 3000):
         role = get(username.guild.roles, name="International_Grandmaster")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
+        await channel.send(f"{username.mention} is a International_Grandmaster")
         return
     else:
         role = get(username.guild.roles, name="Legendary_Grandmaster")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
+        await channel.send(f"{username.mention} is a Legendary_Grandmaster")
         return
