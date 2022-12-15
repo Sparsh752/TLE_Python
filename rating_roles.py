@@ -8,7 +8,7 @@ async def remove_rating_roles(username):
                 await username.remove_roles(user_role)
     print("All roles removed")
 
-async def rating_role(id, rating,bot):
+async def rating_role(id, rating,bot,channel):
     guild = await bot.fetch_guild(1048212913539784805)
     user = await guild.query_members(user_ids=[id])
     username=user[0]
@@ -19,6 +19,7 @@ async def rating_role(id, rating,bot):
         role = get(username.guild.roles, name="Newbie")
         await remove_rating_roles(username)
         await username.add_roles(role)
+        channel.send()
         print("Role added")
         return
     elif (rating < 1400):

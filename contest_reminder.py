@@ -19,9 +19,12 @@ async def completed_contest(html_):
     return contest_ID
 
 
-async def print_final_standings(bot): 
-    returnlist,header= await contest_info.codeforces_rating_changes_shower(str(previous_contestId),bot)
-    print(returnlist)
+async def print_final_standings(bot,channel): 
+    try:
+        returnlist,header= await contest_info.codeforces_rating_changes_shower(str(previous_contestId),bot,channel)
+        print(returnlist)
+    except:
+        previous_contestId=""
 
 URL_BASE = 'https://clist.by/api/v2/'
 clist_token="username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
@@ -52,12 +55,12 @@ async def next_contest():
 
 
 async def reminder(bot):
-
+    channel = bot.get_channel(channel_id)
     while(1):
         try:
             bool_ = await check_rating_changed()
             if(bool_):
-                await print_final_standings(bot)
+                await print_final_standings(bot,channel)
             else:
                 print('NO')
             event,start, href = await next_contest()
@@ -68,7 +71,7 @@ async def reminder(bot):
             dif_time = datetime.datetime(int(start[0:4]), int(start[5:7]), int(start[8:10]), int(start[11:13]), int(start[14:16]), int(start[17:19], 0)) - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]), int(time_date[8:10]), int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19]))
 
             if dif_time.total_seconds()<7201:
-                channel = bot.get_channel(channel_id)
+                
                 embed = discord.Embed(title=event, url=href, description="contest is coming")
                 await channel.send('contest is coming within 2h @everyone' +str(event),embed=embed )
                 await asyncio.sleep(7201)
