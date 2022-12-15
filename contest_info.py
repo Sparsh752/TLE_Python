@@ -25,7 +25,7 @@ def fun(a):                                                                 #fun
         return "--"
     else:
         return a
-async def codeforces_rating_changes(event_name,bot):            # function to get the rating changes of all users in codeforces
+async def codeforces_rating_changes(event_name):            # function to get the rating changes of all users in codeforces
     codeforces_handle = await db.get_all_codeforces_handles()       # get all the codeforces handles from the database
     contest_id=await codeforces_contest_id_finder(event_name)                  # get the contest id of the contest
     if contest_id==None:                                                    # if the contest id is none, return none
@@ -45,7 +45,6 @@ async def codeforces_rating_changes(event_name,bot):            # function to ge
             response=response.json()                        # fetching response
             if response['objects']:                                # if the response is not empty
                 if 'CONTESTANT' in response['objects'][0]['more_fields']['participant_type']: # if the user is a contestant
-                    rating_roles.rating_role(handle[2],fun(data['new_rating']),bot)
                     print(handle[1])
                     data=response['objects'][0]                     # get the data of the user
                     data_dict={'rank':data['place'],'handle':handle[0],'score':data['score'],'Δ':fun(data['rating_change']),'to':fun(data['new_rating'])} # create a dictionary of the data
@@ -150,6 +149,7 @@ async def codeforces_rating_changes_shower(event_name,bot):            # functio
             response=response.json()                        # fetching response
             if response['objects']:                                # if the response is not empty
                 if 'CONTESTANT' in response['objects'][0]['more_fields']['participant_type']: # if the user is a contestant
+                    rating_roles.rating_role(str(handle[2]),fun(data['new_rating']),bot)
                     print(handle[1])
 
                     data=response['objects'][0]                     # get the data of the user
