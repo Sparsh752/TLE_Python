@@ -9,7 +9,7 @@ import contest_info
 counter=0
 previous_contestId=""
 ### checks just completed contest
-channel_id = 1048212913539784808
+channel_id = 1052888188479348787
 async def completed_contest(html_):
     soup1 = BeautifulSoup(html_,'html.parser')
     for el in soup1.find_all("tr"):
