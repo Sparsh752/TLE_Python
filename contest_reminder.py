@@ -4,6 +4,24 @@ from datetime import timezone
 import datetime
 import discord
 
+from bs4 import BeautifulSoup
+import contest_info
+counter=0
+previous_contestId=""
+### checks just completed contest
+
+async def completed_contest(html_):
+    soup1 = BeautifulSoup(html_,'html.parser')
+    for el in soup1.find_all("tr"):
+        if el.has_attr("data-contestid"):
+            contest_ID=el.attrs["data-contestid"]
+            break
+    return contest_ID
+
+
+async def print_final_standings(): 
+    returnlist,header= await contest_info.codeforces_rating_changes_shower(str(previous_contestId))
+    print(returnlist)
 
 URL_BASE = 'https://clist.by/api/v2/'
 clist_token="username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
@@ -28,29 +46,79 @@ async def next_contest():
 
     except Exception as e:
         print(e)
+        return None,None,None
 
 
 
 
-async def contest_reminder(bot):
+async def reminder(bot):
 
     while(1):
+        try:
+            bool_ = await check_rating_changed()
+            if(bool_):
+                await print_final_standings()
+            else:
+                print('NO')
+            event,start, href = await next_contest()
+            start=str(start)
+            time_date=str(datetime.datetime.now(timezone.utc))
+            print((str(start[0:4]), str(start[5:7]), str(start[8:10]), str(start[11:13]), str(start[14:16]), str(start[17:19])))
+            # print()
+            dif_time = datetime.datetime(int(start[0:4]), int(start[5:7]), int(start[8:10]), int(start[11:13]), int(start[14:16]), int(start[17:19], 0)) - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]), int(time_date[8:10]), int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19]))
 
-        event,start, href = await next_contest()
-        start=str(start)
-        time_date=str(datetime.datetime.now(timezone.utc))
-        print((str(start[0:4]), str(start[5:7]), str(start[8:10]), str(start[11:13]), str(start[14:16]), str(start[17:19])))
-        # print()
-        dif_time = datetime.datetime(int(start[0:4]), int(start[5:7]), int(start[8:10]), int(start[11:13]), int(start[14:16]), int(start[17:19], 0)) - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]), int(time_date[8:10]), int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19]))
+            if dif_time.total_seconds()<7201:
+                channel = bot.get_channel(channel_id)
+                embed = discord.Embed(title=event, url=href, description="contest is coming")
+                await channel.send('contest is coming within 2h @everyone' +str(event),embed=embed )
+                await asyncio.sleep(7201)
+            else:
+                await asyncio.sleep(60)
+        except Exception as e:
+            continue
 
-        if dif_time.total_seconds()<7201:
-            channel = bot.get_channel(channel_id)
-            embed = discord.Embed(title=event, url=href, description="contest is coming")
-            await channel.send('contest is coming within 2h @everyone' +str(event),embed=embed )
-            await asyncio.sleep(7201)
-        else:
-            await asyncio.sleep(min(dif_time.total_seconds()-7200,216000))
-
+async def check_rating_changed():
+    url = "https://codeforces.com/contests"
+    r = requests.get(url)   
+    soup = BeautifulSoup(r.content, 'html.parser')  
+    s = soup.find('div', class_= 'contests-table')  
+    _html=str(s)
+    contest_id= await completed_contest(_html)
+    global counter
+    global previous_contestId
+    # if(counter==0):
+    #     previous_contestId=contest_id
+    #     counter=1
+    if(contest_id==previous_contestId):          # if contest updates already given then end func
+        print(contest_id)
+        return False
+    else:
+        s1= soup.find('a', href= '/contest/'+str(contest_id)+'/standings')
+        nlist = s1.text
+        if 'Final standings' in nlist:
+            url = ('https://codeforces.com/contest/'+str(contest_id)+'/standings')
+            r = requests.get(url)  
+            soup = BeautifulSoup(r.content, 'html.parser')  
             
+            s = soup.find('div', class_= 'second-level-menu')  
+            nlist = s.text
+            if "Rating Changes" in nlist:
+                print("yes rating changes came")
+
+                previous_contestId=contest_id
+                print(previous_contestId)
+
+                #### Update previous contest Id in Firebase with ((( contest_id )))  #######
+
+
+
+                return True
+            else:
+                return False
+
+        else:
+            return False
+
+ 
 
         

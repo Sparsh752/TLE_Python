@@ -1,5 +1,5 @@
 import discord
-from contest_reminder import contest_reminder
+from contest_reminder import reminder
 import responses
 from _handle_verification_ import handle_verification
 import gitgud
@@ -9,7 +9,6 @@ import db
 import stalk
 import contest_info
 import challenge
-from check_rating_changes import show_standings
 client = None
 async def send_message(ctx,user_message,is_private):                                      #giving back response to the user
     try:
@@ -27,9 +26,7 @@ async def run_discord_bot():
     guild=client.get_guild(guild_id)
     @client.event
     async def on_ready():                                                               #logged in successfully
-        await contest_reminder(client)
-        print('We have logged in')
-        await show_standings()
+        await reminder(client)
     @client.event
     async def on_message(ctx):
         print(ctx)

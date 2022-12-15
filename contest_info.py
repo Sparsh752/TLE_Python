@@ -3,6 +3,7 @@ import requests
 import json 
 import asyncio
 from operator import itemgetter
+import assign_roles
 URL_BASE = 'https://clist.by/api/v2/'
 clist_token="username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
 
@@ -44,6 +45,7 @@ async def codeforces_rating_changes(event_name):            # function to get th
             response=response.json()                        # fetching response
             if response['objects']:                                # if the response is not empty
                 if 'CONTESTANT' in response['objects'][0]['more_fields']['participant_type']: # if the user is a contestant
+                    assign_roles.reassign_role
                     print(handle[1])
                     data=response['objects'][0]                     # get the data of the user
                     data_dict={'rank':data['place'],'handle':handle[0],'score':data['score'],'Δ':fun(data['rating_change']),'to':fun(data['new_rating'])} # create a dictionary of the data
@@ -123,6 +125,55 @@ async def atcoder_rating_changes(event_name):            # function to get the r
         header.extend(problemlist)
         returnlist=sorted(returnlist,key=itemgetter('rank'))    # sorting the list according to the rank
         return returnlist,header # returning the list
+        
+    except Exception as e:
+        print(e)
+        return None,"error"
+
+async def codeforces_rating_changes_shower(event_name):            # function to get the rating changes of all users in codeforces
+    codeforces_handle = await db.get_all_codeforces_handles()       # get all the codeforces handles from the database
+    contest_id=await codeforces_contest_id_finder(event_name)                  # get the contest id of the contest
+    if contest_id==None:                                                    # if the contest id is none, return none
+        return None,"error"
+    question_url=URL_BASE+'statistics/?'+clist_token+'&contest_id='+str(contest_id)+'&order_by=place'+'&with_problems=True&limit=1'  # url to be fetched 
+    response = requests.get(question_url)                        # fetching response
+    response=response.json()                                    # converting to json
+    problemlist=[]
+    header=['rank','handle', 'score', 'Δ', 'to']
+    for i in response['objects'][0]['problems']:                # iterating over all the problems
+        problemlist.append(i)                                          # appending the problem codes to a list
+    try: 
+        returnlist=[]
+        for handle in codeforces_handle:                                # iterate over all the handles
+            url = URL_BASE+'statistics/?'+clist_token+'&contest_id='+str(contest_id)+'&account_id='+str(handle[1])+'&with_problems=True&with_more_fields=True'           # url to be fetched
+            response = requests.get(url)
+            response=response.json()                        # fetching response
+            if response['objects']:                                # if the response is not empty
+                if 'CONTESTANT' in response['objects'][0]['more_fields']['participant_type']: # if the user is a contestant
+                    print(handle[1])
+
+                    data=response['objects'][0]                     # get the data of the user
+                    data_dict={'rank':data['place'],'handle':handle[0],'score':data['score'],'Δ':fun(data['rating_change']),'to':fun(data['new_rating'])} # create a dictionary of the data
+                    for i in problemlist:  # adding the solved problems to the dictionary
+                        if i in data['problems'].keys():
+                            if 'upsolving' in data['problems'][i].keys():
+                                data_dict[i]=""
+                                continue
+                            if data['problems'][i]['result']=='+':
+                                data_dict[i]=data['problems'][i]['result']
+                                continue
+                            if int(data['problems'][i]['result'])<=0:
+                                data_dict[i]=""
+                                continue
+                            data_dict[i]=data['problems'][i]['result']
+                        else:
+                            data_dict[i]=""
+                    returnlist.append(data_dict) # append the dictionary to the return list
+        if(len(returnlist)==0):
+            return returnlist,header
+        header.extend(problemlist)
+        returnlist=sorted(returnlist,key=itemgetter('rank'))
+        return returnlist,header  # returning the list
         
     except Exception as e:
         print(e)
