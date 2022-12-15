@@ -22,7 +22,6 @@ async def completed_contest(html_):
 async def print_final_standings(bot,channel): 
     global previous_contestId
     try:
-        print('heyy')
         returnlist,header= await contest_info.codeforces_rating_changes_shower(str(previous_contestId),bot,channel)
         print(returnlist)
     except Exception as e:
