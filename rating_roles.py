@@ -8,7 +8,10 @@ async def remove_rating_roles(username):
                 await username.remove_roles(user_role)
     print("All roles removed")
 
-async def rating_role(username, rating):
+async def rating_role(id, rating,bot):
+    guild = await bot.fetch_guild(1048212913539784805)
+    user = await guild.query_members(user_ids=[id])
+    username=user[0]
     if (rating < 800):
         await remove_rating_roles(username)
         return
