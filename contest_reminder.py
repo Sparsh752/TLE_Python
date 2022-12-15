@@ -9,7 +9,7 @@ import contest_info
 counter=0
 previous_contestId=""
 ### checks just completed contest
-
+channel_id = 1048212913539784808
 async def completed_contest(html_):
     soup1 = BeautifulSoup(html_,'html.parser')
     for el in soup1.find_all("tr"):
@@ -25,7 +25,7 @@ async def print_final_standings(bot):
 
 URL_BASE = 'https://clist.by/api/v2/'
 clist_token="username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
-channel_id = 1048212913539784808
+
 
 async def next_contest():
     now = datetime.datetime.now(timezone.utc)
