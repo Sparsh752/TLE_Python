@@ -152,7 +152,7 @@ async def codeforces_rating_changes_shower(event_name,bot):            # functio
                     print(handle[1])
 
                     data=response['objects'][0]                     # get the data of the user
-                    rating_roles.rating_role(str(handle[2]),fun(data['new_rating']),bot)
+                    await rating_roles.rating_role(str(handle[2]),fun(data['new_rating']),bot)
                     data_dict={'rank':data['place'],'handle':handle[0],'score':data['score'],'Δ':fun(data['rating_change']),'to':fun(data['new_rating'])} # create a dictionary of the data
                     for i in problemlist:  # adding the solved problems to the dictionary
                         if i in data['problems'].keys():
