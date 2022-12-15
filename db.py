@@ -81,9 +81,10 @@ async def get_all_codeforces_handles():
     users = await db.collection('users').get()
     codeforces_handles = []
     for user in users:
+        discord_id = user.id
         user = user.to_dict()
         if 'codeforces_handle' in user.keys():
-            codeforces_handles.append((user['codeforces_handle'],user['handle_number_codeforces']))
+            codeforces_handles.append((user['codeforces_handle'],user['handle_number_codeforces'],discord_id))
     return codeforces_handles
 
 # Function to get the list of all atcoder handles in the database
@@ -91,9 +92,10 @@ async def get_all_atcoder_handles():
     users = await db.collection('users').get()
     atcoder_handles = []
     for user in users:
+        discord_id = user.id
         user = user.to_dict()
         if 'atcoder_handle' in user.keys():
-            atcoder_handles.append((user['atcoder_handle'],user['handle_number_atcoder']))
+            atcoder_handles.append((user['atcoder_handle'],user['handle_number_atcoder'],discord_id))
     return atcoder_handles
 
 
