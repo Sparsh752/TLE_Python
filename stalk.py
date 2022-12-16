@@ -2,7 +2,7 @@ import requests
 from operator import itemgetter
 from datetime import datetime,timezone
 
-async def stalk_user(ctx,codeforces_handle,hardest=False,R=None):
+async def stalk_user(codeforces_handle,hardest=False,R=None):
     url = "https://codeforces.com/api/user.status?handle="+str(codeforces_handle)+"&from="+str(1)
     response = requests.get(url,timeout=5).json()
     total=len(response['result'])
