@@ -53,7 +53,7 @@ def paginator(head_row, ndict, line_after_first_col, page_row):
 
 
 #make pages with table
-async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=5, isEmbed=False):
+async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=5, isEmbed=False,isChannel=False):
     buttons = [u"\u23EA", u"\u2B05", u"\u27A1", u"\u23E9"] # skip to start, left, right, skip to end
     current = 0
 
@@ -63,10 +63,16 @@ async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=
         output = paginator(head_row, ndict, line_after_first_col, page_row)
 
     ##if message requires Title then make an embed and print here------
-    if isEmbed:
-        msg =  await ctx.channel.send(embed=output[current])
+    if isChannel:
+        if isEmbed:
+            msg = await ctx.send(embed=output[current])
+        else:
+            msg = await ctx.send(f"```\n{output[current]}\npage: {current+1}/{len(output)}\n```")
     else:
-        msg =  await ctx.channel.send(f"```\n{output[current]}\npage: {current+1}/{len(output)}\n```")
+        if isEmbed:
+            msg =  await ctx.channel.send(embed=output[current])
+        else:
+            msg =  await ctx.channel.send(f"```\n{output[current]}\npage: {current+1}/{len(output)}\n```")
     
     if len(output) < 2:
         return

@@ -3,7 +3,7 @@ import asyncio
 from datetime import timezone
 import datetime
 import discord
-
+import paginator
 from bs4 import BeautifulSoup
 import contest_info
 counter=0
@@ -24,6 +24,13 @@ async def print_final_standings(bot,channel):
     try:
         returnlist,header= await contest_info.codeforces_rating_changes_shower(str(previous_contestId),bot,channel)
         print(returnlist)
+        if header=="error":
+            previous_contestId=""
+        elif len(returnlist)==0:
+            pass
+        else:
+            await channel.send(f"@everyone The rating changes of the last contest are:")
+            await paginator.table(channel,bot,header, returnlist, isChannel=True)
     except Exception as e:
         print(e)
         previous_contestId=""
