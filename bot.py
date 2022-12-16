@@ -28,7 +28,7 @@ async def run_discord_bot():
     @client.event
     async def on_ready():                                                               #logged in successfully
         print('hello')
-        # await reminder(client)
+        await reminder(client)
     @client.event
     async def on_message(ctx):
         print(ctx)

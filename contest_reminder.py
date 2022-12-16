@@ -104,8 +104,14 @@ async def check_rating_changed():
         print(contest_id)
         return False
     else:
-        s1= soup.find('a', href= '/contest/'+str(contest_id)+'/standings')
-        nlist = s1.text
+        
+        try:
+            s1= soup.find('a', href= '/contest/'+str(contest_id)+'/standings')
+            nlist = s1.text
+        except Exception as e:
+            print(e)
+            return False
+        
         if 'Final standings' in nlist:
             url = ('https://codeforces.com/contest/'+str(contest_id)+'/standings')
             r = requests.get(url)  
