@@ -115,50 +115,33 @@ async def atcoder_rating_changes(event_name):            # function to get the r
 
 async def codeforces_rating_changes_shower(event_name,bot,channel):            # function to get the rating changes of all users in codeforces
     codeforces_handle = await db.get_all_codeforces_handles()       # get all the codeforces handles from the database
-    contest_id=await codeforces_contest_id_finder(event_name)                  # get the contest id of the contest
-    if contest_id==None:                                                    # if the contest id is none, return none
-        return None,"error"
-    question_url=URL_BASE+'statistics/?'+clist_token+'&contest_id='+str(contest_id)+'&order_by=place'+'&with_problems=True&limit=1'  # url to be fetched 
-    response = requests.get(question_url)                        # fetching response
-    response=response.json()                                    # converting to json
-    problemlist=[]
-    header=['rank','handle', 'score', 'Δ', 'to']
-    for i in response['objects'][0]['problems']:                # iterating over all the problems
-        problemlist.append(i)                                          # appending the problem codes to a list
-    try: 
-        returnlist=[]
-        for handle in codeforces_handle:                                # iterate over all the handles
-            url = URL_BASE+'statistics/?'+clist_token+'&contest_id='+str(contest_id)+'&account_id='+str(handle[1])+'&with_problems=True&with_more_fields=True'           # url to be fetched
-            response = requests.get(url)
-            response=response.json()                        # fetching response
-            if response['objects']:                                # if the response is not empty
-                if 'CONTESTANT' in response['objects'][0]['more_fields']['participant_type']: # if the user is a contestant
-                    print(handle[1])
-
-                    data=response['objects'][0]                     # get the data of the user
-                    await rating_roles.rating_role(str(handle[2]),fun(data['new_rating']),bot,channel)
-                    data_dict={'rank':data['place'],'handle':handle[0],'score':data['score'],'Δ':fun(data['rating_change']),'to':fun(data['new_rating'])} # create a dictionary of the data
-                    for i in problemlist:  # adding the solved problems to the dictionary
-                        if i in data['problems'].keys():
-                            if 'upsolving' in data['problems'][i].keys():
-                                data_dict[i]=""
-                                continue
-                            if data['problems'][i]['result']=='+':
-                                data_dict[i]=data['problems'][i]['result']
-                                continue
-                            if int(data['problems'][i]['result'])<=0:
-                                data_dict[i]=""
-                                continue
-                            data_dict[i]=data['problems'][i]['result']
-                        else:
-                            data_dict[i]=""
-                    returnlist.append(data_dict) # append the dictionary to the return list
-        if(len(returnlist)==0):
-            return returnlist,header
-        header.extend(problemlist)
-        returnlist=sorted(returnlist,key=itemgetter('rank'))
-        return returnlist,header  # returning the list
-        
-    except Exception as e:
-        print(e)
-        return
+    returnlist=[]
+    req_list=[]
+    header=['rank','handle','score','Δ','from','to']
+    for handle in codeforces_handle:                                # iterate over all the handles
+        try:
+            try:
+                url = "https://codeforces.com/api/user.rating?handle="+str(handle[0])
+                response = requests.get(url)
+                response=response.json()                        # fetching response
+                url2 = "https://codeforces.com/api/contest.standings?contestId=1771&handles=" + str(handle[0])
+                response2 = requests.get(url2)
+                response2=response2.json()
+            except Exception as e:
+                print(e)
+                continue
+            req_list=list(filter(lambda d: d['contestId'] in [int(event_name)],response['result']))
+            if len(req_list)==0:
+                continue
+            else:
+                data=req_list[0]
+                data_dict={'rank':data['rank'],'handle':handle[0],'score':response2['result']['rows'][0]['points'],'Δ':data['newRating']-data['oldRating'],'from':data['oldRating'],'to':data['newRating']}
+                await rating_roles.rating_role(str(handle[2]),data['newRating'],bot,channel)
+                returnlist.append(data_dict) # append the dictionary to the return list
+        except Exception as e:
+            print(e)
+            continue
+    if(len(returnlist)==0):
+        return returnlist,header
+    returnlist=sorted(returnlist,key=itemgetter('rank'))
+    return returnlist,header  # returning the list
