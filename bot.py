@@ -16,7 +16,7 @@ async def send_message(ctx,user_message,is_private):                            
         response= await responses.handle_response(str(user_message),ctx)                            #fetching response
         await ctx.author.send(response) if is_private else await ctx.channel.send(response)     #sending response in dm if private or in channel if not
     except Exception as e:
-        print(e)
+        pass
 
 async def run_discord_bot():
     global client
@@ -68,11 +68,14 @@ async def run_discord_bot():
                 await ctx.channel.send(f"{ctx.author.mention} Please enter a valid platform")
         if user_message.split()[0]==";stalk":
             if len(user_message.split())==2:
-                header,mylist = await stalk.stalk_user(ctx,user_message.split()[1])
-                if(len(mylist)==0):
+                try:
+                    header,mylist = await stalk.stalk_user(ctx,user_message.split()[1])
+                    if(len(mylist)==0):
+                        await ctx.channel.send(f"{ctx.author.mention} No user found")
+                    else:
+                        await table(ctx,client,header,mylist)
+                except Exception as e:
                     await ctx.channel.send(f"{ctx.author.mention} No user found")
-                else:
-                    await table(ctx,client,header,mylist)
             else:
                 await ctx.channel.send(f"{ctx.author.mention} Please follow the message format")
         if user_message.split()[0]==";ratingchange":
