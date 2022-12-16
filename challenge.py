@@ -134,7 +134,7 @@ async def challenge_question_cf(ctx,bot):
             return
         difficulty = await get_ac_problem_difficulty(random_problem['problem']['id'])
         equv_cf_prob_rating = await convertAC2CFrating(int(difficulty))
-        msg=await ctx.channel.send(f"{ctx.mentions[0].mention} Do you want to accept the challenge?")
+        msg=await ctx.channel.send(f"{ctx.mentions[0].mention} Do you want to accept the challenge by {ctx.author.mention}?")
         buttons = ["✅", "❌"]
         for button in buttons:
             await msg.add_reaction(button)
