@@ -20,7 +20,16 @@ async def challenge_question_cf(ctx,bot):
         await ctx.channel.send(f"{ctx.author.mention} Please specify the judge correctly. It can be either `cf` or `ac`")
         return
     if(user_message[1]=='cf'):
+        if len(ctx.mentions) == 0:
+            await ctx.channel.send(f"{ctx.author.mention} The mentioned user can't be challenged")
+            return
         discord_id = ctx.mentions[0].id
+        if discord_id == ctx.author.id:
+            await ctx.channel.send(f"{ctx.author.mention} You cannot challenge yourself")
+            return
+        if discord_id == bot.user.id:
+            await ctx.channel.send(f"{ctx.author.mention} You cannot challenge me")
+            return
         ctx_second=cttx()
         ctx_second.author.id=discord_id
         cf_handle_1 = await get_codeforces_handle(ctx)

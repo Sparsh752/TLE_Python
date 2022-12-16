@@ -31,7 +31,6 @@ async def run_discord_bot():
         await reminder(client)
     @client.event
     async def on_message(ctx):
-        print(ctx)
         if ctx.author == client.user:                                               #will keep messaging itself without this
             return
         user_message=str(ctx.content)
