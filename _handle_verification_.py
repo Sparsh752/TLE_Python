@@ -5,6 +5,9 @@ import string
 import asyncio
 from bs4 import BeautifulSoup
 from db import add_user, add_codeforces_handle, add_atcoder_handle
+from gitgud import get_cf_user_rating
+channel_id = 1052888188479348787
+from rating_roles import rating_role
 
 ##Codeforces
 #Check whether handle exists or not
@@ -61,7 +64,7 @@ def check_Name(cc_handle, random_string):
 #Check whether handle exists or not
 def check_ac(ac_handle):
     url = "https://atcoder.jp/users/" + ac_handle
-    r = requests.get(url);
+    r = requests.get(url)
     if r.status_code == 200:
         return True
     else:
@@ -82,7 +85,7 @@ def check_Affiliation(ac_handle, random_string):
     else:
         return False
 
-async def handle_verification(ctx):
+async def handle_verification(ctx,bot):
     message=ctx
     username = str(message.author.name)
     user_message = str(message.content)
@@ -104,11 +107,13 @@ async def handle_verification(ctx):
                 first_name = firstname(cf_handle)
                 if first_name == random_string:
                     await add_codeforces_handle(ctx, cf_handle)
-
+                    rating=await get_cf_user_rating(cf_handle)
+                    channel = bot.get_channel(channel_id)
                     #########################
                     # store in database if successfull then print
 
                     await message.channel.send(f"{message.author.mention} you are successfully identified on codeforces... >_<")
+                    await rating_role(ctx.author.id,int(rating),bot,channel)
                     break
             else:
                 await message.channel.send(f"{message.author.mention} TimeOut, try again...")
