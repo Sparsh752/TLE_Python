@@ -3,9 +3,9 @@ from quickchart import QuickChart
 import discord
 import json
 import requests
+from db import get_codeforces_handle
 
-
-def bargraph(ndict, user, width=500, height=300):
+async def bargraph(ctx,ndict, user, width=500, height=300):
     qc = QuickChart()
     qc.width = width
     qc.height = height
@@ -61,10 +61,11 @@ def bargraph(ndict, user, width=500, height=300):
 
     page = discord.Embed()
     page.set_image(url=qc.get_short_url())
-    return page
+    await ctx.channel.send(embed=page)
 
 
-def rating_vs_problems(user):
+async def rating_vs_problems(ctx):
+    user = await get_codeforces_handle(ctx)
     prob_rating = {}
     url = "https://codeforces.com/api/user.status?handle=" + user
     response = requests.get(url)
@@ -81,10 +82,10 @@ def rating_vs_problems(user):
                     prob_rating[rating][1] += 1
                 elif (submission['author']['participantType'] == 'PRACTICE'):
                     prob_rating[rating][2] += 1
-    return bargraph(prob_rating, user)
+    await bargraph(ctx,prob_rating, user)
 
 
-def timegraph(data, user, width=500, height=300):
+async def timegraph(ctx,data, user, width=500, height=300):
     qc = QuickChart()
     qc.width = width
     qc.height = height
@@ -161,10 +162,11 @@ def timegraph(data, user, width=500, height=300):
 
     page = discord.Embed()
     page.set_image(url=qc.get_short_url())
-    return page
+    await ctx.channel.send(embed=page)
 
 
-def problem_vs_time(user):
+async def problem_vs_time(ctx):
+    user = await get_codeforces_handle(ctx)
     dates = []
     url = "https://codeforces.com/api/user.status?handle=" + user
     response = requests.get(url)
@@ -195,4 +197,4 @@ def problem_vs_time(user):
                 "y": data[-1]['y']
             }
         )
-    return timegraph(data, user)
+    await timegraph(ctx,data, user)
