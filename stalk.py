@@ -2,7 +2,7 @@ import requests
 from operator import itemgetter
 from datetime import datetime,timezone
 
-async def stalk_user(codeforces_handle,hardest=False,R=None):
+async def stalk_user(codeforces_handle,hardest=False,R=0):
     url = "https://codeforces.com/api/user.status?handle="+str(codeforces_handle)+"&from="+str(1)
     response = requests.get(url,timeout=5)
     response=response.json()
@@ -27,11 +27,15 @@ async def stalk_user(codeforces_handle,hardest=False,R=None):
             n_dict.append({'Problem':str(obj['problem']['name']),'Rating':int(obj['problem']['rating']),'Time': days})
     if hardest==True:
         n_dict = sorted(n_dict, key=itemgetter('Rating'),reverse=True)
-    if R!=None:
+    if R!=0:
         temp=[]
         for i in n_dict:
             if i['Rating']>=R:
                 temp.append(i)
         n_dict=temp 
+    else:
+        for i in n_dict:
+            if i['Rating']==0:
+                i['Rating']='---'
     head_row=['Problem','Rating','Time']
     return head_row,n_dict
