@@ -23,8 +23,8 @@ async def stalk_user(codeforces_handle,hardest=False,R=None):
             else:
                 days=str(time_delta)+" Days Ago"
             if 'rating' not in obj['problem']:
-                obj['problem']['rating']='---'
-            n_dict.append({'Problem':str(obj['problem']['name']),'Rating':str(obj['problem']['rating']),'Time': days})
+                obj['problem']['rating']=0
+            n_dict.append({'Problem':str(obj['problem']['name']),'Rating':int(obj['problem']['rating']),'Time': days})
     if hardest==True:
         n_dict = sorted(n_dict, key=itemgetter('Rating'),reverse=True)
     if R!=None:
