@@ -4,7 +4,8 @@ from datetime import datetime,timezone
 
 async def stalk_user(codeforces_handle,hardest=False,R=None):
     url = "https://codeforces.com/api/user.status?handle="+str(codeforces_handle)+"&from="+str(1)
-    response = requests.get(url,timeout=5).json()
+    response = requests.get(url,timeout=5)
+    response=response.json()
     total=len(response['result'])
     url = "https://codeforces.com/api/user.status?handle="+str(codeforces_handle)+"&count="+str(total)
     response = requests.get(url).json()

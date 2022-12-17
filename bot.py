@@ -68,14 +68,14 @@ async def run_discord_bot():
                 await ctx.channel.send(f"{ctx.author.mention} Please enter a valid platform")
         if user_message.split()[0]==";stalk":
             if len(user_message.split())==2:
-                header,mylist = await stalk.stalk_user(ctx,user_message.split()[1])
+                header,mylist = await stalk.stalk_user(user_message.split()[1])
                 if(len(mylist)==0):
                     await ctx.channel.send(f"{ctx.author.mention} No user found")
                 else:
                     await table(ctx,client,header,mylist)
             elif len(user_message.split())==3:
                 if user_message.split()[2]=="hardest":
-                    header,mylist = await stalk.stalk_user(ctx,user_message.split()[1],hardest=True)
+                    header,mylist = await stalk.stalk_user(user_message.split()[1],hardest=True)
                     if(len(mylist)==0):
                         await ctx.channel.send(f"{ctx.author.mention} No user found")
                     else:
