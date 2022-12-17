@@ -56,6 +56,8 @@ async def run_discord_bot():
         if user_message.split()[0]==";leaderboard":
             if len(user_message.split())==2:
                 mylist = await db.Leaderboard_list(ctx,user_message.split()[1])
+                if(len(mylist)==0):
+                    await ctx.channel.send(f"{ctx.author.mention} No one is there on leaderboard yet")
                 if(user_message.split()[1]=="cf"):
                     await table(ctx,client,['Discord Name','Score','Codeforces Handle'], mylist)
                 elif(user_message.split()[1]=="ac"):
