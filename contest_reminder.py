@@ -27,6 +27,7 @@ async def print_final_standings(bot,channel):
         if header=="error":
             previous_contestId=""
         elif len(returnlist)==0:
+            previous_contestId=""
             pass
         else:
             await channel.send(f"@everyone The rating changes of the last contest are:")
@@ -104,7 +105,6 @@ async def check_rating_changed():
         print(contest_id)
         return False
     else:
-        
         try:
             s1= soup.find('a', href= '/contest/'+str(contest_id)+'/standings')
             nlist = s1.text

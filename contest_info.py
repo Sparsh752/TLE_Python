@@ -122,8 +122,10 @@ async def codeforces_rating_changes_shower(event_name,bot,channel):            #
         try:
             try:
                 url = "https://codeforces.com/api/user.rating?handle="+str(handle[0])
-                response = requests.get(url)
+                response = requests.get(url)    # fetching response
+                response=response.json()
             except Exception as e:
+                print('hi')
                 print(e)
                 continue
             req_list=list(filter(lambda d: d['contestId'] in [int(event_name)],response['result']))
@@ -131,7 +133,7 @@ async def codeforces_rating_changes_shower(event_name,bot,channel):            #
                 continue
             else:
                 try:
-                    response=response.json()                        # fetching response
+                                            
                     url2 = "https://codeforces.com/api/contest.standings?contestId=1771&handles=" + str(handle[0])
                     response2 = requests.get(url2)
                     response2=response2.json()
