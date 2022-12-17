@@ -79,10 +79,13 @@ async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=
 
     for button in buttons:
         await msg.add_reaction(button)
-        
+
     while True:
         try:
-            reaction, user = await bot.wait_for("reaction_add", check=lambda reaction, user: user == ctx.author and reaction.emoji in buttons, timeout=60.0)
+            if isChannel:
+                reaction, user = await bot.wait_for("reaction_add", check=lambda reaction, user: user in bot.get_all_members() and reaction.emoji in buttons, timeout=60.0)
+            else:
+                reaction, user = await bot.wait_for("reaction_add", check=lambda reaction, user: user == ctx.author and reaction.emoji in buttons, timeout=60.0)
 
         except asyncio.TimeoutError:
             for button in buttons:
@@ -106,7 +109,8 @@ async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=
                 current = len(output)-1
 
             for button in buttons:
-                await msg.remove_reaction(button, ctx.author)
+                if reaction.emoji==button:
+                    await msg.remove_reaction(button, bot.user)
 
             if current != previous_page:
                 if isEmbed:
