@@ -117,8 +117,10 @@ async def codeforces_rating_changes_shower(event_name,bot,channel):            #
     codeforces_handle = await db.get_all_codeforces_handles()       # get all the codeforces handles from the database
     returnlist=[]
     req_list=[]
-    header=['rank','handle','score','Δ','from','to']
+    print(await codeforces_contest_id_finder(event_name))
+    header=['rank','handle','Δ','from','to']
     for handle in codeforces_handle:                                # iterate over all the handles
+        print(handle)
         try:
             try:
                 url = "https://codeforces.com/api/user.rating?handle="+str(handle[0])
@@ -132,19 +134,12 @@ async def codeforces_rating_changes_shower(event_name,bot,channel):            #
             if len(req_list)==0:
                 continue
             else:
-                try:
-                                            
-                    url2 = "https://codeforces.com/api/contest.standings?contestId=1771&handles=" + str(handle[0])
-                    response2 = requests.get(url2)
-                    response2=response2.json()
-                except Exception as e:
-                    print(e)
-                    continue
                 data=req_list[0]
-                data_dict={'rank':data['rank'],'handle':handle[0],'score':response2['result']['rows'][0]['points'],'Δ':data['newRating']-data['oldRating'],'from':data['oldRating'],'to':data['newRating']}
+                data_dict={'rank':data['rank'],'handle':handle[0],'Δ':data['newRating']-data['oldRating'],'from':data['oldRating'],'to':data['newRating']}
                 await rating_roles.rating_role(str(handle[2]),data['newRating'],bot,channel)
                 returnlist.append(data_dict) # append the dictionary to the return list
         except Exception as e:
+            print('hi')
             print(e)
             continue
     if(len(returnlist)==0):
