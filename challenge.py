@@ -15,19 +15,19 @@ async def challenge_question_cf(ctx,bot):
     user_message=user_message.split()
     msg= await ctx.channel.send(f"{ctx.author.mention} Checking the correctness of command")
     if len(user_message) < 3:
-        await msg.edit(content=f"{ctx.author.mention} Command format is incorrect")
+        await msg.edit(content=f"{ctx.author.mention} Command format is incorrect 🤦. Please use `;challenge @user platform`")
         return
     if(user_message[1] not in ['cf','ac']):
-        await msg.edit(content=f"{ctx.author.mention} Please specify the judge correctly. It can be either `cf` or `ac`")
+        await msg.edit(content=f"{ctx.author.mention} Please specify the judge correctly. It can be either `cf` or `ac` 🤷‍♂️")
         return
     if len(ctx.mentions) == 0:
             await msg.edit(content=f"{ctx.author.mention} The mentioned user can't be challenged")
             return
     if discord_id == ctx.author.id:
-        await msg.edit(content=f"{ctx.author.mention} You cannot challenge yourself")
+        await msg.edit(content=f"{ctx.author.mention} You cannot challenge yourself 🫠")
         return
     if discord_id == bot.user.id:
-        await msg.edit(content=f"{ctx.author.mention} You cannot challenge me")
+        await msg.edit(content=f"{ctx.author.mention} You cannot challenge me 😕")
         return
     if(user_message[1]=='cf'):
         discord_id = ctx.mentions[0].id
@@ -36,10 +36,10 @@ async def challenge_question_cf(ctx,bot):
         cf_handle_1 = await get_codeforces_handle(ctx)
         cf_handle_2 = await get_codeforces_handle(ctx_second)
         if cf_handle_1 is None:
-            await msg.edit(content=f"{ctx.author.mention} Please set your Codeforces handle first")
+            await msg.edit(content=f"{ctx.author.mention} Please set your Codeforces handle first 😅")
             return
         if cf_handle_2 is None:
-            await msg.edit(content=f"{cf_handle_2} Please set your Codeforces handle first")
+            await msg.edit(content=f"{cf_handle_2} Please set your Codeforces handle first 😅")
             return
         await msg.edit(content=f"Wait {ctx.author.mention} the bot is thinking 🤔 a problem for you....... ")
         cf_rating = await get_cf_user_rating(cf_handle_2)
@@ -57,7 +57,7 @@ async def challenge_question_cf(ctx,bot):
             random_problem = cf_get_random_question_rating(cf_rating)
             iter+=1
         if(iter==50):
-            await msg.edit(content=f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later :( ")
+            await msg.edit(content=f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later 🙁 ")
             return
         await msg.edit(content=f"{ctx.mentions[0].mention} Do you want to accept the challenge by {ctx.author.mention}?")
         buttons = ["✅", "❌"]
@@ -85,16 +85,16 @@ async def challenge_question_cf(ctx,bot):
                         check1 = await check_if_solved(ctx,cf_handle_1,[random_problem["prob_id"]],"cf")
                         check2 = await check_if_solved(ctx_second,cf_handle_2,[random_problem["prob_id"]],"cf")
                         if check1 and check2:
-                            await ctx.channel.send(f"{ctx.author.mention} {ctx.mentions[0].mention} both of you have solved the problem at the same time")
+                            await ctx.channel.send(f"{ctx.author.mention} {ctx.mentions[0].mention} both of you have solved the problem at the same time 🤯")
                             break
                         elif check1:
-                            await ctx.channel.send(f"{ctx.author.mention} {cf_handle_1} has solved the problem first and won the challenge")
+                            await ctx.channel.send(f"{ctx.author.mention} {cf_handle_1} has solved the problem first and won the challenge 🥳")
                             break
                         elif check2:
-                            await ctx.channel.send(f"{ctx.mention[0].mention} {cf_handle_2} has solved the problem first and won the challenge")
+                            await ctx.channel.send(f"{ctx.mention[0].mention} {cf_handle_2} has solved the problem first and won the challenge 🥳")
                             break
                         elif time.time() > timeout:
-                            await ctx.channel.send(f"{ctx.author.mention} {ctx.mentions[0].mention} both of you have not solved the problem in time")
+                            await ctx.channel.send(f"{ctx.author.mention} {ctx.mentions[0].mention} both of you have not solved the problem in time 😬")
                             break
                         else:
                             await asyncio.sleep(10)
@@ -108,10 +108,10 @@ async def challenge_question_cf(ctx,bot):
         ac_handle_1 = await get_atcoder_handle(ctx)
         ac_handle_2 = await get_atcoder_handle(ctx_second)
         if ac_handle_1 is None:
-            await msg.edit(content=f"{ctx.author.mention} Please set your Atcoder handle first")
+            await msg.edit(content=f"{ctx.author.mention} Please set your Atcoder handle first 😅")
             return
         if ac_handle_2 is None:
-            await msg.edit(content=f"{ctx.mentions[0].mention} Please set your Atcoder handle first")
+            await msg.edit(content=f"{ctx.mentions[0].mention} Please set your Atcoder handle first 😅")
             return
         await msg.edit(content=f"Wait {ctx.author.mention} the bot is thinking 🤔 a problem for you....... ")
         last_checked_1,last_solved_problems_1 = await get_last_solved_problems(ctx,'atcoder')
@@ -143,7 +143,7 @@ async def challenge_question_cf(ctx,bot):
                 random_problem = None
             iter+=1
         if(iter==50):
-            await msg.edit(content=f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later :( ")
+            await msg.edit(content=f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later 🙁 ")
             return
         difficulty = await get_ac_problem_difficulty(random_problem['problem']['id'])
         equv_cf_prob_rating = await convertAC2CFrating(int(difficulty))
@@ -172,16 +172,16 @@ async def challenge_question_cf(ctx,bot):
                         check1 = await check_if_solved_ac(ctx,ac_handle_1,[random_problem["problem"]["id"]])
                         check2 = await check_if_solved_ac(ctx_second,ac_handle_2,[random_problem["problem"]["id"]])
                         if check1 and check2:
-                            await ctx.channel.send(f"{ctx.author.mention} {ctx.mentions[0].mention} both of you have solved the problem at the same time")
+                            await ctx.channel.send(f"{ctx.author.mention} {ctx.mentions[0].mention} both of you have solved the problem at the same time 🤯")
                             break
                         elif check1:
-                            await ctx.channel.send(f"{ctx.author.mention} {ac_handle_1} has solved the problem first and won the challenge")
+                            await ctx.channel.send(f"{ctx.author.mention} {ac_handle_1} has solved the problem first and won the challenge 🥳")
                             break
                         elif check2:
-                            await ctx.channel.send(f"{ctx.mention[0].mention} {ac_handle_2} has solved the problem first and won the challenge")
+                            await ctx.channel.send(f"{ctx.mention[0].mention} {ac_handle_2} has solved the problem first and won the challenge 🥳")
                             break
                         elif time.time() > timeout:
-                            await ctx.channel.send(f"{ctx.author.mention} {ctx.mentions[0].mention} both of you have not solved the problem in time")
+                            await ctx.channel.send(f"{ctx.author.mention} {ctx.mentions[0].mention} both of you have not solved the problem in time 😬")
                             break
                         else:
                             await asyncio.sleep(10)
