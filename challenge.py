@@ -20,10 +20,10 @@ async def challenge_question_cf(ctx,bot):
     if(user_message[1] not in ['cf','ac']):
         await msg.edit(content=f"{ctx.author.mention} Please specify the judge correctly. It can be either `cf` or `ac`")
         return
-    if(user_message[1]=='cf'):
-        if len(ctx.mentions) == 0:
+    if len(ctx.mentions) == 0:
             await msg.edit(content=f"{ctx.author.mention} The mentioned user can't be challenged")
             return
+    if(user_message[1]=='cf'):
         discord_id = ctx.mentions[0].id
         if discord_id == ctx.author.id:
             await msg.edit(content=f"{ctx.author.mention} You cannot challenge yourself")
