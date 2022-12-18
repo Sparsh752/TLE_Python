@@ -3,11 +3,12 @@ import datetime
 URL_BASE = 'https://clist.by/api/v2/'
 clist_token="username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
 
-async def nextcontests():
+async def nextcontests(ctx):
     now = datetime.datetime.now()
     year = now.year
     month = now.month
     day = now.day                                                                              #fetching current time
+    msg = await ctx.channel.send(f"{ctx.author.mention} Looking for upcoming contests... 🔍")
     url=URL_BASE+'contest/?'+clist_token+'&resource_id=1&limit=5&start__gte='+str(year)+'-'+str(month)+'-'+str(day)+'%2012:00:00&order_by=start'           #url of the list of contests on codeforces
     try:
         resp=requests.get(url)                                                                                              #fetches response from the url
@@ -26,7 +27,7 @@ async def nextcontests():
             mydict['Duration(in min.)']=str(item['duration']/60)
             count=count+1
             mylist.append(mydict)
-        return mylist                                                                                                #returns string to be messaged by bot
+        return mylist,msg                                                                                                #returns string to be messaged by bot
     except Exception as e:                                                                                                  #in case of any error, code doesn't crash but tells about it in the terminal
         print(e)
         return "Error"
