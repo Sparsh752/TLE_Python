@@ -108,11 +108,12 @@ async def challenge_question_cf(ctx,bot):
         ac_handle_1 = await get_atcoder_handle(ctx)
         ac_handle_2 = await get_atcoder_handle(ctx_second)
         if ac_handle_1 is None:
-            await ctx.channel.send(f"{ctx.author.mention} Please set your Codeforces handle first")
+            await msg.edit(content=f"{ctx.author.mention} Please set your Atcoder handle first")
             return
         if ac_handle_2 is None:
-            await ctx.channel.send(f"{ctx.mentions[0].mention} Please set your Codeforces handle first")
+            await msg.edit(content=f"{ctx.mentions[0].mention} Please set your Atcoder handle first")
             return
+        await msg.edit(content=f"Wait {ctx.author.mention} the bot is thinking 🤔 a problem for you....... ")
         last_checked_1,last_solved_problems_1 = await get_last_solved_problems(ctx,'atcoder')
         last_checked_2,last_solved_problems_2 = await get_last_solved_problems(ctx_second,'atcoder')
         solved_problems_1 = await find_solved_atcoder(ctx,ac_handle_1,last_solved_problems_1,last_checked_1)
@@ -142,11 +143,11 @@ async def challenge_question_cf(ctx,bot):
                 random_problem = None
             iter+=1
         if(iter==50):
-            await ctx.channel.send(f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later :( ")
+            await msg.edit(content=f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later :( ")
             return
         difficulty = await get_ac_problem_difficulty(random_problem['problem']['id'])
         equv_cf_prob_rating = await convertAC2CFrating(int(difficulty))
-        msg=await ctx.channel.send(f"{ctx.mentions[0].mention} Do you want to accept the challenge by {ctx.author.mention}?")
+        msg=await msg.edit(content=f"{ctx.mentions[0].mention} Do you want to accept the challenge by {ctx.author.mention}?")
         buttons = ["✅", "❌"]
         for button in buttons:
             await msg.add_reaction(button)
