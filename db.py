@@ -285,6 +285,7 @@ async def get_gitgud_list(id, platform):
    
 
 async def Leaderboard_list(ctx , msg):
+    res = await ctx.channel.send(f'{ctx.author.mention} Fetching the Leaderboard ... ⌛')
     if msg == 'cf':
         users = db.collection(u'users')
         a=users.order_by('score_codeforces', direction=firestore.Query.DESCENDING).stream()
@@ -295,7 +296,7 @@ async def Leaderboard_list(ctx , msg):
             if ('codeforces_handle' in user.keys()):
                 score = user['score_codeforces']
                 codeforces_handles.append({'Discord Name':user['discord_name'],'Score': score , 'Codeforces Handle': user['codeforces_handle']})
-        return codeforces_handles
+        return codeforces_handles,res
 
     elif msg == 'ac':
         users = db.collection(u'users')
@@ -307,7 +308,7 @@ async def Leaderboard_list(ctx , msg):
             if ('atcoder_handle' in user.keys()):
                 score = user['score_atcoder']
                 atcoder_handles.append({'Discord Name':user['discord_name'],'Score': score , 'Atcoder Handle': user['atcoder_handle'] } )
-        return atcoder_handles
+        return atcoder_handles,res
     elif msg == 'both':
         users = await db.collection('users').get()
         handles = []
@@ -323,5 +324,7 @@ async def Leaderboard_list(ctx , msg):
                 score = user['score_atcoder']
                 handles.append({'Discord Name':user['discord_name'],'Total Score': score})
         handles = sorted(handles, key=lambda d:d['Total Score'] , reverse=True)
-        return handles
+        return handles,res
+    else:
+        return "error",res
 

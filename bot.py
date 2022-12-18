@@ -55,17 +55,17 @@ async def run_discord_bot():
                 await table(ctx,client,['Sr No.','Name','Start Time (dd-mm-yyyy)','Duration(in min.)'], mylist, isEmbed=True,current_message=msg)
         if user_message.split()[0]==";leaderboard":
             if len(user_message.split())==2:
-                mylist = await db.Leaderboard_list(ctx,user_message.split()[1])
+                mylist,res = await db.Leaderboard_list(ctx,user_message.split()[1])
                 if(len(mylist)==0):
-                    await ctx.channel.send(f"{ctx.author.mention} No one is there on leaderboard yet")
+                    await res.edit(content=f"{ctx.author.mention} No one is there on leaderboard yet")
                 if(user_message.split()[1]=="cf"):
-                    await table(ctx,client,['Discord Name','Score','Codeforces Handle'], mylist)
+                    await table(ctx,client,['Discord Name','Score','Codeforces Handle'], mylist,current_message=res)
                 elif(user_message.split()[1]=="ac"):
-                    await table(ctx,client,['Discord Name','Score','Atcoder Handle'], mylist)
+                    await table(ctx,client,['Discord Name','Score','Atcoder Handle'], mylist,current_message=res)
                 elif(user_message.split()[1]=="both"):
-                    await table(ctx,client,['Discord Name','Total Score'], mylist)
+                    await table(ctx,client,['Discord Name','Total Score'], mylist,current_message=res)
                 else:
-                    await ctx.channel.send(f"{ctx.author.mention} Please enter a valid platform")
+                    await res.edit(content=f"{ctx.author.mention} Please enter a valid platform")
             else:
                 await ctx.channel.send(f"{ctx.author.mention} Please enter a valid platform")
         if user_message.split()[0]==";stalk":
