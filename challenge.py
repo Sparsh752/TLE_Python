@@ -13,33 +13,35 @@ class cttx:
 async def challenge_question_cf(ctx,bot):
     user_message = ctx.content
     user_message=user_message.split()
+    msg= await ctx.channel.send(f"{ctx.author.mention} Checking the correctness of command")
     if len(user_message) < 3:
-        await ctx.channel.send(f"{ctx.author.mention} Command format is incorrect")
+        await msg.edit(content=f"{ctx.author.mention} Command format is incorrect")
         return
     if(user_message[1] not in ['cf','ac']):
-        await ctx.channel.send(f"{ctx.author.mention} Please specify the judge correctly. It can be either `cf` or `ac`")
+        await msg.edit(content=f"{ctx.author.mention} Please specify the judge correctly. It can be either `cf` or `ac`")
         return
     if(user_message[1]=='cf'):
         if len(ctx.mentions) == 0:
-            await ctx.channel.send(f"{ctx.author.mention} The mentioned user can't be challenged")
+            await msg.edit(content=f"{ctx.author.mention} The mentioned user can't be challenged")
             return
         discord_id = ctx.mentions[0].id
         if discord_id == ctx.author.id:
-            await ctx.channel.send(f"{ctx.author.mention} You cannot challenge yourself")
+            await msg.edit(content=f"{ctx.author.mention} You cannot challenge yourself")
             return
         if discord_id == bot.user.id:
-            await ctx.channel.send(f"{ctx.author.mention} You cannot challenge me")
+            await msg.edit(content=f"{ctx.author.mention} You cannot challenge me")
             return
         ctx_second=cttx()
         ctx_second.author.id=discord_id
         cf_handle_1 = await get_codeforces_handle(ctx)
         cf_handle_2 = await get_codeforces_handle(ctx_second)
         if cf_handle_1 is None:
-            await ctx.channel.send(f"{ctx.author.mention} Please set your Codeforces handle first")
+            await msg.edit(content=f"{ctx.author.mention} Please set your Codeforces handle first")
             return
         if cf_handle_2 is None:
-            await ctx.channel.send(f"{cf_handle_2} Please set your Codeforces handle first")
+            await msg.edit(content=f"{cf_handle_2} Please set your Codeforces handle first")
             return
+        await msg.edit(content=f"{ctx.author.mention} Finding a problem for you")
         cf_rating = await get_cf_user_rating(cf_handle_2)
         cf_rating = (cf_rating//100)*100
         last_checked_1,last_solved_problems_1 = await get_last_solved_problems(ctx,'codeforces')
@@ -55,9 +57,9 @@ async def challenge_question_cf(ctx,bot):
             random_problem = cf_get_random_question_rating(cf_rating)
             iter+=1
         if(iter==50):
-            await ctx.channel.send(f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later :( ")
+            await msg.edit(content=f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later :( ")
             return
-        msg=await ctx.channel.send(f"{ctx.mentions[0].mention} Do you want to accept the challenge?")
+        await msg.edit(content=f"{ctx.mentions[0].mention} Do you want to accept the challenge?")
         buttons = ["✅", "❌"]
         for button in buttons:
             await msg.add_reaction(button)
