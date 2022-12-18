@@ -96,21 +96,23 @@ async def run_discord_bot():
         if user_message.split()[0]==";ratingchange":
             if len(user_message.split())==3:
                 if(user_message.split()[1]=="cf"):
-                    mylist,header=await contest_info.codeforces_rating_changes(str(user_message.split()[2]))
+                    mylist,header,msg=await contest_info.codeforces_rating_changes(str(user_message.split()[2]),ctx)
                     if header=="error":
-                        await ctx.channel.send(f"{ctx.author.mention} Some error occurred")
+                        await msg.edit(content=f"{ctx.author.mention} Some error occurred 🧐")
                     elif(len(mylist)==0):
-                        await ctx.channel.send(f"{ctx.author.mention} No user found")
+                        await msg.edit(content=f"{ctx.author.mention} Either no user gave the contest or the contest id is invalid 😲")
                     else:
-                        await table(ctx,client,header,mylist)
+                        await table(ctx,client,header,mylist,current_message=msg)
                 elif(user_message.split()[1]=="ac"):
-                    mylist,header=await contest_info.atcoder_rating_changes(str(user_message.split()[2]))
+                    mylist,header,msg=await contest_info.atcoder_rating_changes(str(user_message.split()[2]),ctx)
                     if header=="error":
-                        await ctx.channel.send(f"{ctx.author.mention} Some error occurred")
+                        await msg.edit(content=f"{ctx.author.mention} Perhaps the contest id is invalid 🧐")
                     elif(len(mylist)==0):
-                        await ctx.channel.send(f"{ctx.author.mention} No user found")
+                        await msg.edit(content=f"{ctx.author.mention} No user gave this contest 😲")
                     else:
-                        await table(ctx,client,header,mylist)
+                        await table(ctx,client,header,mylist,current_message=msg)
+                else:
+                    await ctx.channel.send(f"{ctx.author.mention} Please specify a valid platform")
             else:
                 await ctx.channel.send(f"{ctx.author.mention} Please follow the message format")
         if user_message.split()[0]==";graph":

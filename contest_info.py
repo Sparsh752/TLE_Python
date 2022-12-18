@@ -25,7 +25,8 @@ def fun(a):                                                                 #fun
         return "--"
     else:
         return a
-async def codeforces_rating_changes(event_name):            # function to get the rating changes of all users in codeforces
+async def codeforces_rating_changes(event_name,ctx):            # function to get the rating changes of all users in codeforces
+    msg = await ctx.channel.send(f"{ctx.author.mention} Getting data for contest `{event_name}` from codeforces ...")
     codeforces_handle = await db.get_all_codeforces_handles()       # get all the codeforces handles from the database
     returnlist=[]
     req_list=[]
@@ -36,7 +37,7 @@ async def codeforces_rating_changes(event_name):            # function to get th
                 url = "https://codeforces.com/api/user.rating?handle="+str(handle[0])
                 response = requests.get(url)
                 response=response.json()                        # fetching response
-                url2 = "https://codeforces.com/api/contest.standings?contestId=1771&handles=" + str(handle[0])
+                url2 = "https://codeforces.com/api/contest.standings?contestId="+str(event_name)+"&handles=" + str(handle[0])
                 response2 = requests.get(url2)
                 response2=response2.json()
             except Exception as e:
@@ -53,9 +54,9 @@ async def codeforces_rating_changes(event_name):            # function to get th
             print(e)
             continue
     if(len(returnlist)==0):
-        return returnlist,header
+        return returnlist,header,msg
     returnlist=sorted(returnlist,key=itemgetter('rank'))
-    return returnlist,header  # returning the list
+    return returnlist,header,msg  # returning the list
         
 
 async def atcoder_contest_id_finder(event_name):                    #function to convert cf contest name to contest id
@@ -72,11 +73,12 @@ async def atcoder_contest_id_finder(event_name):                    #function to
     except Exception as e:                                                  #tackiling errors    
         print(e)
 
-async def atcoder_rating_changes(event_name):            # function to get the rating changes of all users in codeforces
+async def atcoder_rating_changes(event_name,ctx):            # function to get the rating changes of all users in codeforces
+    msg = await ctx.channel.send(f"{ctx.author.mention} Getting data for contest `{event_name}` from atcoder ...")
     atcoder_handle = await db.get_all_atcoder_handles()       # get all the codeforces handles from the database
     contest_id=await atcoder_contest_id_finder(event_name)                  # get the contest id of the contest
     if contest_id==None:                                                    # if the contest id is none, return none
-        return None,"error"
+        return None,"error",msg
     question_url=URL_BASE+'statistics/?'+clist_token+'&contest_id='+str(contest_id)+'&order_by=place'+'&with_problems=True&limit=1'  # url to be fetched 
     response = requests.get(question_url)                        # fetching response
     response=response.json()                                    # converting to json
@@ -104,10 +106,10 @@ async def atcoder_rating_changes(event_name):            # function to get the r
                             data_dict[i]=""
                     returnlist.append(data_dict) # append the dictionary to the return list
         if(len(returnlist)==0):
-            return returnlist,header
+            return returnlist,header,msg
         header.extend(problemlist)
         returnlist=sorted(returnlist,key=itemgetter('rank'))    # sorting the list according to the rank
-        return returnlist,header # returning the list
+        return returnlist,header,msg # returning the list
         
     except Exception as e:
         print(e)
