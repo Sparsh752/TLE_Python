@@ -91,8 +91,9 @@ async def handle_verification(ctx,bot):
     user_message = str(message.content)
     await add_user(ctx)
     msg_data = user_message.split()
+    msg = await ctx.channel.send(f"{ctx.author.mention} Checking the correctness of command")
     if (len(msg_data) != 2):
-        await message.channel.send(f"{message.author.mention} Command format is incorrect")
+        await message.channel.send(f"{message.author.mention} Command format is incorrect, please check the help section... ")
         return
         
     if msg_data[0] == ';identify_cf':
@@ -100,7 +101,7 @@ async def handle_verification(ctx,bot):
         if check_cf(msg_data[1]):
             random_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
             output = "set your firstname as `" + random_string + "` in your codeforces account within 60 seconds..."
-            await message.channel.send(f"{message.author.mention} {output}")
+            await msg.edit(content=f"{message.author.mention} {output}")
 
             for i in range(30):
                 await asyncio.sleep(2)
@@ -116,10 +117,10 @@ async def handle_verification(ctx,bot):
                     await rating_role(ctx.author.id,int(rating),bot,channel)
                     break
             else:
-                await message.channel.send(f"{message.author.mention} TimeOut, try again...")
+                await msg.edit(content=f"{message.author.mention} TimeOut, try again...")
 
         else:
-            await message.channel.send(f"{message.author.mention} given handle is invalid")
+            await msg.edit(content=f"{message.author.mention} given handle is invalid")
 
 
     elif msg_data[0] == ';identify_ac':
@@ -127,7 +128,7 @@ async def handle_verification(ctx,bot):
         if check_ac(msg_data[1]):
             random_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
             output = "set your Affiliation as `" + random_string + "` in your Atcoder account within 60 seconds..."
-            await message.channel.send(f"{message.author.mention} {output}")
+            await msg.edit(content=f"{message.author.mention} {output}")
             for i in range(30):
                 await asyncio.sleep(2)
                 if check_Affiliation(ac_handle, random_string):
@@ -137,16 +138,16 @@ async def handle_verification(ctx,bot):
                     await message.channel.send(f"{message.author.mention} you are successfully identified on on atcoder... >_<")
                     break
             else:
-                await message.channel.send(f"{message.author.mention} TimeOut, try again...")
+                await msg.edit(content=f"{message.author.mention} TimeOut, try again...")
         else:
-            await message.channel.send(f"{message.author.mention} given handle is invalid")
+            await msg.edit(content=f"{message.author.mention} given handle is invalid")
 
     elif msg_data[0] == ';identify_cc':
         cc_handle = msg_data[1]
         if check_cc(msg_data[1]):
             random_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
             output = "set your Name as `" + random_string + "` in your codechef account within 60 seconds..."
-            await message.channel.send(f"{message.author.mention} {output}")
+            await msg.edit(content=f"{message.author.mention} {output}")
             for i in range(30):
                 await asyncio.sleep(2)
                 if check_Name(cc_handle, random_string):
@@ -155,8 +156,8 @@ async def handle_verification(ctx,bot):
                     await message.channel.send(f"{message.author.mention} you are successfully identified on codechef... >_<")
                     break
             else:
-                await message.channel.send(f"{message.author.mention} TimeOut, try again...")
+                await msg.edit(content=f"{message.author.mention} TimeOut, try again...")
         else:
-            await message.channel.send(f"{message.author.mention} given handle is invalid")
+            await msg.edit(content=f"{message.author.mention} given handle is invalid")
     else: 
-        await message.channel.send(f"{message.author.mention} Write identify correctly")
+        await msg.edit(content=f"{message.author.mention} Write identify correctly")
