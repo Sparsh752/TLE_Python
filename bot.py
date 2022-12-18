@@ -42,11 +42,11 @@ async def run_discord_bot():
         #     user_message=user_message[1:]
         #     await send_message(ctx,user_message,is_private=True) #message is private
         if user_message.split()[0]==";gitlog":
-             mydict =  await gitgud.gitlog(ctx)
+             mydict, msg =  await gitgud.gitlog(ctx)
              if(len(mydict)==0):
-                await ctx.channel.send(f"{ctx.author.mention} You have not solved any problem yet. use ;gitgud to get a problem")
+                await msg.edit(content=f"{ctx.author.mention} You have not solved any problem yet. use ;gitgud to get a problem")
              else:   
-                await table(ctx,client,['Problem Name','Problem Rating','Points'], mydict, isEmbed=True)
+                await table(ctx,client,['Problem Name','Problem Rating','Points'], mydict, isEmbed=True, current_message=msg)
         if user_message.split()[0]==";next":
             mylist = await clist_api.nextcontests()
             if(len(mylist)==0):

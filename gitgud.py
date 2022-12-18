@@ -6,6 +6,7 @@ from db import problem_solving_cf, problem_solving_ac, find_solved_atcoder, upda
 from db import add_in_gitgud_list, get_gitgud_list
 from codeforces_scraping import cf_get_random_question_rating, ac_get_random_question, cf_get_random_question_tag
 import datetime
+import math
 
 
 async def get_problem_cf(contest_id, problem_index):
@@ -64,17 +65,18 @@ async def convertAC2CFrating(a):
 async def gitgud(ctx):
     user_message = ctx.content
     user_message = user_message.split()
+    msg= await ctx.channel.send(f"{ctx.author.mention} Checking the correctness of command")
     if(len(user_message) < 2):
-        await ctx.channel.send(f"{ctx.author.mention} Command format is incorrect")
+        await msg.edit(content=f"{ctx.author.mention} Command format is incorrect")
         return
     if(user_message[1] not in ['cf', 'ac']):
-        await ctx.channel.send(f"{ctx.author.mention} Please specify the judge correctly. It can be either `cf` or `ac`")
+        await msg.edit(content=f"{ctx.author.mention} Please specify the judge correctly. It can be either `cf` or `ac`")
         return
     if(user_message[1] == 'cf'):
         cf_handle = await get_codeforces_handle(ctx)
         points = 8
         if(cf_handle == None):
-            await ctx.channel.send(f"{ctx.author.mention} You have not identified your codeforces handle. First do it using ;identify_cf <handle>")
+            await msg.edit(content=f"{ctx.author.mention} You have not identified your codeforces handle. First do it using ;identify_cf <handle>")
             return
         cf_rating = await get_cf_user_rating(cf_handle)
         cf_rating = (cf_rating//100)*100
@@ -82,7 +84,7 @@ async def gitgud(ctx):
         solved_problems = await find_solved_codeforces(ctx, cf_handle, last_solved_problems, last_checked)
         if(len(user_message) == 3):
             if(user_message[2] not in ['+100', '+200', '+300', '+400']):
-                await ctx.channel.send(f"{ctx.author.mention} Please specify the rating with +100, +200, +300 or +400 only")
+                await msg.edit(content=f"{ctx.author.mention} Please specify the rating with +100, +200, +300 or +400 only")
                 return
             if(user_message[2] == '+100'):
                 points = 12
@@ -96,34 +98,38 @@ async def gitgud(ctx):
         if(cf_rating < 1000):
             cf_rating = 1000
             points = 12
+        await msg.edit(content=f"Wait {ctx.author.mention} the bot is thinking :thinking: a problem for you.......")
         random_problem = cf_get_random_question_rating(cf_rating)
         iter = 0
         while(iter < 50 and random_problem['prob_id'] in solved_problems):
             random_problem = cf_get_random_question_rating(cf_rating)
             iter += 1
         if(iter == 50):
-            await ctx.channel.send(f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later :( ")
+            await msg.edit(content=f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later :frowning2: ")
             return
         title = f"Contest {random_problem['prob_id']} {random_problem['prob_name']}"
         url = f"{random_problem['prob_link']}"
         description = f"Rating: {random_problem['prob_rating']} | You will get {points} points for solving this problem"
         embed = discord.Embed(title=title, url=url, description=description)
-        await ctx.channel.send(f"Challenge problem for `{cf_handle}`", embed=embed)
+        await msg.edit(content=f"Challenge problem for `{cf_handle}`", embed=embed)
         await problem_solving_cf(ctx, random_problem['prob_id'], points)
     else:
         ac_handle = await get_atcoder_handle(ctx)
         ac_rating = await get_ac_user_rating(ac_handle)
         if(ac_handle == None):
-            await ctx.channel.send(f"{ctx.author.mention} You have not identified your atcoder handle. First do it using ;identify_ac <handle>")
+            await msg.edit(content=f"{ctx.author.mention} You have not identified your atcoder handle. First do it using ;identify_ac <handle>")
             return
         if(len(user_message) < 4):
-            await ctx.channel.send(f"{ctx.author.mention} Please specify the contest and problem number")
-            await ctx.channel.send(f"{ctx.author.mention} For example `;gitgud ac abc e` for 'E' problem of 'ABC' contest")
+            await msg.edit(content=f"{ctx.author.mention} Please specify the contest and problem number For example `;gitgud ac abc e` for 'E' problem of 'ABC' contest")
             return
+        await msg.edit(content=f"Wait {ctx.author.mention} the bot is thinking :thinking: a problem for you.......")
         last_checked, last_solved_problems = await get_last_solved_problems(ctx, 'atcoder')
         solved_problems = await find_solved_atcoder(ctx, ac_handle, last_solved_problems, last_checked)
         random_problem = ac_get_random_question(
             user_message[2], user_message[3])
+        if random_problem is None:
+            await msg.edit(content=f"{ctx.author.mention} Sorry I don't think I can give you problem of this type. Please try again later with some other type :frowning2: ")
+            return
         iter = 0
         while(iter < 50 and random_problem["problem"]["id"] in solved_problems):
             random_problem = ac_get_random_question(
@@ -133,7 +139,7 @@ async def gitgud(ctx):
                 random_problem = None
             iter += 1
         if(iter == 50):
-            await ctx.channel.send(f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later :( ")
+            await msg.edit(content=f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later :frowning2: ")
             return
         difficulty = await get_ac_problem_difficulty(random_problem['problem']['id'])
         equv_cf_rating = await convertAC2CFrating(ac_rating)
@@ -157,7 +163,7 @@ async def gitgud(ctx):
         title = f"{random_problem['problem']['title']}"
         url = f"{random_problem['prob_link']}"
         desc = f'You will get {points} points for solving this problem'
-        await ctx.channel.send(f"Challenge problem for `{ac_handle}`", embed=discord.Embed(title=title, url=url, description=desc))
+        await msg.edit(content=f"Challenge problem for `{ac_handle}`", embed=discord.Embed(title=title, url=url, description=desc))
         await problem_solving_ac(ctx, random_problem['problem']['id'], points)
 
 
@@ -194,18 +200,20 @@ async def check_if_solved_ac(ctx, ac_handle, current_question):
 async def gotgud(ctx):
     user_message = ctx.content
     user_message = user_message.split()
+    msg = await ctx.channel.send(f'{ctx.author.mention} Checking the correctness of your command....')
     if(len(user_message) < 2):
-        await ctx.channel.send(f"{ctx.author.mention} Command format is incorrect")
+        await msg.edit(content=f"{ctx.author.mention} Command format is incorrect")
         return
     if(user_message[1] not in ['cf', 'ac']):
-        await ctx.channel.send(f"{ctx.author.mention} Please specify the judge correctly. It can be either `cf` or `ac`")
+        await msg.edit(content=f"{ctx.author.mention} Please specify the judge correctly. It can be either `cf` or `ac`")
         return
     if(user_message[1] == 'cf'):
         id = ctx.author.id
         current_question = await get_current_question(id, 'cf')
         if(current_question == None):
-            await ctx.channel.send(f"{ctx.author.mention} You have not been given any problem yet. Please use ;gitgud cf to get a problem")
+            await msg.edit(content=f"{ctx.author.mention} You have not been given any problem yet. Please use ;gitgud cf to get a problem :slight_smile: ")
             return
+        await msg.edit(content=f"{ctx.author.mention} Checking :face_with_monocle: if you have solved the problem....")
         cf_handle = await get_codeforces_handle(ctx)
         check = await check_if_solved(ctx, cf_handle, current_question, 'cf')
         if(check):
@@ -214,26 +222,26 @@ async def gotgud(ctx):
             time_date = str(current_question[1])
             time = datetime.datetime.now() - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]), int(
                 time_date[8:10]), int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19], 0))
-            await ctx.channel.send(f"{ctx.author.mention} Congratulations! You have solved the problem. You have been awarded {current_question[2]} points and it took you {int(time.total_seconds()/3600)} hours {int((time.total_seconds()%3600)/60)} minutes {int(time.seconds%60)} seconds")
+            await msg.edit(content=f"{ctx.author.mention} Congratulations! :partying_face: You have solved the problem. You have been awarded {current_question[2]} points and it took you {int(time.total_seconds()/3600)} hours {int((time.total_seconds()%3600)/60)} minutes {int(time.seconds%60)} seconds")
             return
         else:
-            await ctx.channel.send(f"{ctx.author.mention} You have not solved the problem yet. Please try again later")
+            await msg.edit(content=f"{ctx.author.mention} You have not solved the problem yet :expressionless:. Please try again later")
             return
     else:
         id = ctx.author.id
         current_question = await get_current_question(id, 'ac')
         if(current_question == None):
-            await ctx.channel.send(f"{ctx.author.mention} You have not been given any problem yet. Please use ;gitgud ac to get a problem")
+            await msg.edit(content=f"{ctx.author.mention} You have not been given any problem yet. Please use ;gitgud ac to get a problem :slight_smile: ")
             return
         ac_handle = await get_atcoder_handle(ctx)
         check = await check_if_solved_ac(ctx, ac_handle, current_question)
         if(check):
             await update_point_at(ctx, current_question[2])
             await add_in_gitgud_list(id, 'ac', current_question)
-            await ctx.channel.send(f"{ctx.author.mention} Congratulations! You have solved the problem. You have been awarded {current_question[2]}")
+            await msg.edit(content=f"{ctx.author.mention} Congratulations! :partying_face: You have solved the problem. You have been awarded {current_question[2]} points")
             return
         else:
-            await ctx.channel.send(f"{ctx.author.mention} You have not solved the problem yet. Please try again later")
+            await msg.edit(content=f"{ctx.author.mention} You have not solved the problem yet :expressionless: . Please try again later")
             return
 
 
@@ -247,45 +255,46 @@ async def nogud_cf(ctx):
             time_date[8:10]), int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19], 0))
 
     except:
-        return "you don't have any problem"
+        return ctx.author.mention+" Currently you don't have any problem use ;gitgud cf to get a problem :slight_smile:"
 
     print(date_time.total_seconds())
     if date_time.total_seconds() > 7200:
         await delete_current_question(ctx.author.id, 'cf')
-        return 'challenge skipped'
+        return ctx.author.mention+' Challenge skipped :confused:'
     else:
-        return 'you have not worked on the problem of cf for 2h'
+        return ctx.author.mention+ ' Think more you can skip the problem in '+ str(math.ceil((7200-date_time.total_seconds())/60)) +' minutes :thinking:'
 
 
 async def nogud_atcoder(ctx):
 
     date_time = datetime.datetime.now()
     try:
-        print('hello')
         problem = await get_current_question(ctx.author.id, 'atcoder')
         time_date = str(problem[1])
         date_time = datetime.datetime.now() - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]), int(
             time_date[8:10]), int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19], 0))
 
     except:
-        return "you don't have any problem"
+        return ctx.author.mention+" Currently you don't have any problem use ;gitgud ac to get a problem :slight_smile:"
 
     if date_time.total_seconds() > 3600:
         await delete_current_question(ctx.author.id, 'atcoder')
-        return 'challenge skipped'
+        return ctx.author.mention+' Challenge skipped :confused:'
     else:
-        return 'you have not worked on the problem of atcoder for 1h'
+        return ctx.author.mention+' Think more you can skip the problem in '+str(math.ceil((3600-date_time.total_seconds())/60))+' minutes :thinking:'
 
 
 async def gitlog(ctx):
     user_message = ctx.content
     user_message = user_message.split()
+    msg= await ctx.channel.send(f"{ctx.author.mention} Checking command format ")
     if(len(user_message) < 2):
-        await ctx.channel.send(f"{ctx.author.mention} Command format is incorrect")
+        await msg.edit(content=f"{ctx.author.mention} Command format is incorrect")
         return
     if(user_message[1] not in ['cf', 'ac']):
-        await ctx.channel.send(f"{ctx.author.mention} Please specify the judge correctly. It can be either `cf` or `ac`")
+        await msg.edit(content=f"{ctx.author.mention} Please specify the judge correctly. It can be either `cf` or `ac`")
         return
+    await msg.edit(content=f"{ctx.author.mention} Fetching your gitgud list :hourglass_flowing_sand:")
     if(user_message[1] == 'cf'):
         id = ctx.author.id
         problems = await get_gitgud_list(id, 'cf')
@@ -305,7 +314,7 @@ async def gitlog(ctx):
             mydict['Problem Rating'] = problem[0][1]
             mydict['Points'] = problem[2]
             l.append(mydict)
-        return l
+        return l, msg
     else:
         id = ctx.author.id
         problems = await get_gitgud_list(id, 'ac')
@@ -319,31 +328,32 @@ async def gitlog(ctx):
             all_problems.append((my_problem, problem[1], problem[2]))
             i += 3
         l = []
-        ctx.channel.send(all_problems)
         for problem in all_problems:
             mydict = {}
             mydict['Problem Name'] =  f'[{problem[0][0]}]({problem[0][2]})'
             mydict['Problem Rating'] = problem[0][1]
             mydict['Points'] = problem[2]
             l.append(mydict)
-        return l
+        return l, msg
 
 
 async def gimme(ctx):
     user_message = ctx.content
     user_message = user_message.split()
+    msg = await ctx.channel.send(f"{ctx.author.mention} Checking command format ")
     cf_handle = await get_codeforces_handle(ctx)
     points = 8
     if(cf_handle == None):
-        await ctx.channel.send(f"{ctx.author.mention} You have not identified your codeforces handle. First do it using ;identify_cf <handle>")
+        await msg.edit(content=f"{ctx.author.mention} You have not identified your codeforces handle. First do it using ;identify_cf <handle>")
         return
+    await msg.edit(content=f"{ctx.author.mention} Thinking of a problem of {user_message[1]} for you :thinking:")
     cf_rating = await get_cf_user_rating(cf_handle)
     cf_rating = (cf_rating//100)*100
     last_checked, last_solved_problems = await get_last_solved_problems(ctx, 'codeforces')
     solved_problems = await find_solved_codeforces(ctx, cf_handle, last_solved_problems, last_checked)
     if(len(user_message) == 3):
         if(user_message[2] not in ['+100', '+200', '+300', '+400']):
-            await ctx.channel.send(f"{ctx.author.mention} Please specify the rating with +100, +200, +300 or +400 only")
+            await msg.edit(content=f"{ctx.author.mention} Please specify the rating with +100, +200, +300 or +400 only")
             return
         if(user_message[2] == '+100'):
             points = 12
@@ -362,18 +372,18 @@ async def gimme(ctx):
     random_problem = cf_get_random_question_tag(user_message[1], cf_rating)
     print("1")
     if random_problem == None:
-        await ctx.channel.send(f"{ctx.author.mention} Sorry we could not give you a problem of this tag in this rating range. Please try with some other rating range :( ")
+        await msg.edit(content=f"{ctx.author.mention} Sorry we could not give you a problem of this tag in this rating range. Please try with some other rating range :frowning: ")
         return
     iter = 0
     while(iter < 50 and random_problem in solved_problems):
         random_problem = cf_get_random_question_tag(user_message[1], cf_rating)
         iter += 1
     if(iter == 50):
-        await ctx.channel.send(f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later :( ")
+        await msg.edit(content=f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later :frowning: ")
         return
     title = f"Contest {random_problem['prob_id']} {random_problem['prob_name']}"
     url = f"{random_problem['prob_link']}"
     description = f"Rating: {random_problem['prob_rating']} | You will get {points} points for solving this problem"
     embed = discord.Embed(title=title, url=url, description=description)
-    await ctx.channel.send(f"Challenge problem for `{cf_handle}`", embed=embed)
+    await msg.edit(content=f"Challenge problem for `{cf_handle}`", embed=embed)
     await problem_solving_cf(ctx, random_problem['prob_id'], points)

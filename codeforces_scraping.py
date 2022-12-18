@@ -68,12 +68,14 @@ def ac_get_random_question(contest_type, question_type):
     question_type = question_type.upper()
     q = requests.get(
         'https://kenkoooo.com/atcoder/resources/problems.json').json()
+    
     q_list = []
     for problem in q:
         if ((problem['id'][:3] == contest_type) & (problem['problem_index'] == question_type)):
             if((is_english_problem(problem))):
                 q_list.append(problem)
-                
+    if (len(q_list) == 0):
+        return None           
     q_index = random.randint(0, len(q_list)-1)
     problem = q_list[q_index]
     prob_link = 'https://atcoder.jp/contests/' + \
