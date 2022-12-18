@@ -48,11 +48,11 @@ async def run_discord_bot():
              else:   
                 await table(ctx,client,['Problem Name','Problem Rating','Points'], mydict, isEmbed=True, current_message=msg)
         if user_message.split()[0]==";next":
-            mylist = await clist_api.nextcontests()
+            mylist,msg = await clist_api.nextcontests(ctx)
             if(len(mylist)==0):
-                await ctx.channel.send(f"{ctx.author.mention} No contest to display :(")
+                msg.edit(content=f"{ctx.author.mention} No contest to display :(")
             else:
-                await table(ctx,client,['Sr No.','Name','Start Time (dd-mm-yyyy)','Duration(in min.)'], mylist, isEmbed=True)
+                await table(ctx,client,['Sr No.','Name','Start Time (dd-mm-yyyy)','Duration(in min.)'], mylist, isEmbed=True,current_message=msg)
         if user_message.split()[0]==";leaderboard":
             if len(user_message.split())==2:
                 mylist = await db.Leaderboard_list(ctx,user_message.split()[1])
