@@ -15,7 +15,7 @@ async def challenge_question_cf(ctx,bot):
     user_message=user_message.split()
     msg= await ctx.channel.send(f"{ctx.author.mention} Checking the correctness of command")
     if len(user_message) < 3:
-        await msg.edit(content=f"{ctx.author.mention} Command format is incorrect 🤦. Please use `;challenge @user platform`")
+        await msg.edit(content=f"{ctx.author.mention} Command format is incorrect 🤦. Please use `;challenge platform @user`")
         return
     if(user_message[1] not in ['cf','ac']):
         await msg.edit(content=f"{ctx.author.mention} Please specify the judge correctly. It can be either `cf` or `ac` 🤷‍♂️")
