@@ -41,7 +41,7 @@ async def challenge_question_cf(ctx,bot):
         if cf_handle_2 is None:
             await msg.edit(content=f"{cf_handle_2} Please set your Codeforces handle first")
             return
-        await msg.edit(content=f"{ctx.author.mention} Finding a problem for you")
+        await msg.edit(content=f"{ctx.author.mention} Bot is thinking ...")
         cf_rating = await get_cf_user_rating(cf_handle_2)
         cf_rating = (cf_rating//100)*100
         last_checked_1,last_solved_problems_1 = await get_last_solved_problems(ctx,'codeforces')
@@ -59,7 +59,7 @@ async def challenge_question_cf(ctx,bot):
         if(iter==50):
             await msg.edit(content=f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later :( ")
             return
-        await msg.edit(content=f"{ctx.mentions[0].mention} Do you want to accept the challenge?")
+        await msg.edit(content=f"{ctx.mentions[0].mention} Do you want to accept the challenge by {ctx.author.mention}?")
         buttons = ["✅", "❌"]
         for button in buttons:
             await msg.add_reaction(button)
@@ -68,6 +68,7 @@ async def challenge_question_cf(ctx,bot):
                 reaction, user = await bot.wait_for("reaction_add", check=lambda reaction, user: user == ctx.mentions[0] and reaction.emoji in buttons, timeout=60.0)
 
             except asyncio.TimeoutError:
+                await msg.edit(content=f"{ctx.author.mention} Ig that's a no from {ctx.mentions[0].mention}")
                 for button in buttons:
                     await msg.remove_reaction(button, bot.user)
                 return
