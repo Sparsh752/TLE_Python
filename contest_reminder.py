@@ -40,7 +40,7 @@ URL_BASE = 'https://clist.by/api/v2/'
 clist_token="username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
 
 
-async def next_contest():
+async def next_contest(id):
     now = datetime.datetime.now(timezone.utc)
     year = now.year
     month = now.month
@@ -49,18 +49,21 @@ async def next_contest():
     minute=now.minute
     seconds=now.second
 
-    url=URL_BASE+'contest/?'+clist_token+'&resource_id=1&limit=1&start__gte='+str(year)+'-'+str(month)+'-'+str(day)+'%20'+str(hour)+':'+str(minute)+':'+str(seconds)+'&order_by=start'
+    url=URL_BASE+'contest/?'+clist_token+'&resource_id='+id+'&limit=1&start__gte='+str(year)+'-'+str(month)+'-'+str(day)+'%20'+str(hour)+':'+str(minute)+':'+str(seconds)+'&order_by=start'
 
     try:
         resp=requests.get(url)
         contests=resp.json()['objects'][0]
         print((contests['event'],contests['start'],contests['href']))
-        return contests['event'],contests['start'],contests['href']
+        return [contests['event'],contests['start'],contests['href']]
 
     except Exception as e:
         print(e)
-        return None,None,None
+        return [None,None,None]
 
+
+def sortDate(date_time):
+    return date_time[1][0:4], date_time[1][5:7], date_time[1][8:10], date_time[1][11:13], date_time[1][14:16], date_time[1][17:19] 
 
 
 
@@ -68,12 +71,20 @@ async def reminder(bot):
     channel = bot.get_channel(channel_id)
     while(1):
         try:
+
             bool_ = await check_rating_changed()
             if(bool_):
                 await print_final_standings(bot,channel)
             else:
                 print('NO')
-            event,start, href = await next_contest()
+
+            list_=[]
+            list_.append(await next_contest(1))
+            list_.append(await next_contest(2))
+            list_.append(await next_contest(93))
+            list_.sort(key=sortDate)
+            event,start, href = list_[0][0],list_[0][1],list_[0][2]
+            
             start=str(start)
             time_date=str(datetime.datetime.now(timezone.utc))
             print((str(start[0:4]), str(start[5:7]), str(start[8:10]), str(start[11:13]), str(start[14:16]), str(start[17:19])))
