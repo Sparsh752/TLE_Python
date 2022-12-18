@@ -112,7 +112,7 @@ async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=
 
             for button in buttons:
                 if reaction.emoji==button:
-                    await msg.remove_reaction(button, bot.user)
+                    await msg.remove_reaction(button, user)
 
             if current != previous_page:
                 if isEmbed:
