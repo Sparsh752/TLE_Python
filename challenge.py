@@ -41,7 +41,7 @@ async def challenge_question_cf(ctx,bot):
         if cf_handle_2 is None:
             await msg.edit(content=f"{cf_handle_2} Please set your Codeforces handle first")
             return
-        await msg.edit(content=f"{ctx.author.mention} Bot is thinking ...")
+        await msg.edit(content=f"Wait {ctx.author.mention} the bot is thinking 🤔 a problem for you....... ")
         cf_rating = await get_cf_user_rating(cf_handle_2)
         cf_rating = (cf_rating//100)*100
         last_checked_1,last_solved_problems_1 = await get_last_solved_problems(ctx,'codeforces')
