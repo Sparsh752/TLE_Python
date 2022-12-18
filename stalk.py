@@ -2,7 +2,8 @@ import requests
 from operator import itemgetter
 from datetime import datetime,timezone
 
-async def stalk_user(codeforces_handle,hardest=False,R=0):
+async def stalk_user(ctx,codeforces_handle,hardest=False,R=0):
+    msg = await ctx.channel.send(f"{ctx.author.mention} Getting data for `{codeforces_handle}` from codeforces")
     url = "https://codeforces.com/api/user.status?handle="+str(codeforces_handle)+"&from="+str(1)
     response = requests.get(url,timeout=5)
     response=response.json()
@@ -38,4 +39,4 @@ async def stalk_user(codeforces_handle,hardest=False,R=0):
             if i['Rating']==0:
                 i['Rating']='---'
     head_row=['Problem','Rating','Time']
-    return head_row,n_dict
+    return head_row,n_dict,msg
