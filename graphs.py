@@ -198,3 +198,95 @@ async def problem_vs_time(ctx):
             }
         )
     await timegraph(ctx,data, user)
+
+def timegraph2(data, user, width=500, height=300):
+    qc = QuickChart()
+    qc.width = width
+    qc.height = height
+    qc.config = {
+        "type": "line",
+        "data": {
+            "datasets": [
+                {
+                    "label": "Performance",
+                    "backgroundColor": "rgba(255, 99, 132, 0.5)",
+                    "borderColor": "rgb(255, 99, 132)",
+                    "fill": False,
+                    "data": data
+                }
+            ]
+        },
+        "options": {
+            "responsive": True,
+            "title": {
+                "display": True,
+                "text": user
+            },
+            "scales": {
+                "xAxes": [{
+                    "type": "time",
+                    "display": True,
+                    "scaleLabel": {
+                        "display": True,
+                        "labelString": "Time"
+                    },
+                    "ticks": {
+                        "major": {
+                            "enabled": True
+                        },
+                    }
+                }],
+                "yAxes": [{
+                    "display": True,
+                    "scaleLabel": {
+                        "display": True,
+                        "labelString": "Rating"
+                    }
+                }]
+            },
+            "elements": {
+                "point": {
+                    "radius": 0
+                }
+            }
+        }
+    }
+
+    page = discord.Embed()
+    page.set_image(url=qc.get_short_url())
+    return page
+
+
+# returns an embed with performance graph image
+def performance(user):
+    ret_data = []
+    url = "https://codeforces.com/api/user.rating?handle=" + user
+    response = requests.get(url)
+    data = response.json()['result'];
+    for contest in data:
+        date = contest['ratingUpdateTimeSeconds']
+        date = datetime.utcfromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
+        performance = 0
+        oldRating = contest['oldRating']
+        newRating = contest['newRating']
+
+
+
+# ===========Performance Calculation===================
+        ratingChange = newRating - oldRating
+        performance = 100
+        if oldRating == 0:
+            if newRating < 1400:
+                ratingChange = newRating - 100
+                performance =  100 + 3 * ratingChange
+            else:
+                ratingChange = newRating - 1400
+                performance =  1400 + 3 * ratingChange
+        else:
+            performance =  oldRating + 3 * ratingChange
+
+
+
+
+        ret_data.append({'x': date, 'y':performance})
+    return timegraph2(ret_data, user)
