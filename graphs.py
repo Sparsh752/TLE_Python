@@ -258,11 +258,16 @@ def timegraph2(data, user, width=500, height=300):
 
 
 # returns an embed with performance graph image
-def performance(user):
+async def performance(ctx,user):
+    msg= await ctx.channel.send(f"{ctx.author.mention} Please wait while I fetch the data")
     ret_data = []
-    url = "https://codeforces.com/api/user.rating?handle=" + user
-    response = requests.get(url)
-    data = response.json()['result']
+    try:
+        url = "https://codeforces.com/api/user.rating?handle=" + user
+        response = requests.get(url)
+        data = response.json()['result']
+    except:
+        await msg.edit(content=f"Sorry {ctx.author.mention} I am unable to fetch the data")
+        return
     for contest in data:
         date = contest['ratingUpdateTimeSeconds']
         date = datetime.utcfromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
@@ -289,4 +294,7 @@ def performance(user):
 
 
         ret_data.append({'x': date, 'y':performance})
-    return timegraph2(ret_data, user)
+    page = timegraph2(ret_data, user)
+    await msg.edit(content=f"Here is the performance graph of {user}")
+    await ctx.channel.send(embed=page)
+    

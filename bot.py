@@ -9,7 +9,7 @@ import db
 import stalk
 import contest_info
 import challenge
-from graphs import rating_vs_problems, problem_vs_time
+from graphs import rating_vs_problems, problem_vs_time,performance
 client = None
 async def send_message(ctx,user_message,is_private):                                      #giving back response to the user
     try:
@@ -113,6 +113,11 @@ async def run_discord_bot():
                         await table(ctx,client,header,mylist,current_message=msg)
                 else:
                     await ctx.channel.send(f"{ctx.author.mention} Please specify a valid platform")
+            else:
+                await ctx.channel.send(f"{ctx.author.mention} Please follow the message format")
+        if user_message.split()[0]==";performance":
+            if len(user_message.split())==2:
+                await performance(ctx,user_message.split()[1])
             else:
                 await ctx.channel.send(f"{ctx.author.mention} Please follow the message format")
         if user_message.split()[0]==";graph":
