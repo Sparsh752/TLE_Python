@@ -262,7 +262,7 @@ def performance(user):
     ret_data = []
     url = "https://codeforces.com/api/user.rating?handle=" + user
     response = requests.get(url)
-    data = response.json()['result'];
+    data = response.json()['result']
     for contest in data:
         date = contest['ratingUpdateTimeSeconds']
         date = datetime.utcfromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
