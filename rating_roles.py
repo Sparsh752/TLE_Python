@@ -12,6 +12,7 @@ async def rating_role(id, rating,bot,channel):
     guild = await bot.fetch_guild(1048212913539784805)
     user = await guild.query_members(user_ids=[id])
     username=user[0]
+    msg = await channel.send(f"Fetching rating changes")
     if (rating < 800):
         await remove_rating_roles(username)
         return
@@ -19,7 +20,7 @@ async def rating_role(id, rating,bot,channel):
         role = get(username.guild.roles, name="Newbie")
         await remove_rating_roles(username)
         await username.add_roles(role)
-        await channel.send(f"{username.mention} is a <@&{role.id}>")
+        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
         print("Role added")
         return
     elif (rating < 1400):
@@ -27,61 +28,61 @@ async def rating_role(id, rating,bot,channel):
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
-        await channel.send(f"{username.mention} is a <@&{role.id}>")
+        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
         return
     elif (rating < 1600):
         role = get(username.guild.roles, name="Specialist")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
-        await channel.send(f"{username.mention} is a <@&{role.id}>")
+        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
         return
     elif (rating < 1900):
         role = get(username.guild.roles, name="Expert")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
-        await channel.send(f"{username.mention} is a <@&{role.id}>")
+        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
         return
     elif (rating < 2100):
         role = get(username.guild.roles, name="Candidate_Master")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
-        await channel.send(f"{username.mention} is a <@&{role.id}>")
+        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
         return
     elif (rating < 2300):
         role = get(username.guild.roles, name="Master")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
-        await channel.send(f"{username.mention} is a <@&{role.id}>")
+        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
         return
     elif (rating < 2400):
         role = get(username.guild.roles, name="International_Master")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
-        await channel.send(f"{username.mention} is a <@&{role.id}>")
+        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
         return
     elif (rating < 2600):
         role = get(username.guild.roles, name="Grandmaster")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
-        await channel.send(f"{username.mention} is a <@&{role.id}>")
+        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
         return
     elif (rating < 3000):
         role = get(username.guild.roles, name="International_Grandmaster")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
-        await channel.send(f"{username.mention} is a <@&{role.id}>")
+        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
         return
     else:
         role = get(username.guild.roles, name="Legendary_Grandmaster")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
-        await channel.send(f"{username.mention} is a <@&{role.id}>")
+        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
         return
