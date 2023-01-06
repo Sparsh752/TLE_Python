@@ -4,7 +4,7 @@ import random
 import string
 import asyncio
 from bs4 import BeautifulSoup
-from db import add_user, add_codeforces_handle, add_atcoder_handle
+from db import add_user, add_codeforces_handle, add_atcoder_handle,check_user
 from gitgud import get_cf_user_rating
 channel_id = 1052888188479348787
 from rating_roles import rating_role
@@ -97,6 +97,10 @@ async def handle_verification(ctx,bot):
         return
         
     if msg_data[0] == ';identify_cf':
+        check=await check_user(ctx,'cf')
+        if(check):
+            await msg.edit(content = f"{message.author.mention} you are already identified on codeforces... :sweat_smile: ")
+            return
         cf_handle = msg_data[1]
         if check_cf(msg_data[1]):
             random_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
@@ -124,6 +128,10 @@ async def handle_verification(ctx,bot):
 
 
     elif msg_data[0] == ';identify_ac':
+        check=await check_user(ctx,'ac')
+        if(check):
+            await msg.edit(content=f"{message.author.mention} you are already identified on atcoder... :sweat_smile: ")
+            return
         ac_handle = msg_data[1]
         if check_ac(msg_data[1]):
             random_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))

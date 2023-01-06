@@ -38,6 +38,22 @@ db = firestore_async.client()
 # Function to add a new user to the database
 # Input: discord_name, codeforces_handle, atcoder_handle
 # Output: None
+async def check_user(ctx,handle):
+    data = await db.collection('users').document(str(ctx.author.id)).get()
+    if handle == 'cf':
+        if data.exists:
+            if data.to_dict()['codeforces_handle'] != None:
+                return True
+            else:
+                return False
+    elif handle == 'ac':
+        if data.exists:
+            if data.to_dict()['atcoder_handle'] != None:
+                return True
+            else:
+                return False
+
+
 async def add_user(ctx):
     discord_name = ctx.author.name
     if(await db.collection('users').document(str(ctx.author.id)).get()).exists:
