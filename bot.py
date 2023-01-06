@@ -9,7 +9,7 @@ import db
 import stalk
 import contest_info
 import challenge
-from graphs import rating_vs_problems, problem_vs_time
+from graphs import rating_vs_problems, problem_vs_time,performance
 from help import help as help_command
 client = None
 async def send_message(ctx,user_message,is_private):                                      #giving back response to the user
