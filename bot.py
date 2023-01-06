@@ -71,7 +71,10 @@ async def run_discord_bot():
                 await ctx.channel.send(f"{ctx.author.mention} Please enter a valid platform")
         if user_message.split()[0]==";stalk":
             if len(user_message.split())==2:
-                header,mylist,msg = await stalk.stalk_user(ctx,user_message.split()[1])
+                temp =  await stalk.stalk_user(ctx,user_message.split()[1])
+                if(temp==None):
+                    return
+                header,mylist,msg = temp[0],temp[1],temp[2]
                 if(len(mylist)==0):
                     await msg.edit(content=f"{ctx.author.mention} No user found")
                 else:

@@ -7,6 +7,9 @@ async def stalk_user(ctx,codeforces_handle,hardest=False,R=0):
     url = "https://codeforces.com/api/user.status?handle="+str(codeforces_handle)+"&from="+str(1)
     response = requests.get(url,timeout=5)
     response=response.json()
+    if response['status']=='FAILED':
+        await msg.edit(content=f"{ctx.author.mention} No user found :scream_cat:")
+        return None
     total=len(response['result'])
     url = "https://codeforces.com/api/user.status?handle="+str(codeforces_handle)+"&count="+str(total)
     response = requests.get(url).json()
