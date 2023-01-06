@@ -64,7 +64,8 @@ async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=
 
     ##if message requires Title then make an embed and print here------
     if current_message!=None:
-        await current_message.edit(content=f"{ctx.author.mention} Here is the list you wanted: :nerd:")
+        await current_message.delete()
+        await ctx.channel.send(f"{ctx.author.mention} Here is the list you wanted: :nerd:")
     if isChannel:
         if isEmbed:
             msg = await ctx.send(embed=output[current])
