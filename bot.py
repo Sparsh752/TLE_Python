@@ -9,7 +9,8 @@ import db
 import stalk
 import contest_info
 import challenge
-from graphs import rating_vs_problems, problem_vs_time,performance
+from graphs import rating_vs_problems, problem_vs_time
+from help import help as help_command
 client = None
 async def send_message(ctx,user_message,is_private):                                      #giving back response to the user
     try:
@@ -127,9 +128,11 @@ async def run_discord_bot():
                 await problem_vs_time(ctx)
             else:
                 await ctx.channel.send(f"{ctx.author.mention} Please follow the message format")
-            
+        if user_message.split()[0]==";help":
+            await ctx.channel.send(embed=help_command());
         else:
             await send_message(ctx,user_message,is_private=False)#message is not private
+
 
 
     client.run(TOKEN)

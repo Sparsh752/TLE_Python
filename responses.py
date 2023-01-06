@@ -9,8 +9,6 @@ async def handle_response(message,ctx):
     msg_data=p_message.split()               #to split the message into words
     if p_message=="hello":
         return "Hey there "+ctx.author.name
-    if p_message=="roll":
-        return str(random.randint(1,6))
     if p_message=="!help":
         return "Commands: hello, roll"
     if msg_data[0]==";gitgud":
