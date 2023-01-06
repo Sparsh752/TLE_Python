@@ -1,0 +1,10 @@
+pip install requests
+pip install asyncio
+pip install bs4
+pip install discord
+pip install time
+pip install datetime
+pip install firebase_admin
+pip install quickchart.io
+pip install nest_asyncio
+pip install table2ascii
