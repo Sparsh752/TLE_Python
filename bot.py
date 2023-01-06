@@ -11,6 +11,7 @@ import contest_info
 import challenge
 from graphs import rating_vs_problems, problem_vs_time,performance
 from help import help as help_command
+import os
 client = None
 async def send_message(ctx,user_message,is_private):                                      #giving back response to the user
     try:
@@ -21,7 +22,7 @@ async def send_message(ctx,user_message,is_private):                            
 
 async def run_discord_bot():
     global client
-    TOKEN='MTA0ODIzNTAxMjcxMTAxMDM2NA.G6wi4q.6AE7Q3otjPtQ-Hu9JJ0C6hNnVDEc_M9xSsmLTc'    #bot id
+    TOKEN=os.environ.get('TOKEN')    #bot id
     print('hello')
     client = discord.Client(intents=discord.Intents.all())                              #giving permissions and intents to the bot
     # guild_id=1048212913539784805        #guild id

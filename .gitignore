@@ -2,3 +2,5 @@
 __pycache__/clist_api.cpython-39.pyc
 __pycache__/responses.cpython-39.pyc
 __pycache__
+process.env
+firebase_key.json

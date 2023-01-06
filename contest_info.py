@@ -4,6 +4,7 @@ import json
 import asyncio
 from operator import itemgetter
 import rating_roles
+import os
 URL_BASE = 'https://clist.by/api/v2/'
 clist_token = "username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
 
