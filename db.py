@@ -249,10 +249,14 @@ async def get_current_question(id, platform):
     if platform == 'cf':
         problem = await db.collection('users').document(str(id)).get(field_paths={'problem_solving_cf'})
         problem = problem.to_dict()['problem_solving_cf']
+        if len(problem)==0:
+            return None
         return problem
     else:
         problem = await db.collection('users').document(str(id)).get(field_paths={'problem_solving_atcoder'})
         problem = problem.to_dict()['problem_solving_atcoder']
+        if len(problem)==0:
+            return None
         return problem
 
 async def delete_current_question(id,platform):

@@ -78,6 +78,10 @@ async def gitgud(ctx):
         if(cf_handle == None):
             await msg.edit(content=f"{ctx.author.mention} You have not identified your codeforces handle. First do it using ;identify_cf <handle>")
             return
+        problem = await get_current_question(ctx.author.id, 'cf')
+        if problem != None:
+            await msg.edit(content=f"{ctx.author.mention} You already have a problem assigned to you. Please use ;nogud cf to remove it.")
+            return
         cf_rating = await get_cf_user_rating(cf_handle)
         cf_rating = (cf_rating//100)*100
         last_checked, last_solved_problems = await get_last_solved_problems(ctx, 'codeforces')
@@ -118,6 +122,10 @@ async def gitgud(ctx):
         ac_rating = await get_ac_user_rating(ac_handle)
         if(ac_handle == None):
             await msg.edit(content=f"{ctx.author.mention} You have not identified your atcoder handle. First do it using ;identify_ac <handle>")
+            return
+        problem = await get_current_question(ctx.author.id, 'ac')
+        if problem != None:
+            await msg.edit(content=f"{ctx.author.mention} You already have a problem assigned to you. Please use ;nogud ac to remove it.")
             return
         if(len(user_message) < 4):
             await msg.edit(content=f"{ctx.author.mention} Please specify the contest and problem number For example `;gitgud ac abc e` for 'E' problem of 'ABC' contest")
