@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  tle-bot:
+    build: .
+    restart: always
+    env_file:
+      - "process.env"
