@@ -137,4 +137,4 @@ async def run_discord_bot():
 
 
 
-    client.run("MTA0ODIzNTAxMjcxMTAxMDM2NA.G20kqz.SfNLEjQpu4gJ7HjKpTYDWJkPUURgDhK3nLWaFw")
+    client.run(TOKEN)
