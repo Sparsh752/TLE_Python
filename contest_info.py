@@ -109,13 +109,21 @@ async def atcoder_rating_changes(event_name, ctx):
     # fetching response
     response = requests.get(question_url)
     # converting to json
-    response = response.json()
+    try:
+        response = response.json()
+    except Exception as e:
+        print(e)
+        return None, "error", msg
     problemlist = []
     header = ['rank', 'handle', 'score', 'Δ', 'to']
     # iterating over all the problems
-    for i in response['objects'][0]['problems']:
+    try:
+        for i in response['objects'][0]['problems']:
         # appending the problem codes to a list
-        problemlist.append(i)
+            problemlist.append(i)
+    except Exception as e:
+        print(e)
+        return None, "error", msg
     # try:
     returnlist = []
     for handle in atcoder_handle:                                # iterate over all the handles
