@@ -6,7 +6,7 @@ import asyncio
 from bs4 import BeautifulSoup
 from db import add_user, add_codeforces_handle, add_atcoder_handle,check_user
 from gitgud import get_cf_user_rating
-channel_id = 1052888188479348787
+import discord
 from rating_roles import rating_role
 
 ##Codeforces
@@ -86,6 +86,7 @@ def check_Affiliation(ac_handle, random_string):
         return False
 
 async def handle_verification(ctx,bot):
+    channel = discord.utils.get(bot.get_all_channels(), name="reminders")                              
     message=ctx
     username = str(message.author.name)
     user_message = str(message.content)
@@ -104,20 +105,19 @@ async def handle_verification(ctx,bot):
         cf_handle = msg_data[1]
         if check_cf(msg_data[1]):
             random_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
-            output = "set your firstname as `" + random_string + "` in your codeforces account within 60 seconds..."
-            await msg.edit(content=f"{message.author.mention} {output}")
-
+            output = "Set your firstname as `" + random_string + "` in your codeforces account within 60 seconds... Click [here](https://codeforces.com/settings/social) to set your firstname..."
+            await msg.delete()
+            await ctx.channel.send(embed=discord.Embed(description=f"{message.author.mention} {output}", color=discord.Color.blue()))
             for i in range(30):
                 await asyncio.sleep(2)
                 first_name = firstname(cf_handle)
                 if first_name == random_string:
                     await add_codeforces_handle(ctx, cf_handle)
                     rating=await get_cf_user_rating(cf_handle)
-                    channel = bot.get_channel(channel_id)
                     #########################
                     # store in database if successfull then print
 
-                    await message.channel.send(f"{message.author.mention} you are successfully identified on codeforces... >_<")
+                    await message.channel.send(f"{message.author.mention} you are successfully identified on codeforces... :smiley:")
                     await rating_role(ctx.author.id,int(rating),bot,channel)
                     break
             else:
@@ -135,15 +135,16 @@ async def handle_verification(ctx,bot):
         ac_handle = msg_data[1]
         if check_ac(msg_data[1]):
             random_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
-            output = "set your Affiliation as `" + random_string + "` in your Atcoder account within 60 seconds..."
-            await msg.edit(content=f"{message.author.mention} {output}")
+            output = "Set your Affiliation as `" + random_string + "` in your Atcoder account within 60 seconds...\n Click [here](https://atcoder.jp/settings) to set you affilation"
+            await msg.delete()
+            await ctx.channel.send(embed=discord.Embed(description=f"{message.author.mention} {output}", color=0x00ff00))
             for i in range(30):
                 await asyncio.sleep(2)
                 if check_Affiliation(ac_handle, random_string):
                     #########################
                     # store in database if successfull then print
                     await add_atcoder_handle(ctx, ac_handle)
-                    await message.channel.send(f"{message.author.mention} you are successfully identified on on atcoder... >_<")
+                    await message.channel.send(f"{message.author.mention} you are successfully identified on on atcoder... :smiley:")
                     break
             else:
                 await msg.edit(content=f"{message.author.mention} TimeOut, try again...")

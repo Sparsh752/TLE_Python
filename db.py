@@ -42,13 +42,13 @@ async def check_user(ctx,handle):
     data = await db.collection('users').document(str(ctx.author.id)).get()
     if handle == 'cf':
         if data.exists:
-            if data.to_dict()['codeforces_handle'] != None:
+            if 'codeforces_handle' in data.to_dict().keys():
                 return True
             else:
                 return False
     elif handle == 'ac':
         if data.exists:
-            if data.to_dict()['atcoder_handle'] != None:
+            if 'atcoder_handle' in data.to_dict().keys():
                 return True
             else:
                 return False
@@ -201,17 +201,23 @@ async def find_solved_atcoder(ctx,atcoder_handle, last_solved_atcoder, last_chec
 
 async def get_codeforces_handle(ctx):
     user_dict=await db.collection('users').document(str(ctx.author.id)).get()
-    user_dict=user_dict.to_dict()
-    if 'codeforces_handle' in user_dict.keys():
-        return user_dict['codeforces_handle']
+    if user_dict.exists:
+        user_dict=user_dict.to_dict()
+        if 'codeforces_handle' in user_dict.keys():
+            return user_dict['codeforces_handle']
+        else:
+            return None
     else:
         return None
 
 async def get_atcoder_handle(ctx):
     user_dict=await db.collection('users').document(str(ctx.author.id)).get()
-    user_dict=user_dict.to_dict()
-    if 'atcoder_handle' in user_dict.keys():
-        return user_dict['atcoder_handle']
+    if user_dict.exists:
+        user_dict=user_dict.to_dict()
+        if 'atcoder_handle' in user_dict.keys():
+            return user_dict['atcoder_handle']
+        else:
+            return None
     else:
         return None
 
@@ -248,12 +254,16 @@ async def problem_solving_ac(ctx,problem,points):
 async def get_current_question(id, platform):
     if platform == 'cf':
         problem = await db.collection('users').document(str(id)).get(field_paths={'problem_solving_cf'})
+        if problem.to_dict()=={}:
+            return None
         problem = problem.to_dict()['problem_solving_cf']
         if len(problem)==0:
             return None
         return problem
     else:
         problem = await db.collection('users').document(str(id)).get(field_paths={'problem_solving_atcoder'})
+        if problem.to_dict()=={}:
+            return None
         problem = problem.to_dict()['problem_solving_atcoder']
         if len(problem)==0:
             return None

@@ -66,6 +66,9 @@ async def bargraph(ctx,ndict, user, width=500, height=300):
 
 async def rating_vs_problems(ctx):
     user = await get_codeforces_handle(ctx)
+    if(user == None):
+        await ctx.channel.send(f"{ctx.author.mention} You have not identified your codeforces handle. First do it using ;identify_cf <handle>")
+        return
     prob_rating = {}
     url = "https://codeforces.com/api/user.status?handle=" + user
     response = requests.get(url)
@@ -167,6 +170,9 @@ async def timegraph(ctx,data, user, width=500, height=300):
 
 async def problem_vs_time(ctx):
     user = await get_codeforces_handle(ctx)
+    if(user == None):
+        await ctx.channel.send(f"{ctx.author.mention} You have not identified your codeforces handle. First do it using ;identify_cf <handle>")
+        return
     dates = []
     url = "https://codeforces.com/api/user.status?handle=" + user
     response = requests.get(url)

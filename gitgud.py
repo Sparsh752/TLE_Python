@@ -73,7 +73,9 @@ async def gitgud(ctx):
         await msg.edit(content=f"{ctx.author.mention} Please specify the judge correctly. It can be either `cf` or `ac`")
         return
     if(user_message[1] == 'cf'):
+        print(ctx)
         cf_handle = await get_codeforces_handle(ctx)
+        print(cf_handle)
         points = 8
         if(cf_handle == None):
             await msg.edit(content=f"{ctx.author.mention} You have not identified your codeforces handle. First do it using ;identify_cf <handle>")
@@ -217,12 +219,15 @@ async def gotgud(ctx):
         return
     if(user_message[1] == 'cf'):
         id = ctx.author.id
+        cf_handle = await get_codeforces_handle(ctx)
+        if(cf_handle == None):
+            await msg.edit(content=f"{ctx.author.mention} You have not identified your codeforces handle. First do it using ;identify_cf <handle>")
+            return
         current_question = await get_current_question(id, 'cf')
         if(current_question == None):
             await msg.edit(content=f"{ctx.author.mention} You have not been given any problem yet. Please use ;gitgud cf to get a problem :slight_smile: ")
             return
         await msg.edit(content=f"{ctx.author.mention} Checking :face_with_monocle: if you have solved the problem....")
-        cf_handle = await get_codeforces_handle(ctx)
         check = await check_if_solved(ctx, cf_handle, current_question, 'cf')
         if(check):
             await update_point_cf(ctx, current_question[2])
@@ -237,11 +242,14 @@ async def gotgud(ctx):
             return
     else:
         id = ctx.author.id
+        ac_handle = await get_atcoder_handle(ctx)
+        if(ac_handle == None):
+            await msg.edit(content=f"{ctx.author.mention} You have not identified your atcoder handle. First do it using ;identify_ac <handle>")
+            return
         current_question = await get_current_question(id, 'ac')
         if(current_question == None):
             await msg.edit(content=f"{ctx.author.mention} You have not been given any problem yet. Please use ;gitgud ac to get a problem :slight_smile: ")
             return
-        ac_handle = await get_atcoder_handle(ctx)
         check = await check_if_solved_ac(ctx, ac_handle, current_question)
         if(check):
             await update_point_at(ctx, current_question[2])
@@ -256,14 +264,16 @@ async def gotgud(ctx):
 async def nogud_cf(ctx):
 
     date_time = datetime.datetime.now()
-    try:
-        problem = await get_current_question(ctx.author.id, 'cf')
-        time_date = str(problem[1])
-        date_time = datetime.datetime.now() - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]), int(
-            time_date[8:10]), int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19], 0))
-
-    except:
+    problem = await get_current_question(ctx.author.id, 'cf')
+    if(problem == None):
         return ctx.author.mention+" Currently you don't have any problem use ;gitgud cf to get a problem :slight_smile:"
+    
+    time_date = str(problem[1])
+    try:
+        date_time = datetime.datetime.now() - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]), int(
+            time_date[8:10]), int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19]))
+    except Exception as e:
+        print(e)  
 
     print(date_time.total_seconds())
     if date_time.total_seconds() > 7200:
@@ -276,14 +286,15 @@ async def nogud_cf(ctx):
 async def nogud_atcoder(ctx):
 
     date_time = datetime.datetime.now()
-    try:
-        problem = await get_current_question(ctx.author.id, 'atcoder')
-        time_date = str(problem[1])
-        date_time = datetime.datetime.now() - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]), int(
-            time_date[8:10]), int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19], 0))
-
-    except:
+    problem = await get_current_question(ctx.author.id, 'atcoder')
+    if problem == None:
         return ctx.author.mention+" Currently you don't have any problem use ;gitgud ac to get a problem :slight_smile:"
+    time_date = str(problem[1])
+    try:
+        date_time = datetime.datetime.now() - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]), int(
+            time_date[8:10]), int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19]))
+    except Exception as e:
+        print(e)
 
     if date_time.total_seconds() > 3600:
         await delete_current_question(ctx.author.id, 'atcoder')
@@ -298,10 +309,10 @@ async def gitlog(ctx):
     msg= await ctx.channel.send(f"{ctx.author.mention} Checking command format ")
     if(len(user_message) < 2):
         await msg.edit(content=f"{ctx.author.mention} Command format is incorrect")
-        return
+        return "error","error"
     if(user_message[1] not in ['cf', 'ac']):
         await msg.edit(content=f"{ctx.author.mention} Please specify the judge correctly. It can be either `cf` or `ac`")
-        return
+        return "error","error"
     await msg.edit(content=f"{ctx.author.mention} Fetching your gitgud list :hourglass_flowing_sand:")
     if(user_message[1] == 'cf'):
         id = ctx.author.id
@@ -352,9 +363,9 @@ async def gimme(ctx):
     cf_handle = await get_codeforces_handle(ctx)
     points = 8
     if(cf_handle == None):
-        await msg.edit(content=f"{ctx.author.mention} You have not identified your codeforces handle. First do it using ;identify_cf <handle>")
+        await msg.edit(content=f"{ctx.author.mention} Please set your codeforces handle first")
         return
-    await msg.edit(content=f"{ctx.author.mention} Thinking of a problem of {user_message[1]} for you :thinking:")
+    
     cf_rating = await get_cf_user_rating(cf_handle)
     cf_rating = (cf_rating//100)*100
     last_checked, last_solved_problems = await get_last_solved_problems(ctx, 'codeforces')
@@ -372,6 +383,7 @@ async def gimme(ctx):
         elif(user_message[2] == '+400'):
             points = 30
         cf_rating += (int(user_message[2][1:]))
+    await msg.edit(content=f"{ctx.author.mention} Thinking of a problem of {user_message[1]} for you :thinking:")
     print(cf_rating)
     print('0')
     if(cf_rating < 1000):

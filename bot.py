@@ -45,16 +45,14 @@ async def run_discord_bot():
         #     await send_message(ctx,user_message,is_private=True) #message is private
         if user_message.split()[0]==";gitlog":
              mydict, msg =  await gitgud.gitlog(ctx)
+             if msg=="error":
+                return
              if(len(mydict)==0):
                 await msg.edit(content=f"{ctx.author.mention} You have not solved any problem yet. use ;gitgud to get a problem")
              else:   
                 await table(ctx,client,['Problem Name','Problem Rating','Points'], mydict, isEmbed=True, current_message=msg)
         if user_message.split()[0]==";next":
-            mylist,msg = await clist_api.nextcontests(ctx)
-            if(len(mylist)==0):
-                msg.edit(content=f"{ctx.author.mention} No contest to display :(")
-            else:
-                await table(ctx,client,['Sr No.','Name','Start Time (dd-mm-yyyy)','Duration(in min.)'], mylist, isEmbed=True,current_message=msg)
+            await clist_api.nextcontests(ctx)
         if user_message.split()[0]==";leaderboard":
             if len(user_message.split())==2:
                 mylist,res = await db.Leaderboard_list(ctx,user_message.split()[1])
@@ -139,4 +137,4 @@ async def run_discord_bot():
 
 
 
-    client.run(TOKEN)
+    client.run("MTA0ODIzNTAxMjcxMTAxMDM2NA.G20kqz.SfNLEjQpu4gJ7HjKpTYDWJkPUURgDhK3nLWaFw")
