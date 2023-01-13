@@ -11,7 +11,7 @@ from rating_roles import rating_role
 
 ##Codeforces
 #Check whether handle exists or not
-def check_cf(username):
+async def check_cf(username):
     url = "https://codeforces.com/profile/" + username
     url_home = "https://codeforces.com/"
     response = requests.get(url)
@@ -23,7 +23,7 @@ def check_cf(username):
         return True
 
 #Fetching firstName from codeforces
-def firstname(cf_handle):
+async def firstname(cf_handle):
     cf_api = "https://codeforces.com/api/user.info?handles=" + cf_handle
     response = requests.get(cf_api)
     cf_list = response.json()['result'][0]
@@ -36,7 +36,7 @@ def firstname(cf_handle):
 
 ##CodeChef
 #Check whether handle exists or not
-def check_cc(cc_handle):
+async def check_cc(cc_handle):
     url = "https://www.codechef.com/users/" + cc_handle
     url_home = "https://www.codechef.com/"
     response = requests.get(url)
@@ -48,7 +48,7 @@ def check_cc(cc_handle):
         return True
 
 #Check Name from codechef
-def check_Name(cc_handle, random_string):
+async def check_Name(cc_handle, random_string):
     url = "https://www.codechef.com//users/" + cc_handle
     r = requests.get(url)   
     soup = BeautifulSoup(r.content, 'html.parser')  
@@ -62,7 +62,7 @@ def check_Name(cc_handle, random_string):
 
 ##AtCoder
 #Check whether handle exists or not
-def check_ac(ac_handle):
+async def check_ac(ac_handle):
     url = "https://atcoder.jp/users/" + ac_handle
     r = requests.get(url)
     if r.status_code == 200:
@@ -103,14 +103,15 @@ async def handle_verification(ctx,bot):
             await msg.edit(content = f"{message.author.mention} you are already identified on codeforces... :sweat_smile: ")
             return
         cf_handle = msg_data[1]
-        if check_cf(msg_data[1]):
+        check1=await check_cf(msg_data[1])
+        if check1:
             random_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
             output = "Set your firstname as `" + random_string + "` in your codeforces account within 60 seconds... Click [here](https://codeforces.com/settings/social) to set your firstname..."
             await msg.delete()
             await ctx.channel.send(embed=discord.Embed(description=f"{message.author.mention} {output}", color=discord.Color.blue()))
             for i in range(30):
                 await asyncio.sleep(2)
-                first_name = firstname(cf_handle)
+                first_name = await firstname(cf_handle)
                 if first_name == random_string:
                     await add_codeforces_handle(ctx, cf_handle)
                     rating=await get_cf_user_rating(cf_handle)
@@ -133,7 +134,8 @@ async def handle_verification(ctx,bot):
             await msg.edit(content=f"{message.author.mention} you are already identified on atcoder... :sweat_smile: ")
             return
         ac_handle = msg_data[1]
-        if check_ac(msg_data[1]):
+        check1 = await check_ac(msg_data[1])
+        if check1:
             random_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
             output = "Set your Affiliation as `" + random_string + "` in your Atcoder account within 60 seconds...\n Click [here](https://atcoder.jp/settings) to set you affilation"
             await msg.delete()
@@ -153,13 +155,15 @@ async def handle_verification(ctx,bot):
 
     elif msg_data[0] == ';identify_cc':
         cc_handle = msg_data[1]
-        if check_cc(msg_data[1]):
+        check1=await check_cc(msg_data[1])
+        if check1:
             random_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
             output = "set your Name as `" + random_string + "` in your codechef account within 60 seconds..."
             await msg.edit(content=f"{message.author.mention} {output}")
             for i in range(30):
                 await asyncio.sleep(2)
-                if check_Name(cc_handle, random_string):
+                check2 = await check_Name(cc_handle, random_string)
+                if check2:
                     #########################
                     # store in database if successfull then print
                     await message.channel.send(f"{message.author.mention} you are successfully identified on codechef... >_<")

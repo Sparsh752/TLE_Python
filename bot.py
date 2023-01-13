@@ -30,7 +30,7 @@ async def run_discord_bot():
     @client.event
     async def on_ready():                                                               #logged in successfully
         print('hello')
-        await reminder(client)
+        # await reminder(client)
     @client.event
     async def on_message(ctx):
         if ctx.author == client.user:                                               #will keep messaging itself without this
@@ -131,7 +131,8 @@ async def run_discord_bot():
             else:
                 await ctx.channel.send(f"{ctx.author.mention} Please follow the message format")
         if user_message.split()[0]==";help":
-            await ctx.channel.send(embed=help_command());
+            content=await help_command()
+            await ctx.channel.send(embed=content)
         else:
             await send_message(ctx,user_message,is_private=False)#message is not private
 

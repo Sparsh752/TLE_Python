@@ -1,6 +1,6 @@
 import discord
 
-def help():
+async def help():
     content_body = [
         [";help", "Shows this message"],
         [";hello", "greets you"],
