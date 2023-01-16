@@ -4,6 +4,7 @@ import responses
 from _handle_verification_ import handle_verification
 import gitgud
 from paginator import table
+import asyncio
 import clist_api
 import db
 import stalk
@@ -12,6 +13,10 @@ import challenge
 from graphs import rating_vs_problems, problem_vs_time,performance
 from help import help as help_command
 import os
+async def reconnect():
+    await asyncio.sleep(10)
+    await client.close()
+    await client.connect()
 client = None
 async def send_message(ctx,user_message,is_private):                                      #giving back response to the user
     try:
@@ -31,6 +36,14 @@ async def run_discord_bot():
     async def on_ready():                                                               #logged in successfully
         print('hello')
         # await reminder(client)
+    @client.event
+    async def on_disconnect():
+        await reconnect()
+    @client.event
+    async def on_connection_error(error):
+        print(error)
+        await reconnect()
+
     @client.event
     async def on_message(ctx):
         if ctx.author == client.user:                                               #will keep messaging itself without this

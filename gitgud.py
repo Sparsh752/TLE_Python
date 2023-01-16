@@ -197,11 +197,11 @@ async def check_if_solved(ctx, cf_handle, problem, platform):
 
 
 async def check_if_solved_ac(ctx, ac_handle, current_question):
-    url = "https://atcoder.jp/contests/"+str(current_question[0][:-2])+"/submissions?f.Task="+str(
-        current_question[0])+"&f.LanguageName=&f.Status=AC&f.User="+str(ac_handle)
-    response = requests.get(url)
-    S = BeautifulSoup(response.text, 'lxml')
-    if len(S.find_all('td', class_='no-break')) == 0:
+    url = 'https://atcoder.jp/contests/'+str(current_question[0][:-2])+'/submissions?f.Task='+str(current_question[0])+'&f.LanguageName=&f.Status=AC&f.User='+str(ac_handle)
+    response = requests.get(url.encode('utf-8'))
+    check1=response.text.find('No Submissions')
+    print(check1)
+    if check1 != -1:
         return False
     else:
         return True
@@ -251,6 +251,7 @@ async def gotgud(ctx):
             await msg.edit(content=f"{ctx.author.mention} You have not been given any problem yet. Please use ;gitgud ac to get a problem :slight_smile: ")
             return
         check = await check_if_solved_ac(ctx, ac_handle, current_question)
+        print(check)
         if(check):
             await update_point_at(ctx, current_question[2])
             await add_in_gitgud_list(id, 'ac', current_question)
@@ -263,18 +264,20 @@ async def gotgud(ctx):
 
 async def nogud_cf(ctx):
 
-    date_time = datetime.datetime.now()
     problem = await get_current_question(ctx.author.id, 'cf')
     if(problem == None):
         return ctx.author.mention+" Currently you don't have any problem use ;gitgud cf to get a problem :slight_smile:"
     
     time_date = str(problem[1])
+    print(time_date)
     try:
-        date_time = datetime.datetime.now() - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]), int(
-            time_date[8:10]), int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19]))
+        # date_time = datetime.datetime.now() - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]), int(
+        #     time_date[8:10]), int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19]))
+        date_time = datetime.datetime.now() - datetime.datetime.strptime(time_date,"%Y-%m-%d %H:%M:%S.%f+00:00")
     except Exception as e:
         print(e)  
-
+    print(datetime.datetime.now(),datetime.datetime.strptime(time_date,"%Y-%m-%d %H:%M:%S.%f+00:00"))
+    print(date_time)
     print(date_time.total_seconds())
     if date_time.total_seconds() > 7200:
         await delete_current_question(ctx.author.id, 'cf')
@@ -285,17 +288,20 @@ async def nogud_cf(ctx):
 
 async def nogud_atcoder(ctx):
 
-    date_time = datetime.datetime.now()
     problem = await get_current_question(ctx.author.id, 'atcoder')
     if problem == None:
         return ctx.author.mention+" Currently you don't have any problem use ;gitgud ac to get a problem :slight_smile:"
     time_date = str(problem[1])
+    print(time_date)
     try:
-        date_time = datetime.datetime.now() - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]), int(
-            time_date[8:10]), int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19]))
+        # date_time = datetime.datetime.now() - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]), int(
+        #     time_date[8:10]), int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19]))
+        date_time = datetime.datetime.now() - datetime.datetime.strptime(time_date,"%Y-%m-%d %H:%M:%S.%f+00:00")
     except Exception as e:
         print(e)
-
+    print(datetime.datetime.now(),datetime.datetime.strptime(time_date,"%Y-%m-%d %H:%M:%S.%f+00:00"))
+    print(date_time)
+    print(date_time.total_seconds())
     if date_time.total_seconds() > 3600:
         await delete_current_question(ctx.author.id, 'atcoder')
         return ctx.author.mention+' Challenge skipped :confused:'

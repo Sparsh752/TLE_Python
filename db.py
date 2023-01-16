@@ -257,6 +257,8 @@ async def get_current_question(id, platform):
         if problem.to_dict()=={}:
             return None
         problem = problem.to_dict()['problem_solving_cf']
+        if problem == None:
+            return None
         if len(problem)==0:
             return None
         return problem
@@ -265,6 +267,8 @@ async def get_current_question(id, platform):
         if problem.to_dict()=={}:
             return None
         problem = problem.to_dict()['problem_solving_atcoder']
+        if problem == None:
+            return None
         if len(problem)==0:
             return None
         return problem
