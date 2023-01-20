@@ -401,7 +401,7 @@ async def gimme(ctx):
         await msg.edit(content=f"{ctx.author.mention} Sorry we could not give you a problem of this tag in this rating range. Please try with some other rating range :frowning: ")
         return
     iter = 0
-    while(iter < 50 and random_problem in solved_problems):
+    while(iter < 50 and random_problem['prob_id'] in solved_problems):
         random_problem = cf_get_random_question_tag(user_message[1], cf_rating)
         iter += 1
     if(iter == 50):
