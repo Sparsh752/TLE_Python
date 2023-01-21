@@ -37,7 +37,8 @@ async def nextcontests(ctx):
         content = ''
         await msg.delete()
         for contest in mylist:
-            content += "_"+contest['Name']+"_"+'\n'+'Start Time (dd-mm-yyyy):\a'+contest['Start Time (dd-mm-yyyy)'] + \
+            timings=datetime.datetime.strptime(contest['Start Time (dd-mm-yyyy)'],"%d-%m-%Y %H:%M")+datetime.timedelta(minutes=330)
+            content += "_"+contest['Name']+"_"+'\n'+'Start Time (dd-mm-yyyy):\a'+str(timings.day//10)+str(timings.day%10)+"-"+str(timings.month//10)+str(timings.month%10)+"-"+str(timings.year)+" "+str(timings.hour//10)+str(timings.hour%10)+":"+str(timings.minute//10)+str(timings.minute%10) + \
                 '\n' + 'Platform:\a'+contest['Platform']+\
                 '\n'+'Duration(in min.):\a' + \
                 contest['Duration(in min.)']+'\n\n\n'
