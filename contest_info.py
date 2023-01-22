@@ -138,6 +138,8 @@ async def atcoder_rating_changes(event_name, ctx):
         # if the response is not empty
         if response['objects']:
             # if the user is a contestant
+            if "is_rated" not in response['objects'][0]['more_fields'].keys():
+                continue
             if response['objects'][0]['more_fields']['is_rated'] == True:
                 # get the data of the user
                 data = response['objects'][0]
