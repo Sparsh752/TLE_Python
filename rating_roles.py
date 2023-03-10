@@ -1,7 +1,7 @@
 from discord.utils import get
-
+import os
 async def remove_rating_roles(username):
-    rating_roles = ["Newbie", "Pupil", "Specialist", "Expert", "Candidate_Master", "Master", "Internation_Master", "Grandmaster", "International_Grandmaster", "Legendary_Grandmaster"]
+    rating_roles = ["Newbie", "Pupil", "Specialist", "Expert", "Candidate Master", "Master", "Internation Master", "Grandmaster", "International Grandmaster", "Legendary Grandmaster"]
     for role in rating_roles:
         for user_role in username.roles:
             if role == user_role.name:
@@ -9,7 +9,8 @@ async def remove_rating_roles(username):
     print("All roles removed")
 
 async def rating_role(id, rating,bot,channel):
-    guild = await bot.fetch_guild(1048212913539784805)
+    GUILD=os.environ.get('GUILD')
+    guild = await bot.fetch_guild(GUILD)
     user = await guild.query_members(user_ids=[id])
     username=user[0]
     msg = await channel.send(f"Fetching rating changes")
@@ -45,7 +46,7 @@ async def rating_role(id, rating,bot,channel):
         await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
         return
     elif (rating < 2100):
-        role = get(username.guild.roles, name="Candidate_Master")
+        role = get(username.guild.roles, name="Candidate Master")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
@@ -59,7 +60,7 @@ async def rating_role(id, rating,bot,channel):
         await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
         return
     elif (rating < 2400):
-        role = get(username.guild.roles, name="International_Master")
+        role = get(username.guild.roles, name="International Master")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
@@ -73,14 +74,14 @@ async def rating_role(id, rating,bot,channel):
         await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
         return
     elif (rating < 3000):
-        role = get(username.guild.roles, name="International_Grandmaster")
+        role = get(username.guild.roles, name="International Grandmaster")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
         await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
         return
     else:
-        role = get(username.guild.roles, name="Legendary_Grandmaster")
+        role = get(username.guild.roles, name="Legendary Grandmaster")
         await remove_rating_roles(username)
         await username.add_roles(role)
         print("Role added")
