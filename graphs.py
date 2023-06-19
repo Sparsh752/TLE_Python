@@ -5,14 +5,15 @@ import json
 import requests
 from db import get_codeforces_handle
 
+# creates a bar graph for the number of problems solved graph
 async def bargraph(ctx,ndict, user, width=500, height=300):
     qc = QuickChart()
     qc.width = width
     qc.height = height
-    labels = []
-    data1 = []
-    data2 = []
-    data3 = []
+    labels = [] # each rating is a label in the graph
+    data1 = [] # problems solved in contest
+    data2 = [] # problems solved in virtual
+    data3 = [] # problems solved in practice
     for key in ndict.keys():
         labels.append(key)
     labels.sort()
@@ -27,7 +28,7 @@ async def bargraph(ctx,ndict, user, width=500, height=300):
         "data": {
             "labels": labels,
             "datasets": [{
-                "label": "Constest",
+                "label": "Contest",
                 "data": data1
             },
                 {
@@ -63,7 +64,7 @@ async def bargraph(ctx,ndict, user, width=500, height=300):
     page.set_image(url=qc.get_short_url())
     await ctx.channel.send(embed=page)
 
-
+# main function which returns the graph of rating vs number of problems solved
 async def rating_vs_problems(ctx):
     user = await get_codeforces_handle(ctx)
     if(user == None):
@@ -80,14 +81,14 @@ async def rating_vs_problems(ctx):
                 if (rating not in prob_rating.keys()):
                     prob_rating[rating] = [0, 0, 0]
                 if (submission['author']['participantType'] == 'CONTESTANT'):
-                    prob_rating[rating][0] += 1
+                    prob_rating[rating][0] += 1 # counting the number of questions solved while in contest
                 elif (submission['author']['participantType'] == 'VIRTUAL'):
-                    prob_rating[rating][1] += 1
+                    prob_rating[rating][1] += 1 # counting the number of questions solved while in virtual contest
                 elif (submission['author']['participantType'] == 'PRACTICE'):
-                    prob_rating[rating][2] += 1
+                    prob_rating[rating][2] += 1 # counting the number of questions solved while in practice
     await bargraph(ctx,prob_rating, user)
 
-
+# calculates the graph required by the function problem_vs_time
 async def timegraph(ctx,data, user, width=500, height=300):
     qc = QuickChart()
     qc.width = width
@@ -167,7 +168,7 @@ async def timegraph(ctx,data, user, width=500, height=300):
     page.set_image(url=qc.get_short_url())
     await ctx.channel.send(embed=page)
 
-
+# calculates the cumulative number of problems done over time
 async def problem_vs_time(ctx):
     user = await get_codeforces_handle(ctx)
     if(user == None):
@@ -205,6 +206,7 @@ async def problem_vs_time(ctx):
         )
     await timegraph(ctx,data, user)
 
+# calculates the graph required to the function performance
 def timegraph2(data, user, width=500, height=300):
     qc = QuickChart()
     qc.width = width
