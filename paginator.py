@@ -8,6 +8,7 @@ def embed_paginator(head_row, ndict, page_row):
     pages = []
     for i in range(no_pages):
 
+        # creates a single page of the embed
         content_body = ''
         for k in head_row:
             content_body += str(k) + '\a\a\a\a\a\a\a'
@@ -18,7 +19,7 @@ def embed_paginator(head_row, ndict, page_row):
             for head in head_row:
                 content_body += str(ndict[j][head]) + '\a\a\a\a\a\a\a'
             content_body += '\n'
-
+        # renders a single page
         page = discord.Embed( 
             description=content_body,
             color = discord.Color.blue()
@@ -42,7 +43,7 @@ def paginator(head_row, ndict, line_after_first_col, page_row):
             for head in head_row:
                 line.append(ndict[j][head])
             page.append(line)
-        
+        #converts table of one page into string
         output = t2a(
             header=head_row,
             body=page,
@@ -56,14 +57,13 @@ def paginator(head_row, ndict, line_after_first_col, page_row):
 async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=5, isEmbed=False,isChannel=False, current_message=None):
     buttons = [u"\u23EA", u"\u2B05", u"\u27A1", u"\u23E9"] # skip to start, left, right, skip to end
     current = 0
-
+    #creates pages
     if isEmbed:
         output = embed_paginator(head_row, ndict, page_row)
     else:
         output = paginator(head_row, ndict, line_after_first_col, page_row)
-
-    ##if message requires Title then make an embed and print here------
-    if current_message!=None:
+    #replace last page
+    if current_message != None:
         await current_message.delete()
         await ctx.channel.send(f"{ctx.author.mention} Here is the list you wanted: :nerd:")
     if isChannel:
@@ -76,20 +76,20 @@ async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=
             msg =  await ctx.channel.send(embed=output[current])
         else:
             msg =  await ctx.channel.send(f"```\n{output[current]}\npage: {current+1}/{len(output)}\n```")
-    
+    # end if only single page required
     if len(output) < 2:
         return
-
+    # adds reaction buttons for navigating through pages
     for button in buttons:
         await msg.add_reaction(button)
-
+    # navigation through pages
     while True:
         try:
             if isChannel:
                 reaction, user = await bot.wait_for("reaction_add", check=lambda reaction, user: user in bot.get_all_members() and reaction.emoji in buttons, timeout=60.0)
             else:
                 reaction, user = await bot.wait_for("reaction_add", check=lambda reaction, user: user == ctx.author and reaction.emoji in buttons, timeout=60.0)
-
+        # time for navigating is up, resets on each reaction
         except asyncio.TimeoutError:
             for button in buttons:
                 await msg.remove_reaction(button, bot.user)
@@ -110,11 +110,11 @@ async def table(ctx, bot, head_row, ndict, line_after_first_col=False, page_row=
 
             elif reaction.emoji == u"\u23E9":
                 current = len(output)-1
-
+            # remove user reaction after page changed
             for button in buttons:
                 if reaction.emoji==button:
                     await msg.remove_reaction(button, user)
-
+            # change message only if a new page was requested
             if current != previous_page:
                 if isEmbed:
                     await msg.edit(embed=output[current])
