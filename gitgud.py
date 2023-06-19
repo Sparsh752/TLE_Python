@@ -1,3 +1,4 @@
+# Importing the required libraries
 import requests
 import discord
 from bs4 import BeautifulSoup
@@ -8,30 +9,42 @@ from random_question import cf_get_random_question_rating, ac_get_random_questio
 import datetime
 import math
 
-
+# returns a problem of given contest id and index from codeforces
 async def get_problem_cf(contest_id, problem_index):
+
     url = 'https://codeforces.com/api/problemset.problems'
+    # get the response from the url
     response = requests.get(url)
     data = response.json()
+    # problems from the api
     problems = data['result']['problems']
     for problem in problems:
+        # if problem has required contest id and index
         if problem['contestId'] == int(contest_id) and problem['index'] == str(problem_index):
             return (problem['name'], problem['rating'], 'https://codeforces.com/contest/'+str(contest_id)+'/problem/'+str(problem_index))
+    # if no problem is found in API call with the required parameters
     return None
 
 
+# returns a problem of given contest id and index from codeforces
 async def get_problem_atcoder(contest_id, problem_index):
     url = 'https://kenkoooo.com/atcoder/resources/problems.json'
+    # get the response from the url
     response = requests.get(url)
+    # problems from the api
     data = response.json()
     problem_id = str(contest_id)+'_'+str(problem_index)
     for problem in data:
+        # if problem has required contest id and index
         if problem['contest_id'] == str(contest_id) and str(problem['problem_index']).capitalize() == str(problem_index).capitalize():
+            # get the difficulty of the problem
             difficulty = await get_ac_problem_difficulty(problem_id)
             difficulty = int(difficulty)
             return (problem['name'], difficulty, 'https://atcoder.jp/contests/'+str(contest_id)+'/tasks/'+str(problem_id))
+    # if no problem is found in API call with the required parameters
+    return None
 
-
+# returns the current rating of the given codeforces handle
 async def get_cf_user_rating(codeforces_handle):
     url = f'https://codeforces.com/api/user.rating?handle={codeforces_handle}'
     data = requests.get(url).json()
@@ -41,16 +54,19 @@ async def get_cf_user_rating(codeforces_handle):
         return None
 
 
+# returns the current rating of the given atcoder handle
 async def get_ac_user_rating(atcoder_handle):
     url = f'https://atcoder.jp/users/{atcoder_handle}/history/json'
     data = requests.get(url).json()
     return data[-1]['NewRating']
 
 
+# returns the difficulty of the problem based on kenkoooo
 async def get_ac_problem_difficulty(problem_id):
     url = f'https://kenkoooo.com/atcoder/resources/problem-models.json'
     data = requests.get(url).json()
     return data[problem_id]['difficulty']
+
 
 
 async def convertAC2CFrating(a):
