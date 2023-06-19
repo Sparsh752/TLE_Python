@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from db import get_last_solved_problems, find_solved_codeforces, get_codeforces_handle, get_atcoder_handle, get_current_question, delete_current_question
 from db import problem_solving_cf, problem_solving_ac, find_solved_atcoder, update_point_cf, update_point_at
 from db import add_in_gitgud_list, get_gitgud_list
-from codeforces_scraping import cf_get_random_question_rating, ac_get_random_question, cf_get_random_question_tag
+from random_question import cf_get_random_question_rating, ac_get_random_question, cf_get_random_question_tag
 import datetime
 import math
 

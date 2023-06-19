@@ -1,5 +1,4 @@
 import random
-from bs4 import BeautifulSoup
 import requests
 
 # function for verification of the user

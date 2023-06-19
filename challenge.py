@@ -1,6 +1,6 @@
 from db import get_codeforces_handle,get_last_solved_problems,find_solved_codeforces,get_atcoder_handle,find_solved_atcoder
 from gitgud import get_cf_user_rating,get_ac_user_rating,check_if_solved,get_ac_problem_difficulty,convertAC2CFrating,check_if_solved_ac
-from codeforces_scraping import cf_get_random_question_rating,ac_get_random_question
+from random_question import cf_get_random_question_rating,ac_get_random_question
 import asyncio
 import discord
 import time
