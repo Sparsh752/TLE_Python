@@ -132,12 +132,9 @@ async def atcoder_rating_changes(event_name, ctx):
     for handle in atcoder_handle:                                # iterate over all the handles
         url = URL_BASE+'statistics/?'+clist_token+'&contest_id='+str(contest_id)+'&account_id='+str(handle[1])+'&with_problems=True&with_more_fields=True'           # url to be fetched
         response = requests.get(url)
-        print(response.status_code)
         if response.status_code!=200:
-            print(handle)
             continue
         response = response.json()                        # fetching response
-
         # if the response is not empty
         if response['objects']:
             # if the user is a contestant
@@ -164,9 +161,6 @@ async def atcoder_rating_changes(event_name, ctx):
     returnlist = sorted(returnlist, key=itemgetter('rank'))
     return returnlist, header, msg  # returning the list
 
-    # except Exception as e:
-    #     print(e)
-    #     return None,"error"
 
 
 # function to get the rating changes of all users in the databse that participated in the last 

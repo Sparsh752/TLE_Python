@@ -120,7 +120,7 @@ async def run_discord_bot():
                     if header=="error":
                         await msg.edit(content=f"{ctx.author.mention} Perhaps the contest id is invalid 🧐")
                     elif(len(mylist)==0):
-                        await msg.edit(content=f"{ctx.author.mention} No user gave this contest 😲")
+                        await msg.edit(content=f"{ctx.author.mention} No user gave this contest or contest is unrated 😲")
                     else:
                         await table(ctx,client,header,mylist,current_message=msg)
                 else:
