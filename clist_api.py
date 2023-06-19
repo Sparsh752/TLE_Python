@@ -1,9 +1,8 @@
 import requests
 import datetime
 import discord
-URL_BASE = 'https://clist.by/api/v2/'
+URL_BASE = 'https://clist.by/api/v2/' # the common url used in all clist api calls
 clist_token = "username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
-
 
 async def nextcontests(ctx):
     now = datetime.datetime.now()
@@ -17,9 +16,10 @@ async def nextcontests(ctx):
         resp = requests.get(url)  # fetches response from the url
         contests = resp.json()['objects']  # splitting into json objects
         count = 1
-        mylist = []
+        mylist = [] # list of contests to be returned
         for item in contests:
-            mydict = {}
+            mydict = {} # holds information about a contest
+            # checking the url length so that it's display is not awkward
             if (len(item['event']) > 15):
                 string = item['event']
                 mydict['Name'] = f'[{string}]({item["href"]})'
@@ -29,12 +29,18 @@ async def nextcontests(ctx):
                 item['start'][4:8]+item['start'][:4]+" "+item['start'][11:16]
             mydict['Duration(in min.)'] = str(item['duration']/60)
             mydict['Platform'] = item['resource']
+            # 1 -> codeforces
+            # 2 -> codechef
+            # 25 -> usaco
+            # 73 -> hackerearth
+            # 93 -> atcoder
             if(item['resource_id'] in [1,93,2,73,25]):
                 count = count+1
                 mylist.append(mydict)
             if(count == 11):
                 break
         content = ''
+        # deletes the previous "looking for upcoming contests" message
         await msg.delete()
         for contest in mylist:
             timings=datetime.datetime.strptime(contest['Start Time (dd-mm-yyyy)'],"%d-%m-%Y %H:%M")+datetime.timedelta(minutes=330)
@@ -50,7 +56,7 @@ async def nextcontests(ctx):
         await ctx.channel.send("Sorry couldn't fetch the data. Please try again later.")
 
 
-# function to convert codeforces handle to codeforces id
+# function to convert codeforces handle to codeforces id to facilitate clist api call
 def codeforces_handle_to_number(handle_name):
     url = URL_BASE+'account/?'+clist_token+'&resource_id=1' + \
         '&handle='+handle_name  # url of the to be fetched
