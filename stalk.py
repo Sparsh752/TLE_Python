@@ -24,8 +24,8 @@ async def stalk_user(ctx,codeforces_handle,hardest=False,R=0):
     for obj in data:
         if obj['verdict']=='OK':
             rounded_dt1 = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0) #Current UTC datetime rounded to beginning of day 
-            rounded_dt2 = datetime.fromtimestamp(obj['creationTimeSeconds'],timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
-            time_delta=(rounded_dt1-rounded_dt2).days #Rounding up the date stored in obj to beginning of day
+            rounded_dt2 = datetime.fromtimestamp(obj['creationTimeSeconds'],timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0) #Rounding up the date stored in obj to beginning of day
+            time_delta=(rounded_dt1-rounded_dt2).days #Finding the difference in days between the two
 
             #Converting numeric difference in days to string
             if time_delta==0:
