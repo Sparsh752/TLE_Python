@@ -5,7 +5,7 @@ import asyncio
 from operator import itemgetter
 import rating_roles
 import os
-URL_BASE = 'https://clist.by/api/v2/'
+URL_BASE = 'https://clist.by/api/v2/' # common url for clist api call
 clist_token = "username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
 
 
@@ -26,7 +26,7 @@ async def codeforces_contest_id_finder(event_name):
     except Exception as e:  # tackiling errors
         print(e)
 
-
+# used when someone has given a contest as an unrated user
 def fun(a):  # function to return -- if a is none
     if a == None:
         return "--"
@@ -34,7 +34,8 @@ def fun(a):  # function to return -- if a is none
         return a
 
 
-# function to get the rating changes of all users in codeforces
+# function to get the rating changes and standing of all users in the database that participated in 
+# the contest being given by the user
 async def codeforces_rating_changes(event_name, ctx):
     msg = await ctx.channel.send(f"{ctx.author.mention} Getting data for contest `{event_name}` from codeforces ...")
     # get all the codeforces handles from the database
@@ -75,7 +76,7 @@ async def codeforces_rating_changes(event_name, ctx):
     return returnlist, header, msg  # returning the list
 
 
-# function to convert cf contest name to contest id
+# function to convert atcoder contest name to contest id
 async def atcoder_contest_id_finder(event_name):
     url = URL_BASE+'contest/?'+clist_token+'&resource_id=93' + \
         '&order_by=-start&limit=1000'  # url to be fetched
@@ -93,7 +94,7 @@ async def atcoder_contest_id_finder(event_name):
         print(e)
 
 
-# function to get the rating changes of all users in codeforces
+# function to get the rating changes of all users in atcoder
 async def atcoder_rating_changes(event_name, ctx):
     msg = await ctx.channel.send(f"{ctx.author.mention} Getting data for contest `{event_name}` from atcoder ...")
     # get all the codeforces handles from the database
@@ -166,7 +167,8 @@ async def atcoder_rating_changes(event_name, ctx):
     #     return None,"error"
 
 
-# function to get the rating changes of all users in codeforces
+# function to get the rating changes of all users in the databse that participated in the last 
+# contest conducted on codeforces
 async def codeforces_rating_changes_shower(event_name, bot, channel):
     # get all the codeforces handles from the database
     codeforces_handle = await db.get_all_codeforces_handles()
