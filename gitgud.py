@@ -68,7 +68,7 @@ async def get_ac_problem_difficulty(problem_id):
     return data[problem_id]['difficulty']
 
 
-
+# converts atcoder's ratings to codeforces
 async def convertAC2CFrating(a):
     x1 = 0
     x2 = 3900
@@ -193,9 +193,11 @@ async def gitgud(ctx):
         await problem_solving_ac(ctx, random_problem['problem']['id'], points)
 
 
+# returns true or false based on whether or not given problem is solved by given cf_handle on given platform
 async def check_if_solved(ctx, cf_handle, problem, platform):
     if(platform == 'cf'):
         last_checked, last_solved_problems = await get_last_solved_problems(ctx, 'codeforces')
+        # list of all solved problems on codeforces
         solved_problems = await find_solved_codeforces(ctx, cf_handle, last_solved_problems, last_checked)
         if(problem[0] in solved_problems):
             return True
@@ -203,15 +205,14 @@ async def check_if_solved(ctx, cf_handle, problem, platform):
             return False
     else:
         last_checked, last_solved_problems = await get_last_solved_problems(ctx, 'atcoder')
+        # list of all solved problems on atcoder
         solved_problems = await find_solved_atcoder(ctx, cf_handle, last_solved_problems, last_checked)
-        print(problem[0])
-        print(solved_problems)
         if(str(problem[0]) in solved_problems):
             return True
         else:
             return False
 
-
+# returns true or false based on current_question is done by ac_handle or not
 async def check_if_solved_ac(ctx, ac_handle, current_question):
     url = 'https://atcoder.jp/contests/'+str(current_question[0][:-2])+'/submissions?f.Task='+str(current_question[0])+'&f.LanguageName=&f.Status=AC&f.User='+str(ac_handle)
     response = requests.get(url.encode('utf-8'))
