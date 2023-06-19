@@ -177,13 +177,15 @@ async def find_solved_codeforces(ctx,codeforces_handle, last_solved_codeforces, 
     # If the user has submitted any problem after the last checked time then we need to find the solved problems from the last checked time to the current time
     url = "https://codeforces.com/api/user.status?handle="+str(codeforces_handle)+"&count="+str(total-last_checked_codeforces)
     response = requests.get(url).json()
-    data=response['result']
+    # print(response)
+    if response['status'] == 'OK':
+        data=response['result']
     # Check all the solved problems
-    for obj in data:
-        if obj['verdict']=='OK':
-            last_solved_codeforces.append(str(obj['problem']['contestId'])+':'+str(obj['problem']['index']))
-    last_checked_codeforces += len(data)
-    await update_last_checked_codeforces(ctx, last_solved_codeforces, last_checked_codeforces)
+        for obj in data:
+            if obj['verdict']=='OK':
+                last_solved_codeforces.append(str(obj['problem']['contestId'])+':'+str(obj['problem']['index']))
+        last_checked_codeforces += len(data)
+        await update_last_checked_codeforces(ctx, last_solved_codeforces, last_checked_codeforces)
     return last_solved_codeforces
     
 # This function is used to find the solved problems of a atcoder handle
