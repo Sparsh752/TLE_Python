@@ -6,7 +6,7 @@ from operator import itemgetter
 import rating_roles
 import os
 URL_BASE = 'https://clist.by/api/v2/' # common url for clist api call
-clist_token = "username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
+clist_token=os.environ.get('clist_token')
 
 
 # function to convert cf contest name to contest id

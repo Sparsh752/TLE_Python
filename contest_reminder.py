@@ -5,10 +5,12 @@ import datetime
 import discord
 import paginator
 from bs4 import BeautifulSoup
+import os
 import contest_info
 
 URL_BASE = 'https://clist.by/api/v2/'
-clist_token="username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
+# clist_token="username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
+clist_token=os.environ.get('clist_token')
 counter=0
 previous_contestId=""
 # This is a function that finds the contest id of the last completed contest
@@ -92,7 +94,7 @@ async def reminder(bot):
             start=str(start)
             time_date=str(datetime.datetime.now(timezone.utc))
             print((str(start[0:4]), str(start[5:7]), str(start[8:10]), str(start[11:13]), str(start[14:16]), str(start[17:19])))
-            # print()
+
             dif_time = datetime.datetime(int(start[0:4]), int(start[5:7]), int(start[8:10]), int(start[11:13]), int(start[14:16]), int(start[17:19], 0)) - datetime.datetime(int(time_date[0:4]), int(time_date[5:7]), int(time_date[8:10]), int(time_date[11:13]), int(time_date[14:16]), int(time_date[17:19]))
             if dif_time.total_seconds()<7201:
                 # If the contest is coming within 2 hours then send a message in the reminders channel
