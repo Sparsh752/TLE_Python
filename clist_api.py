@@ -1,6 +1,7 @@
 import requests
 import datetime
 import discord
+import os
 URL_BASE = 'https://clist.by/api/v2/' # the common url used in all clist api calls
 clist_token=os.environ.get('clist_token')
 
