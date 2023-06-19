@@ -9,9 +9,6 @@ import os
 import contest_info
 
 URL_BASE = 'https://clist.by/api/v2/'
-# clist_token="username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
-# clist_token=os.environ.get('CLIST_TOKEN')
-# from bot import clist_token
 counter=0
 previous_contestId=""
 # This is a function that finds the contest id of the last completed contest

@@ -7,7 +7,6 @@ import rating_roles
 import os
 
 URL_BASE = 'https://clist.by/api/v2/' # common url for clist api call
-# clist_token=os.environ.get('CLIST_TOKEN')
 
 # function to convert cf contest name to contest id
 async def codeforces_contest_id_finder(event_name):
