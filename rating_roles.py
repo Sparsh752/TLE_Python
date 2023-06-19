@@ -1,5 +1,7 @@
 from discord.utils import get
 import os
+
+#Whenever this function is called it will remove all the rating roles for the given username
 async def remove_rating_roles(username):
     rating_roles = ["Newbie", "Pupil", "Specialist", "Expert", "Candidate Master", "Master", "Internation Master", "Grandmaster", "International Grandmaster", "Legendary Grandmaster"]
     for role in rating_roles:
@@ -8,12 +10,16 @@ async def remove_rating_roles(username):
                 await username.remove_roles(user_role)
     print("All roles removed")
 
+#This function will add the rating role to the user based on the rating
 async def rating_role(id, rating,bot,channel):
-    GUILD=os.environ.get('GUILD')
+    #Fetch the guild from the environment variable
+    GUILD=os.environ.get('GUILD') 
     guild = await bot.fetch_guild(GUILD)
+    #Get the user from the id and guild then fetch the username
     user = await guild.query_members(user_ids=[id])
     username=user[0]
     msg = await channel.send(f"Fetching rating changes")
+    #Now based on the rating add the role to the user
     if (rating < 800):
         await remove_rating_roles(username)
         return
