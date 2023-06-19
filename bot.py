@@ -12,6 +12,9 @@ import challenge
 from graphs import rating_vs_problems, problem_vs_time,performance
 from help import help as help_command
 import os
+from dotenv import load_dotenv
+load_dotenv('process.env') 
+
 async def reconnect():
     await asyncio.sleep(10)
     await client.close()
@@ -20,6 +23,7 @@ client = None
 async def run_discord_bot():
     global client
     TOKEN=os.environ.get('TOKEN')    #bot id
+    print(TOKEN)
     print('hello')
     client = discord.Client(intents=discord.Intents.all())                              #giving permissions and intents to the bot
     # guild_id=1048212913539784805        #guild id
@@ -143,8 +147,8 @@ async def run_discord_bot():
         elif user_message.split()[0]==";gotgud":
             return await gitgud.gotgud(ctx)
         elif user_message.split()[0]==";nogud":
-            if len(user_message)==2:
-                if user_message[1]=="cf":
+            if len(user_message.split())==2:
+                if user_message.split()[1]=="cf":
                     return await gitgud.nogud_cf(ctx)
                 elif user_message[1]=="ac":
                     return await gitgud.nogud_atcoder(ctx)
@@ -157,3 +161,4 @@ async def run_discord_bot():
 
 
     client.run(TOKEN)
+    # client.run("MTA0ODIzNTAxMjcxMTAxMDM2NA.GI06If.qX0eaDInv-RozlOEv4JwGcKnLC93f_D0-JRVkI")

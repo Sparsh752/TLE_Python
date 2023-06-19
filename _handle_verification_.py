@@ -86,7 +86,7 @@ def check_Affiliation(ac_handle, random_string):
         return False
 
 async def handle_verification(ctx,bot):
-    channel = discord.utils.get(bot.get_all_channels(), name="reminder")                              
+    channel = discord.utils.get(bot.get_all_channels(), name="reminders")                              
     message=ctx
     username = str(message.author.name)
     user_message = str(message.content)

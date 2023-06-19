@@ -281,10 +281,13 @@ async def nogud_cf(ctx):
     print(date_time.total_seconds())
     if date_time.total_seconds() > 7200:
         await delete_current_question(ctx.author.id, 'cf')
-        return ctx.author.mention+' Challenge skipped :confused:'
+        await ctx.channel.send(f"{ctx.author.mention} Challenge skipped :confused:")
+        # return ctx.author.mention+' Challenge skipped :confused:'
+        return
     else:
-        return ctx.author.mention+ ' Think more you can skip the problem in '+ str(math.ceil((7200-date_time.total_seconds())/60)) +' minutes :thinking:'
-
+        await ctx.channel.send(f"{ctx.author.mention} Think more you can skip the problem in "+ str(math.ceil((7200-date_time.total_seconds())/60)) +" minutes :thinking:")
+        # return ctx.author.mention+ ' Think more you can skip the problem in '+ str(math.ceil((7200-date_time.total_seconds())/60)) +' minutes :thinking:'
+        return 
 
 async def nogud_atcoder(ctx):
 
