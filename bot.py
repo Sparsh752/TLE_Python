@@ -154,8 +154,7 @@ async def run_discord_bot():
                     return await gitgud.nogud_atcoder(ctx)
         elif user_message.split()[0]==";gimme":
             return await gitgud.gimme(ctx)
-        else:
-            return "Sorry, I didn't understand that :smiling_face_with_tear: Try ;help for more info"
+        return "Sorry, I didn't understand that :smiling_face_with_tear: Try ;help for more info"
         
 
 
