@@ -2,10 +2,13 @@ import requests
 import datetime
 import discord
 import os
+
+
 URL_BASE = 'https://clist.by/api/v2/' # the common url used in all clist api calls
-clist_token=os.environ.get('clist_token')
+
 
 async def nextcontests(ctx):
+    clist_token=os.environ.get('CLIST_TOKEN')
     now = datetime.datetime.now()
     year = now.year
     month = now.month
@@ -59,6 +62,7 @@ async def nextcontests(ctx):
 
 # function to convert codeforces handle to codeforces id to facilitate clist api call
 def codeforces_handle_to_number(handle_name):
+    clist_token=os.environ.get('CLIST_TOKEN')
     url = URL_BASE+'account/?'+clist_token+'&resource_id=1' + \
         '&handle='+handle_name  # url of the to be fetched
     if (handle_name == None):  # if handle is none, return none
@@ -72,6 +76,7 @@ def codeforces_handle_to_number(handle_name):
 
 # function to convert atcoder handle to atcoder id similar to codeforces
 def atcoder_handle_to_number(handle_name):
+    clist_token=os.environ.get('CLIST_TOKEN')
     url = URL_BASE+'account/?'+clist_token+'&resource_id=93'+'&handle='+handle_name
     if (handle_name == None):
         return None
@@ -84,6 +89,7 @@ def atcoder_handle_to_number(handle_name):
 
 # function to convert codechef handle to codechef id similar to codeforces
 def codechef_handle_to_number(handle_name):
+    clist_token=os.environ.get('CLIST_TOKEN')
     url = URL_BASE+'account/?'+clist_token+'&resource_id=2'+'&handle='+handle_name
     if (handle_name == None):
         return None

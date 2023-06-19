@@ -5,12 +5,13 @@ import asyncio
 from operator import itemgetter
 import rating_roles
 import os
-URL_BASE = 'https://clist.by/api/v2/' # common url for clist api call
-clist_token=os.environ.get('clist_token')
 
+URL_BASE = 'https://clist.by/api/v2/' # common url for clist api call
+# clist_token=os.environ.get('CLIST_TOKEN')
 
 # function to convert cf contest name to contest id
 async def codeforces_contest_id_finder(event_name):
+    clist_token=os.environ.get('CLIST_TOKEN')
     url = URL_BASE+'contest/?'+clist_token+'&resource_id=1' + \
         '&order_by=-start&limit=1000'  # url to be fetched
     if (event_name == None):  # if event is none, return none
@@ -78,6 +79,7 @@ async def codeforces_rating_changes(event_name, ctx):
 
 # function to convert atcoder contest name to contest id
 async def atcoder_contest_id_finder(event_name):
+    clist_token=os.environ.get('CLIST_TOKEN')
     url = URL_BASE+'contest/?'+clist_token+'&resource_id=93' + \
         '&order_by=-start&limit=1000'  # url to be fetched
     if (event_name == None):  # if event is none, return none
@@ -96,6 +98,7 @@ async def atcoder_contest_id_finder(event_name):
 
 # function to get the rating changes of all users in atcoder
 async def atcoder_rating_changes(event_name, ctx):
+    clist_token=os.environ.get('CLIST_TOKEN')
     msg = await ctx.channel.send(f"{ctx.author.mention} Getting data for contest `{event_name}` from atcoder ...")
     # get all the codeforces handles from the database
     atcoder_handle = await db.get_all_atcoder_handles()

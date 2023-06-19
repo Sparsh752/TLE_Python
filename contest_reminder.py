@@ -10,7 +10,8 @@ import contest_info
 
 URL_BASE = 'https://clist.by/api/v2/'
 # clist_token="username=Sparsh&api_key=c5b41252e84b288521c92f78cc70af99464345f8"
-clist_token=os.environ.get('clist_token')
+# clist_token=os.environ.get('CLIST_TOKEN')
+# from bot import clist_token
 counter=0
 previous_contestId=""
 # This is a function that finds the contest id of the last completed contest
@@ -45,6 +46,7 @@ async def print_final_standings(bot,channel):
 # This is a function that finds the next contest on codeforces, atcoder and codechef
 # This uses Clist API
 async def next_contest(id):
+    clist_token=os.environ.get('CLIST_TOKEN')
     now = datetime.datetime.now(timezone.utc)
     year = now.year
     month = now.month
