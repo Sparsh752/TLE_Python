@@ -9,8 +9,7 @@ class author:
     id=5
 class cttx:
     author=author()
-
-async def challenge_question_cf(ctx,bot):
+async def challenge_question_cf(ctx,bot): # function to challenge a user on codeforces
     user_message = ctx.content
     user_message=user_message.split()
     msg= await ctx.channel.send(f"{ctx.author.mention} Checking the correctness of command")
@@ -23,18 +22,18 @@ async def challenge_question_cf(ctx,bot):
     if len(ctx.mentions) == 0:
             await msg.edit(content=f"{ctx.author.mention} The mentioned user can't be challenged")
             return
-    discord_id = ctx.mentions[0].id
+    discord_id = ctx.mentions[0].id     # discord id of the user to be challenged
     if discord_id == ctx.author.id:
         await msg.edit(content=f"{ctx.author.mention} You cannot challenge yourself 🫠")
         return
     if discord_id == bot.user.id:
         await msg.edit(content=f"{ctx.author.mention} You cannot challenge me 😕")
         return
-    if(user_message[1]=='cf'):
+    if(user_message[1]=='cf'):      # if the challenge is on codeforces judge
         ctx_second=cttx()
         ctx_second.author.id=discord_id
-        cf_handle_1 = await get_codeforces_handle(ctx)
-        cf_handle_2 = await get_codeforces_handle(ctx_second)
+        cf_handle_1 = await get_codeforces_handle(ctx)  # codeforces handle of the user who challenged
+        cf_handle_2 = await get_codeforces_handle(ctx_second) # codeforces handle of the user who is challenged
         if cf_handle_1 is None:
             await msg.edit(content=f"{ctx.author.mention} Please set your Codeforces handle first 😅")
             return
@@ -42,6 +41,7 @@ async def challenge_question_cf(ctx,bot):
             await msg.edit(content=f"{cf_handle_2} Please set your Codeforces handle first 😅")
             return
         await msg.edit(content=f"Wait {ctx.author.mention} the bot is thinking 🤔 a problem for you....... ")
+        # getting appropriate question for the challenge according to the rating of the user from codeforces
         cf_rating = await get_cf_user_rating(cf_handle_2)
         cf_rating = (cf_rating//100)*100
         last_checked_1,last_solved_problems_1 = await get_last_solved_problems(ctx,'codeforces')
@@ -59,11 +59,13 @@ async def challenge_question_cf(ctx,bot):
         if(iter==50):
             await msg.edit(content=f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later 🙁 ")
             return
+        # asking user to accept or reject challenge
         await msg.edit(content=f"{ctx.mentions[0].mention} Do you want to accept the challenge by {ctx.author.mention}?")
         buttons = ["✅", "❌"]
         for button in buttons:
             await msg.add_reaction(button)
         while True:
+            # waiting for a reaction from user
             try:
                 reaction, user = await bot.wait_for("reaction_add", check=lambda reaction, user: user == ctx.mentions[0] and reaction.emoji in buttons, timeout=60.0)
 
@@ -74,6 +76,7 @@ async def challenge_question_cf(ctx,bot):
                 return
             else:
                 if reaction.emoji == "✅":
+                    # challenge accepted
                     await ctx.channel.send(f"{ctx.author.mention} {ctx.mentions[0].mention} has accepted the challenge")
                     title = f"Contest {random_problem['prob_id']} {random_problem['prob_name']}"
                     url = f"{random_problem['prob_link']}"
@@ -99,13 +102,14 @@ async def challenge_question_cf(ctx,bot):
                         else:
                             await asyncio.sleep(10)
                 elif reaction.emoji == "❌":
+                    # challenge rejected
                     await ctx.channel.send(f"{ctx.author.mention} {ctx.mentions[0].mention} has declined the challenge")
                     return
-    else:
+    else:   # if the challenge is on atcoder judge
         ctx_second=cttx()
         ctx_second.author.id=discord_id
-        ac_handle_1 = await get_atcoder_handle(ctx)
-        ac_handle_2 = await get_atcoder_handle(ctx_second)
+        ac_handle_1 = await get_atcoder_handle(ctx)     # getting the atcoder handle for user who challenged 
+        ac_handle_2 = await get_atcoder_handle(ctx_second)  # getting the atcoder handle for user who is challenged
         if ac_handle_1 is None:
             await msg.edit(content=f"{ctx.author.mention} Please set your Atcoder handle first 😅")
             return
@@ -113,6 +117,7 @@ async def challenge_question_cf(ctx,bot):
             await msg.edit(content=f"{ctx.mentions[0].mention} Please set your Atcoder handle first 😅")
             return
         await msg.edit(content=f"Wait {ctx.author.mention} the bot is thinking 🤔 a problem for you....... ")
+         # getting random question for the challenge from atcoder
         last_checked_1,last_solved_problems_1 = await get_last_solved_problems(ctx,'atcoder')
         last_checked_2,last_solved_problems_2 = await get_last_solved_problems(ctx_second,'atcoder')
         solved_problems_1 = await find_solved_atcoder(ctx,ac_handle_1,last_solved_problems_1,last_checked_1)
@@ -146,11 +151,13 @@ async def challenge_question_cf(ctx,bot):
             return
         difficulty = await get_ac_problem_difficulty(random_problem['problem']['id'])
         equv_cf_prob_rating = await convertAC2CFrating(int(difficulty))
+        # asking user to accept or reject challenge
         msg=await msg.edit(content=f"{ctx.mentions[0].mention} Do you want to accept the challenge by {ctx.author.mention}?")
         buttons = ["✅", "❌"]
         for button in buttons:
             await msg.add_reaction(button)
         while True:
+            # waiting for the reaction of the user
             try:
                 reaction, user = await bot.wait_for("reaction_add", check=lambda reaction, user: user == ctx.mentions[0] and reaction.emoji in buttons, timeout=60.0)
 
@@ -160,6 +167,7 @@ async def challenge_question_cf(ctx,bot):
                 return
             else:
                 if reaction.emoji == "✅":
+                    # challenge accepted
                     await ctx.channel.send(f"{ctx.author.mention} {ctx.mentions[0].mention} has accepted the challenge")
                     title = f"{random_problem['problem']['title']}"
                     url = f"{random_problem['prob_link']}"
@@ -186,5 +194,6 @@ async def challenge_question_cf(ctx,bot):
                             await asyncio.sleep(10)
 
                 elif reaction.emoji == "❌":
+                    # challenge rejected
                     await ctx.channel.send(f"{ctx.author.mention} {ctx.mentions[0].mention} has declined the challenge")
                     return
