@@ -1,5 +1,6 @@
 import discord
 
+# A simple message displayed when the ;help command is called
 async def help():
     content_body = [
         [";help", "Shows this message"],
