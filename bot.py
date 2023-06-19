@@ -1,6 +1,5 @@
 import discord
 from contest_reminder import reminder
-import responses
 from _handle_verification_ import handle_verification
 import gitgud
 from paginator import table
@@ -18,13 +17,6 @@ async def reconnect():
     await client.close()
     await client.connect()
 client = None
-async def send_message(ctx,user_message,is_private):                                      #giving back response to the user
-    try:
-        response= await responses.handle_response(str(user_message),ctx)                            #fetching response
-        await ctx.author.send(response) if is_private else await ctx.channel.send(response)     #sending response in dm if private or in channel if not
-    except Exception as e:
-        pass
-
 async def run_discord_bot():
     global client
     TOKEN=os.environ.get('TOKEN')    #bot id
@@ -56,7 +48,7 @@ async def run_discord_bot():
         # if user_message[0]=='?':                                                        #checking if message is private
         #     user_message=user_message[1:]
         #     await send_message(ctx,user_message,is_private=True) #message is private
-        if user_message.split()[0]==";gitlog":
+        elif user_message.split()[0]==";gitlog":
              mydict, msg =  await gitgud.gitlog(ctx)
              if msg=="error":
                 return
@@ -64,9 +56,9 @@ async def run_discord_bot():
                 await msg.edit(content=f"{ctx.author.mention} You have not solved any problem yet. use ;gitgud to get a problem")
              else:   
                 await table(ctx,client,['Problem Name','Problem Rating','Points'], mydict, isEmbed=True, current_message=msg)
-        if user_message.split()[0]==";next":
+        elif user_message.split()[0]==";next":
             await clist_api.nextcontests(ctx)
-        if user_message.split()[0]==";leaderboard":
+        elif user_message.split()[0]==";leaderboard":
             if len(user_message.split())==2:
                 mylist,res = await db.Leaderboard_list(ctx,user_message.split()[1])
                 if(len(mylist)==0):
@@ -81,7 +73,7 @@ async def run_discord_bot():
                     await res.edit(content=f"{ctx.author.mention} Please enter a valid platform")
             else:
                 await ctx.channel.send(f"{ctx.author.mention} Please enter a valid platform")
-        if user_message.split()[0]==";stalk":
+        elif user_message.split()[0]==";stalk":
             if len(user_message.split())==2:
                 temp =  await stalk.stalk_user(ctx,user_message.split()[1])
                 if(temp==None):
@@ -109,7 +101,7 @@ async def run_discord_bot():
                     return
             else:
                 await ctx.channel.send(f"{ctx.author.mention} Please follow the message format")
-        if user_message.split()[0]==";ratingchange":
+        elif user_message.split()[0]==";ratingchange":
             if len(user_message.split())==3:
                 if(user_message.split()[1]=="cf"):
                     mylist,header,msg=await contest_info.codeforces_rating_changes(str(user_message.split()[2]),ctx)
@@ -131,23 +123,36 @@ async def run_discord_bot():
                     await ctx.channel.send(f"{ctx.author.mention} Please specify a valid platform")
             else:
                 await ctx.channel.send(f"{ctx.author.mention} Please follow the message format")
-        if user_message.split()[0]==";performance":
+        elif user_message.split()[0]==";performance":
             if len(user_message.split())==2:
                 await performance(ctx,user_message.split()[1])
             else:
                 await ctx.channel.send(f"{ctx.author.mention} Please follow the message format")
-        if user_message.split()[0]==";graph":
+        elif user_message.split()[0]==";graph":
             if(user_message.split()[1]=="rvp"):
                 await rating_vs_problems(ctx)
             elif(user_message.split()[1]=="pvt"):
                 await problem_vs_time(ctx)
             else:
                 await ctx.channel.send(f"{ctx.author.mention} Please follow the message format")
-        if user_message.split()[0]==";help":
+        elif user_message.split()[0]==";help":
             content=await help_command()
             await ctx.channel.send(embed=content)
+        elif user_message.split()[0]==";gitgud":
+            return await gitgud.gitgud(ctx)
+        elif user_message.split()[0]==";gotgud":
+            return await gitgud.gotgud(ctx)
+        elif user_message.split()[0]==";nogud":
+            if len(user_message)==2:
+                if user_message[1]=="cf":
+                    return await gitgud.nogud_cf(ctx)
+                elif user_message[1]=="ac":
+                    return await gitgud.nogud_atcoder(ctx)
+        elif user_message.split()[0]==";gimme":
+            return await gitgud.gimme(ctx)
         else:
-            await send_message(ctx,user_message,is_private=False)#message is not private
+            return "Sorry, I didn't understand that :smiling_face_with_tear: Try ;help for more info"
+        
 
 
 
