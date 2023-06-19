@@ -4,7 +4,6 @@ import discord
 async def help():
     content_body = [
         [";help", "Shows this message"],
-        [";hello", "greets you"],
         [";identify\_cf <handle>", "Identify yourself on codeforces"],
         [";identify\_ac <handle>", "Identify yourself on atcoder"],
         [";gitgud cf", "Gives you a codeforces problem to solve"],
@@ -30,6 +29,7 @@ async def help():
         [";ratingchange ac <contest\_id>", "Shows the rating change of all the participants of the given contest id on atcoder"],
         [";graph rvp", "Shows the rating vs problem graph of your codeforces account"],
         [";graph pvt", "Shows the problem vs time graph of the your codeforces account"],
+        [";performance <handle>", "Shows the contest wise performance of the given handle on codeforces"],
 
     ]
     content=''
