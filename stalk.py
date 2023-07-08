@@ -8,7 +8,11 @@ async def stalk_user(ctx,codeforces_handle,hardest=False,R=0):
 
     #Get the problems solved by a user using codeforces API
     url = "https://codeforces.com/api/user.status?handle="+str(codeforces_handle)+"&from="+str(1)
-    response = requests.get(url,timeout=5)
+    try:
+        response = requests.get(url,timeout=5)
+    except TimeoutError:
+        await msg.edit(content=f"{ctx.author.mention} Codeforces API timed out :scream_cat:")
+        return None
     response=response.json()
 
     #If user does not exist send error message
