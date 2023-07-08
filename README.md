@@ -45,7 +45,11 @@ Finally, the bot can be started by running the ``main.py`` file.
 
 # Working
 
-Below is a video which demonstrates the working of the bot.
+![image](https://github.com/Sparsh752/TLE_Python/assets/21035646/9182a9f9-32d8-4447-9a75-476cecf0dfbd)
+![image](https://github.com/Sparsh752/TLE_Python/assets/21035646/a701f212-4323-4aa0-85a4-ef012a979a16)
+![image](https://github.com/Sparsh752/TLE_Python/assets/21035646/2934f6ed-0c45-4de6-a3da-43e44eea16b4)
+![image](https://github.com/Sparsh752/TLE_Python/assets/21035646/5c8d2af9-dd4a-49e4-99de-5584aaf985e9)
+
 
 # Credits
 
