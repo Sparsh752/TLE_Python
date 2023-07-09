@@ -60,6 +60,5 @@ This project was made by:
 5. [Satyam Chaurasia](https://github.com/satyam-ch)
 6. [Gautam Sharma](https://github.com/g-s01)
 7. [Dipit Patowari](https://github.com/DipitPatowari)
-8. [Ayush Kumar](https://github.com/AyushUtk)
+8. [Ayush Verma](https://github.com/AyushUtk)
 9. [Arnav Sharan](https://github.com/Arnavai)
-
