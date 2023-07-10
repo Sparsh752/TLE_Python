@@ -43,6 +43,19 @@ Install the required dependencies:
 
 Finally, the bot can be started by running the ``main.py`` file.
 
+# Making the env file
+
+The process.env file used in the bot:
+
+![process.env](https://github.com/Sparsh752/TLE_Python/assets/95131287/177d8c6c-4b8a-4b0c-967a-2c0550c2fed4)
+
+#### TOKEN
+Each bot, upon its creation, is given a `token` by Discord which is used by `discord.py` in running the bot.
+#### GUILD
+It is the `id` of the `channel` one wants the bot to run on.
+#### CLIST_TOKEN
+It is the token that is required for making a `clist api` call, it can be availed by making an account on [clist.by](https://clist.by/)
+
 # Working
 
 ![image](https://github.com/Sparsh752/TLE_Python/assets/21035646/a24648df-2cc3-4d3d-97bf-2220e1d6a002)
