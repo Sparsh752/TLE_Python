@@ -1,6 +1,6 @@
 # Competitive Programming Helper Discord bot
 ![Maintainer](https://img.shields.io/badge/Maintainer-CodingClub-blue)
-[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![python](	https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)](https://www.python.org/)
 [![PyPi version](https://badgen.net/pypi/v/pip/)](https://pypi.org/project/pip)
 
 This project is a Discord bot which helps a user in doing competitive programming efficiently.
