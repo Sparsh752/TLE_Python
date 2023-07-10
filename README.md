@@ -54,9 +54,8 @@ The process.env file used in the bot:
 **CLIST_TOKEN**: It is the token that is required for making a `clist api` call, it can be availed by making an account on [clist.by](https://clist.by/)
 
 # Working
-
-![image](https://github.com/Sparsh752/TLE_Python/assets/21035646/a24648df-2cc3-4d3d-97bf-2220e1d6a002)
 ![image](https://github.com/Sparsh752/TLE_Python/assets/21035646/69b33f10-a6cd-46a4-9ecd-5b543f158bd3)
+![image](https://github.com/Sparsh752/TLE_Python/assets/21035646/a24648df-2cc3-4d3d-97bf-2220e1d6a002)
 ![image](https://github.com/Sparsh752/TLE_Python/assets/21035646/421d7bfb-c753-415c-84cd-f906add22fde)
 ![image](https://github.com/Sparsh752/TLE_Python/assets/21035646/9fb6d5d8-a15c-45be-923d-1b0d3e05ec90)
 ![image](https://github.com/Sparsh752/TLE_Python/assets/21035646/f0dcb034-32c2-4584-b944-be5fd0ca45ef)
