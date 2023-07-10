@@ -49,8 +49,8 @@ The process.env file used in the bot:
 
 ![process.env](https://github.com/Sparsh752/TLE_Python/assets/95131287/177d8c6c-4b8a-4b0c-967a-2c0550c2fed4)
 
-**TOKEN**: Each bot, upon its creation, is given a `token` by Discord which is used by `discord.py` in running the bot.
-**GUILD**: It is the `id` of the `channel` one wants the bot to run on.
+**TOKEN**: Each bot, upon its creation, is given a `token` by Discord which is used by `discord.py` in running the bot. <br>
+**GUILD**: It is the `id` of the `channel` one wants the bot to run on. <br>
 **CLIST_TOKEN**: It is the token that is required for making a `clist api` call, it can be availed by making an account on [clist.by](https://clist.by/)
 
 # Working
