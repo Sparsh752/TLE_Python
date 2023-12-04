@@ -183,7 +183,10 @@ async def find_solved_codeforces(ctx,codeforces_handle, last_solved_codeforces, 
     # Check all the solved problems
         for obj in data:
             if obj['verdict']=='OK':
-                last_solved_codeforces.append(str(obj['problem']['contestId'])+':'+str(obj['problem']['index']))
+                try:
+                    last_solved_codeforces.append(str(obj['problem']['contestId'])+':'+str(obj['problem']['index']))
+                except:
+                    pass
         last_checked_codeforces += len(data)
         await update_last_checked_codeforces(ctx, last_solved_codeforces, last_checked_codeforces)
     return last_solved_codeforces
