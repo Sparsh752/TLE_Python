@@ -1,4 +1,4 @@
-from db import get_codeforces_handle,get_last_solved_problems,find_solved_codeforces,get_atcoder_handle,find_solved_atcoder
+from db import get_codeforces_handle,find_solved_codeforces,get_atcoder_handle,find_solved_atcoder
 from gitgud import get_cf_user_rating,get_ac_user_rating,check_if_solved,get_ac_problem_difficulty,convertAC2CFrating,check_if_solved_ac
 from random_question import cf_get_random_question_rating,ac_get_random_question
 import asyncio
@@ -44,19 +44,23 @@ async def challenge_question_cf(ctx,bot): # function to challenge a user on code
         # getting appropriate question for the challenge according to the rating of the user from codeforces
         cf_rating = await get_cf_user_rating(cf_handle_2)
         cf_rating = (cf_rating//100)*100
-        last_checked_1,last_solved_problems_1 = await get_last_solved_problems(ctx,'codeforces')
-        last_checked_2,last_solved_problems_2 = await get_last_solved_problems(ctx_second,'codeforces')
-        solved_problems_1 = await find_solved_codeforces(ctx,cf_handle_1,last_solved_problems_1,last_checked_1)
-        solved_problems_2 = await find_solved_codeforces(ctx_second,cf_handle_2,last_solved_problems_2,last_checked_2)
+        
+        solved_problems_1 = await find_solved_codeforces(ctx,cf_handle_1)
+        solved_problems_2 = await find_solved_codeforces(ctx_second,cf_handle_2)
         solved_problems=[]
         solved_problems.extend(solved_problems_1)
         solved_problems.extend(solved_problems_2)
         random_problem = cf_get_random_question_rating(cf_rating)
         iter=0
-        while(iter < 50 and random_problem["prob_id"] in solved_problems):
+        
+        #Update (Soumya) : Previously, while (iter <= 50) and random_problem
+        # was cross-checked with Firebase (database). Now, it is checked with
+        # Codeforces API.
+        
+        while(iter <= 100 and random_problem["prob_id"] in solved_problems):
             random_problem = cf_get_random_question_rating(cf_rating)
             iter+=1
-        if(iter==50):
+        if(iter==100):
             await msg.edit(content=f"{ctx.author.mention} Sorry we could not give you a problem now. Please try again later 🙁 ")
             return
         # asking user to accept or reject challenge
@@ -118,10 +122,9 @@ async def challenge_question_cf(ctx,bot): # function to challenge a user on code
             return
         await msg.edit(content=f"Wait {ctx.author.mention} the bot is thinking 🤔 a problem for you....... ")
          # getting random question for the challenge from atcoder
-        last_checked_1,last_solved_problems_1 = await get_last_solved_problems(ctx,'atcoder')
-        last_checked_2,last_solved_problems_2 = await get_last_solved_problems(ctx_second,'atcoder')
-        solved_problems_1 = await find_solved_atcoder(ctx,ac_handle_1,last_solved_problems_1,last_checked_1)
-        solved_problems_2 = await find_solved_atcoder(ctx_second,ac_handle_2,last_solved_problems_2,last_checked_2)
+       
+        solved_problems_1 = await find_solved_atcoder(ctx,ac_handle_1)
+        solved_problems_2 = await find_solved_atcoder(ctx_second,ac_handle_2)
         solved_problems=[]
         solved_problems.extend(solved_problems_1)
         solved_problems.extend(solved_problems_2)
