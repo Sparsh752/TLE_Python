@@ -45,8 +45,8 @@ async def challenge_question_cf(ctx,bot): # function to challenge a user on code
         cf_rating = await get_cf_user_rating(cf_handle_2)
         cf_rating = (cf_rating//100)*100
         
-        solved_problems_1 = await find_solved_codeforces(ctx,cf_handle_1)
-        solved_problems_2 = await find_solved_codeforces(ctx_second,cf_handle_2)
+        solved_problems_1 =  find_solved_codeforces(ctx,cf_handle_1)
+        solved_problems_2 =  find_solved_codeforces(ctx_second,cf_handle_2)
         solved_problems=[]
         solved_problems.extend(solved_problems_1)
         solved_problems.extend(solved_problems_2)
@@ -123,8 +123,8 @@ async def challenge_question_cf(ctx,bot): # function to challenge a user on code
         await msg.edit(content=f"Wait {ctx.author.mention} the bot is thinking 🤔 a problem for you....... ")
          # getting random question for the challenge from atcoder
        
-        solved_problems_1 = await find_solved_atcoder(ctx,ac_handle_1)
-        solved_problems_2 = await find_solved_atcoder(ctx_second,ac_handle_2)
+        solved_problems_1 =  find_solved_atcoder(ctx,ac_handle_1)
+        solved_problems_2 =  find_solved_atcoder(ctx_second,ac_handle_2)
         solved_problems=[]
         solved_problems.extend(solved_problems_1)
         solved_problems.extend(solved_problems_2)
