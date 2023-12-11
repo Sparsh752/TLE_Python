@@ -23,15 +23,25 @@ async def check_cf(username):
 
 #Fetching firstName from codeforces for handle_verification
 async def firstname(cf_handle):
-    cf_api = "https://codeforces.com/api/user.info?handles=" + cf_handle
-    response = requests.get(cf_api)
-    cf_list = response.json()['result'][0]
-    if "firstName" in cf_list.keys():
-        firstname_ = cf_list['firstName']
+    cf_url = "https://codeforces.com/profile/" + cf_handle
+    web_resposne = requests.get(cf_url)
+    html_page = BeautifulSoup(web_resposne.text, "lxml")
+    user_box = html_page.find('div', class_ = "userbox")
+    try:
+        name_line = user_box.find('div', style="font-size: 0.8em; color: #777;").text.split()
+        firstname_ = name_line[0]
         return firstname_
-    else:
-        # print("first name does not exist")
+    except:
         return ""
+    # cf_api = "https://codeforces.com/api/user.info?handles=" + cf_handle
+    # response = requests.get(cf_api)
+    # cf_list = response.json()["result"][0]
+    # if "firstName" in cf_list.keys():
+    #     firstname_ = cf_list["firstName"]
+    #     return firstname_
+    # else:
+    #     # print("first name does not exist")
+    #     return ""
 
 ##CodeChef
 #Checking whether handle submitted exists or not
@@ -137,7 +147,9 @@ async def handle_verification(ctx,bot):
                     await rating_role(ctx.author.id,int(rating),bot,channel)
                     break
             else:
-                await msg.edit(content=f"{message.author.mention} TimeOut, try again...")
+                await message.channel.send(content=f"{message.author.mention} TimeOut, try again...")
+                # await msg.edit(content=f"{message.author.mention} TimeOut, try again...") 
+                # error throw karri thi upper wali line for some reason
 
         else:
             await msg.edit(content=f"{message.author.mention} given handle is invalid")
