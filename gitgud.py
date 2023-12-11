@@ -100,7 +100,7 @@ async def gitgud(ctx):
             return
         cf_rating = await get_cf_user_rating(cf_handle)
         cf_rating = (cf_rating//100)*100
-        solved_problems = find_solved_codeforces(ctx, cf_handle)
+        solved_problems = await find_solved_codeforces(ctx, cf_handle)
         # giving points according to the difficulty of the question and rating of the user
         if(len(user_message) == 3):
             if(user_message[2] not in ['+100', '+200', '+300', '+400']):
@@ -149,7 +149,7 @@ async def gitgud(ctx):
             return
         await msg.edit(content=f"Wait {ctx.author.mention} the bot is thinking :thinking: a problem for you.......")
         # getting random question for the user from atcoder
-        solved_problems = find_solved_atcoder(ctx, ac_handle)
+        solved_problems = await find_solved_atcoder(ctx, ac_handle)
         # random problem based on the type of contest and problem number
         random_problem = ac_get_random_question(
             user_message[2], user_message[3])
@@ -199,14 +199,14 @@ async def gitgud(ctx):
 async def check_if_solved(ctx, cf_handle, problem, platform):
     if(platform == 'cf'):
         # list of all solved problems on codeforces
-        solved_problems = find_solved_codeforces(ctx, cf_handle)
+        solved_problems = await find_solved_codeforces(ctx, cf_handle)
         if(problem[0] in solved_problems):
             return True
         else:
             return False
     else:
         # list of all solved problems on atcoder
-        solved_problems = find_solved_atcoder(ctx, cf_handle)
+        solved_problems = await find_solved_atcoder(ctx, cf_handle)
         if(str(problem[0]) in solved_problems):
             return True
         else:
@@ -401,7 +401,7 @@ async def gimme(ctx):
     
     cf_rating = await get_cf_user_rating(cf_handle) # getting the current rating of the user
     cf_rating = (cf_rating//100)*100
-    solved_problems = find_solved_codeforces(ctx, cf_handle)
+    solved_problems = await find_solved_codeforces(ctx, cf_handle)
     # giving points according to the difficulty of the question and rating of the user
     if(len(user_message) == 3):
         if(user_message[2] not in ['+100', '+200', '+300', '+400']):
