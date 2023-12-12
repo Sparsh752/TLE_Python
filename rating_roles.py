@@ -25,71 +25,48 @@ async def rating_role(id, rating,bot,channel):
         return
     elif (rating < 1200):
         role = get(username.guild.roles, name="Newbie")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        print("Role added")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="Newbie")
     elif (rating < 1400):
         role = get(username.guild.roles, name="Pupil")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="Pupil")
     elif (rating < 1600):
         role = get(username.guild.roles, name="Specialist")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="Specialist")
     elif (rating < 1900):
         role = get(username.guild.roles, name="Expert")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="Expert")
     elif (rating < 2100):
         role = get(username.guild.roles, name="Candidate Master")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="Candidate Master")
     elif (rating < 2300):
         role = get(username.guild.roles, name="Master")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="Master")
     elif (rating < 2400):
         role = get(username.guild.roles, name="International Master")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="International Master")
     elif (rating < 2600):
         role = get(username.guild.roles, name="Grandmaster")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="Grandmaster")
     elif (rating < 3000):
         role = get(username.guild.roles, name="International Grandmaster")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="International Grandmaster")
     else:
         role = get(username.guild.roles, name="Legendary Grandmaster")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
+        if role is None:
+            role = await username.guild.create_role(name="Legendary Grandmaster")
+    if (role in username.roles):
         return
+    await remove_rating_roles(username)
+    await username.add_roles(role)
+    print("Role added")
+    await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
+    return

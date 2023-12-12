@@ -177,7 +177,7 @@ async def codeforces_rating_changes_shower(event_name, bot, channel):
         try:
             try:
                 url = "https://codeforces.com/api/user.rating?handle=" + \
-                    str(handle[0])
+                str(handle[0])
                 response = requests.get(url)    # fetching response
                 response = response.json()
             except Exception as e:
@@ -191,14 +191,16 @@ async def codeforces_rating_changes_shower(event_name, bot, channel):
             else:
                 data = req_list[0]
                 data_dict = {'rank': data['rank'], 'handle': handle[0], 'Δ': data['newRating'] -
-                             data['oldRating'], 'from': data['oldRating'], 'to': data['newRating']}
+                                data['oldRating'], 'from': data['oldRating'], 'to': data['newRating']}
                 await rating_roles.rating_role(str(handle[2]), data['newRating'], bot, channel)
                 # append the dictionary to the return list
                 returnlist.append(data_dict)
+
         except Exception as e:
-            print('hi')
+            print('hii')
             print(e)
             continue
+    print("return list:",returnlist)
     if (len(returnlist) == 0):
         return returnlist, header
     returnlist = sorted(returnlist, key=itemgetter('rank'))

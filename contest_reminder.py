@@ -80,7 +80,7 @@ async def reminder(bot):
             if(bool_):
                 await print_final_standings(bot,channel)
             else:
-                print('NO')
+                print("no rating change")
             # Get the next contest on codeforces, atcoder and codechef
             list_=[]
             list_.append(await next_contest(1))
@@ -98,13 +98,14 @@ async def reminder(bot):
             if dif_time.total_seconds()<7201:
                 # If the contest is coming within 2 hours then send a message in the reminders channel
                 embed = discord.Embed(title=event, url=href, description="contest is coming")
-                await channel.send('contest is coming within 2h @everyone' +str(event),embed=embed )
+                await channel.send('contest is coming within 2h @everyone ' +str(event),embed=embed )
                 # Sleep for 2 hours so that it doesn't send the message again
                 await asyncio.sleep(7201)
             else:
                 # Sleep for 1 minute and then check again
                 await asyncio.sleep(60)
         except Exception as e:
+            print(e)
             continue
 
 # This is a function that can check if the rating changes of the last contest are released or not
