@@ -2,7 +2,7 @@
 import requests
 import discord
 from bs4 import BeautifulSoup
-from db import get_last_solved_problems, find_solved_codeforces, get_codeforces_handle, get_atcoder_handle, get_current_question, delete_current_question
+from db import find_solved_codeforces, get_codeforces_handle, get_atcoder_handle, get_current_question, delete_current_question
 from db import problem_solving_cf, problem_solving_ac, find_solved_atcoder, update_point_cf, update_point_at
 from db import add_in_gitgud_list, get_gitgud_list
 from random_question import cf_get_random_question_rating, ac_get_random_question, cf_get_random_question_tag
@@ -100,8 +100,7 @@ async def gitgud(ctx):
             return
         cf_rating = await get_cf_user_rating(cf_handle)
         cf_rating = (cf_rating//100)*100
-        last_checked, last_solved_problems = await get_last_solved_problems(ctx, 'codeforces')
-        solved_problems = await find_solved_codeforces(ctx, cf_handle, last_solved_problems, last_checked)
+        solved_problems = await find_solved_codeforces(ctx, cf_handle)
         # giving points according to the difficulty of the question and rating of the user
         if(len(user_message) == 3):
             if(user_message[2] not in ['+100', '+200', '+300', '+400']):
@@ -150,8 +149,7 @@ async def gitgud(ctx):
             return
         await msg.edit(content=f"Wait {ctx.author.mention} the bot is thinking :thinking: a problem for you.......")
         # getting random question for the user from atcoder
-        last_checked, last_solved_problems = await get_last_solved_problems(ctx, 'atcoder')
-        solved_problems = await find_solved_atcoder(ctx, ac_handle, last_solved_problems, last_checked)
+        solved_problems = await find_solved_atcoder(ctx,ac_handle)
         # random problem based on the type of contest and problem number
         random_problem = ac_get_random_question(
             user_message[2], user_message[3])
@@ -200,9 +198,9 @@ async def gitgud(ctx):
 # returns true or false based on whether or not given problem is solved by given cf_handle on given platform
 async def check_if_solved(ctx, cf_handle, problem, platform):
     if(platform == 'cf'):
-        last_checked, last_solved_problems = await get_last_solved_problems(ctx, 'codeforces')
+        
         # list of all solved problems on codeforces
-        solved_problems = await find_solved_codeforces(ctx, cf_handle, last_solved_problems, last_checked)
+        solved_problems = await find_solved_codeforces(ctx, cf_handle)
         if(problem[0] in solved_problems):
             return True
         else:
@@ -210,7 +208,7 @@ async def check_if_solved(ctx, cf_handle, problem, platform):
     else:
         last_checked, last_solved_problems = await get_last_solved_problems(ctx, 'atcoder')
         # list of all solved problems on atcoder
-        solved_problems = await find_solved_atcoder(ctx, cf_handle, last_solved_problems, last_checked)
+        solved_problems = await find_solved_atcoder(ctx, cf_handle)
         if(str(problem[0]) in solved_problems):
             return True
         else:
@@ -405,8 +403,8 @@ async def gimme(ctx):
     
     cf_rating = await get_cf_user_rating(cf_handle) # getting the current rating of the user
     cf_rating = (cf_rating//100)*100
-    last_checked, last_solved_problems = await get_last_solved_problems(ctx, 'codeforces')
-    solved_problems = await find_solved_codeforces(ctx, cf_handle, last_solved_problems, last_checked)
+    
+    solved_problems = await find_solved_codeforces(ctx, cf_handle)
     # giving points according to the difficulty of the question and rating of the user
     if(len(user_message) == 3):
         if(user_message[2] not in ['+100', '+200', '+300', '+400']):
