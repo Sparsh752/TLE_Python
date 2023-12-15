@@ -19,21 +19,19 @@ db = firestore_async.client()
 #    There is a collection named "users" which contains documents of the users
 #    Each document is identified by the discord id of the user
 #    Each document has the following fields:
-#    1. discord_name: string 
+#    1. discord_name: string
 #    2. codeforces_handle: string
 #    3. atcoder_handle: string
 #    4. handle_number_codeforces: string (Used in CLIST API)
 #    5. handle_number_atcoder: string (Used in CLIST API)
-#    6. last_checked_codeforces : integer (Tells the number of problems solved by the user when it was last time checked)
-#    7. last_checked_atcoder : datetime (Tells the time when it was last time checked)
-#    8. solved_codeforces: object list of id's of solved problems on codeforces
-#    9. solved_atcoder: object list of id's of solved problems on atcoder
-#    10. gitgud_cf: object list of id's of solved problems on codeforces using gitgud
-#    11. gitgud_ac: object list of id's of solved problems on atcoder using gitgud
-#    12. score_codeforces: integer (Score of the user on codeforces)
-#    13. score_atcoder: integer (Score of the user on atcoder)
-#    14. problem_solving_cf: tuple (Contains the problem id, time when it was given and points) of the problem given by gitgud on codeforces
-#    15. problem_solving_atcoder: tuple (Contains the problem id, time when it was given and points) of the problem given by gitgud on atcoder
+#    6. solved_codeforces: object list of id's of solved problems on codeforces
+#    7. solved_atcoder: object list of id's of solved problems on atcoder
+#    8. gitgud_cf: object list of id's of solved problems on codeforces using gitgud
+#    9. gitgud_ac: object list of id's of solved problems on atcoder using gitgud
+#    10. score_codeforces: integer (Score of the user on codeforces)
+#    11. score_atcoder: integer (Score of the user on atcoder)
+#    12. problem_solving_cf: tuple (Contains the problem id, time when it was given and points) of the problem given by gitgud on codeforces
+#    13. problem_solving_atcoder: tuple (Contains the problem id, time when it was given and points) of the problem given by gitgud on atcoder
 
 # Function to check if a user exists in the database and has identified himself on the given platform
 # Input: context (Use to get discord id of the message sender), handle platform (cf or ac)
@@ -62,8 +60,8 @@ async def add_user(ctx):
     discord_name = ctx.author.name
     # Adding the user to the database with the discord id as the primary key
     if(await db.collection('users').document(str(ctx.author.id)).get()).exists:
-        await db.collection('users').document(str(ctx.author.id)).update({ 
-            'discord_name': discord_name,   
+        await db.collection('users').document(str(ctx.author.id)).update({
+            'discord_name': discord_name,
         })
     else:
         await db.collection('users').document(str(ctx.author.id)).set({
@@ -80,11 +78,9 @@ async def add_user(ctx):
 # Output: None
 async def add_codeforces_handle(ctx, codeforces_handle):
     handle_number_codeforces = codeforces_handle_to_number(codeforces_handle)
-    solved_codeforces = await find_solved_codeforces(ctx,codeforces_handle,[],0)
     await db.collection('users').document(str(ctx.author.id)).update({
         'codeforces_handle': codeforces_handle,
         'handle_number_codeforces': handle_number_codeforces,
-        'solved_codeforces': solved_codeforces,
         'gitgud_cf': [],
         'score_codeforces':0,
     })
@@ -97,11 +93,9 @@ async def add_codeforces_handle(ctx, codeforces_handle):
 # Output: None
 async def add_atcoder_handle(ctx, atcoder_handle):
     handle_number_atcoder = atcoder_handle_to_number(atcoder_handle)
-    solved_atcoder = await find_solved_atcoder(ctx,atcoder_handle,[],datetime.datetime(2010,1,1,0,0,0,0,datetime.timezone.utc))
     await db.collection('users').document(str(ctx.author.id)).update({
         'atcoder_handle': atcoder_handle,
         'handle_number_atcoder': handle_number_atcoder,
-        'solved_atcoder': solved_atcoder,
         'gitgud_ac':[],
         'score_atcoder':0,
     })
@@ -136,76 +130,43 @@ async def get_all_atcoder_handles():
     return atcoder_handles
 
 
-# Function to return the tuple of last checked time and solved problems of a user
-# So that we don't need to find the solved problems of a user again and again
-async def get_last_solved_problems(ctx,stage):
-    
-    doc_ref=await db.collection('users').document(str(ctx.author.id)).get()
 
-    docs=doc_ref.to_dict()
 
-    if stage=='atcoder':
-        return (docs['last_checked_atcoder'],docs['solved_atcoder'])
-    else:
-        return (docs['last_checked_codeforces'],docs['solved_codeforces'])
 
-# Function to update the last checked time and solved problems of a user
-async def update_last_checked_codeforces(ctx, solved_codeforces, last_checked_codeforces):
-    await db.collection('users').document(str(ctx.author.id)).update({
-        'last_checked_codeforces': last_checked_codeforces,
-        'solved_codeforces': solved_codeforces,
-    })
-
-async def update_last_checked_atcoder(ctx, solved_atcoder, last_checked_atcoder):
-    await db.collection('users').document(str(ctx.author.id)).update({
-        'last_checked_atcoder': last_checked_atcoder,
-        'solved_atcoder': solved_atcoder,
-    })
 
 # Function to find the solved problems of a codeforces handle
 # It returns a list of solved problems
-# It also updates the last_checked_codeforces and last_solved_codeforces field in the database
 # Input: context (Use to get discord id of the message sender), codeforces_handle, last_solved_codeforces (List of all the problem solved last time it was checked), last_checked_codeforces(Time when it was last checked)
-async def find_solved_codeforces(ctx,codeforces_handle, last_solved_codeforces, last_checked_codeforces):
+async def find_solved_codeforces(ctx,codeforces_handle):
+    # This function returns the list of all the submissions of a user
     # This function returns the list of all the submissions of a user
     url = "https://codeforces.com/api/user.status?handle="+str(codeforces_handle)+"&from="+str(1)
     response = requests.get(url).json()
-    # Checking if the user has submitted any problem after the last checked time
-    total=len(response['result'])
-    if total == last_checked_codeforces:
-        return last_solved_codeforces
-    # If the user has submitted any problem after the last checked time then we need to find the solved problems from the last checked time to the current time
-    url = "https://codeforces.com/api/user.status?handle="+str(codeforces_handle)+"&count="+str(total-last_checked_codeforces)
-    response = requests.get(url).json()
-    # print(response)
-    if response['status'] == 'OK':
-        data=response['result']
-    # Check all the solved problems
-        for obj in data:
-            if obj['verdict']=='OK':
-                try:
-                    last_solved_codeforces.append(str(obj['problem']['contestId'])+':'+str(obj['problem']['index']))
-                except:
-                    pass
-        last_checked_codeforces += len(data)
-        await update_last_checked_codeforces(ctx, last_solved_codeforces, last_checked_codeforces)
-    return last_solved_codeforces
+    data=response['result']
+#    # Check all the solved problems
+    solved_codeforces=[]
+    for obj in data:
+        if obj['verdict']=='OK':
+            try:
+                last_solved_codeforces.append(str(obj['problem']['contestId'])+':'+str(obj['problem']['index']))
+            except:
+                pass
+    return solved_codeforces
+    
     
 # This function is used to find the solved problems of a atcoder handle
 # It returns a list of solved problems
-# It also updates the last_checked_atcoder and last_solved_atcoder field in the database
 
-async def find_solved_atcoder(ctx,atcoder_handle, last_solved_atcoder, last_checked_atcoder):
+async def find_solved_atcoder(ctx,atcoder_handle):
     last_checked_atcoder = last_checked_atcoder - datetime.datetime(1970,1,1,0,0,0,0,datetime.timezone.utc)
     mytime = int(last_checked_atcoder.total_seconds())
     url = "https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions?user="+ atcoder_handle+"&from_second="+str(int(mytime))
     response = requests.get(url).json()
+    solved_atcoder=[]
     for obj in response:
         if(obj['result']=='AC'):
-            last_solved_atcoder.append(obj['problem_id'])
-    last_checked_atcoder = datetime.datetime.now(datetime.timezone.utc)
-    await update_last_checked_atcoder(ctx, last_solved_atcoder, last_checked_atcoder)
-    return last_solved_atcoder
+            solved_atcoder.append(obj['problem_id'])
+    return solved_atcoder
 
 # Find the codeforces handle of a user with the given discord id
 async def get_codeforces_handle(ctx):
@@ -218,6 +179,7 @@ async def get_codeforces_handle(ctx):
             return None
     else:
         return None
+        
 # Find the atcoder handle of a user with the given discord id
 async def get_atcoder_handle(ctx):
     user_dict=await db.collection('users').document(str(ctx.author.id)).get()
@@ -229,6 +191,7 @@ async def get_atcoder_handle(ctx):
             return None
     else:
         return None
+        
 # This is used to increase the score of a user if he solves a problem using gitgud on codeforces
 async def update_point_cf(ctx,points):
     Id=ctx.author.id
@@ -240,6 +203,7 @@ async def update_point_cf(ctx,points):
         'problem_solving_cf': None,
     }
     )
+    
 # This is used to increase the score of a user if he solves a problem using gitgud on atcoder
 async def update_point_at(ctx,points):
     Id=ctx.author.id
@@ -251,16 +215,19 @@ async def update_point_at(ctx,points):
         'problem_solving_atcoder': None,
     }
     )
+    
 # This is used to get the current points of a user on codeforces
 async def problem_solving_cf(ctx,problem,points):
     await db.collection('users').document(str(ctx.author.id)).update({
         'problem_solving_cf': (problem,datetime.datetime.now(),points),
     })
+    
 # This is used to get the current points of a user on atcoder
 async def problem_solving_ac(ctx,problem,points):
     await db.collection('users').document(str(ctx.author.id)).update({
         'problem_solving_atcoder': (problem,datetime.datetime.now(),points),
     })
+    
 # This is used to get the current question the user has taken from gitgud on codeforces
 async def get_current_question(id, platform):
     if platform == 'cf':
@@ -283,6 +250,7 @@ async def get_current_question(id, platform):
         if len(problem)==0:
             return None
         return problem
+        
 # This is used to delete the current question the user has taken from gitgud on codeforces in the case of NOGUD
 async def delete_current_question(id,platform):
     if platform == 'cf':
@@ -295,6 +263,7 @@ async def delete_current_question(id,platform):
             'problem_solving_atcoder': firestore.DELETE_FIELD
         }
         )
+        
 # This is used to add the question into the gitgud list of the user on codeforces or atcoder
 async def add_in_gitgud_list(id, platform, problem):
     if platform == 'cf':
@@ -316,6 +285,7 @@ async def add_in_gitgud_list(id, platform, problem):
             'gitgud_ac': gitgud_ac_list
         }
         )
+        
 # This is used to get the gitgud list of the user on codeforces or atcoder
 async def get_gitgud_list(id, platform):
     if platform == 'cf':
@@ -366,7 +336,7 @@ async def Leaderboard_list(ctx , msg):
                 score = user['score_codeforces'] + user['score_atcoder']
                 handles.append({'Discord Name':user['discord_name'],'Total Score': score})
             elif 'codeforces_handle' in user.keys():
-                score = user['score_codeforces'] 
+                score = user['score_codeforces']
                 handles.append({'Discord Name':user['discord_name'],'Total Score': score})
             elif 'atcoder_handle' in user.keys():
                 score = user['score_atcoder']
