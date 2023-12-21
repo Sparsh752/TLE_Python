@@ -11,14 +11,15 @@ async def remove_rating_roles(username):
     print("All roles removed")
 
 #This function will add the rating role to the user based on the rating
-async def rating_role(id, rating,bot,channel):
+async def rating_role(id, rating,bot,channel, msg):
     #Fetch the guild from the environment variable
-    GUILD=os.environ.get('GUILD') 
+    GUILD=os.environ.get('GUILD')
     guild = await bot.fetch_guild(GUILD)
     #Get the user from the id and guild then fetch the username
     user = await guild.query_members(user_ids=[id])
     username=user[0]
-    msg = await channel.send(f"Fetching rating changes")
+    if (msg is None):
+        msg = await channel.send(f"Fetching rating changes")
     #Now based on the rating add the role to the user
     if (rating < 800):
         await remove_rating_roles(username)
@@ -64,9 +65,9 @@ async def rating_role(id, rating,bot,channel):
         if role is None:
             role = await username.guild.create_role(name="Legendary Grandmaster")
     if (role in username.roles):
-        return
+        return msg
     await remove_rating_roles(username)
     await username.add_roles(role)
     print("Role added")
     await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-    return
+    return None

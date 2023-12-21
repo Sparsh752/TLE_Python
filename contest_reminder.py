@@ -10,9 +10,10 @@ import contest_info
 
 URL_BASE = 'https://clist.by/api/v2/'
 counter=0
-previous_contestId=""
+previous_contestId_cf=""
+previous_contestId_ac=""
 # This is a function that finds the contest id of the last completed contest
-async def completed_contest(html_):
+async def completed_contest_codeforces(html_):
     soup1 = BeautifulSoup(html_,'html.parser')
     # Find all the table rows
     for el in soup1.find_all("tr"):
@@ -22,23 +23,54 @@ async def completed_contest(html_):
             break
     return contest_ID
 
+async def completed_contest_atcoder(html_):
+    soup1 = BeautifulSoup(html_,'html.parser')
+    # Find all the table rows
+    for el in soup1.find_all("tr"):
+        # Find the table row with the contest id this is the first row or the last completed contest
+        
+        if not el.has_attr("class"):
+            continue
+        if el.attrs["class"].__contains__("contest") and not el.attrs["class"].__contains__("success") :       
+            #this part is heavily dependent on the html structure of the website
+            contest_ID=el.find_all("a", class_="")[0].attrs["href"].split("/")[2][10:]
+            contest_name=el.find_all("a", class_="")[3].attrs["href"].split("/")[2]
+            return contest_ID,contest_name
 
-async def print_final_standings(bot,channel): 
-    global previous_contestId
+
+async def print_final_standings_codeforces(bot,channel): 
+    global previous_contestId_cf
     try:
-        returnlist,header= await contest_info.codeforces_rating_changes_shower(str(previous_contestId),bot,channel)
+        returnlist,header= await contest_info.codeforces_rating_changes_shower(str(previous_contestId_cf),bot,channel)
         print(returnlist)
         if header=="error":
-            previous_contestId=""
+            previous_contestId_cf=""
         elif len(returnlist)==0:
-            previous_contestId=""
+            previous_contestId_cf=""
             pass
         else:
-            await channel.send(f"@everyone The rating changes of the last contest are:")
+            await channel.send(f"@everyone The rating changes of the last codeforces contest are:")
             await paginator.table(channel,bot,header, returnlist, isChannel=True)
     except Exception as e:
         print(e)
-        previous_contestId=""
+        previous_contestId_cf=""
+
+async def print_final_standings_atcoder(bot,channel):
+    global previous_contestId_ac
+    try:
+        returnlist,header= await contest_info.atcoder_rating_changes_shower(str(previous_contestId_ac),channel)
+        print(returnlist)
+        if header=="error":
+            previous_contestId_ac=""
+        elif len(returnlist)==0:
+            previous_contestId_ac=""
+            pass
+        else:
+            await channel.send(f"@everyone The rating changes of the last atcoder contest are:")
+            await paginator.table(channel,bot,header, returnlist, isChannel=True)
+    except Exception as e:
+        print(e)
+        previous_contestId_ac=""
 
 # This is a function that finds the next contest on codeforces, atcoder and codechef
 # This uses Clist API
@@ -76,11 +108,17 @@ async def reminder(bot):
     while(1):
         try:
             # Check if there is a rating change
-            bool_ = await check_rating_changed()
+            bool_ = await check_rating_changed_codeforces()
             if(bool_):
-                await print_final_standings(bot,channel)
+                await print_final_standings_codeforces(bot,channel)
             else:
-                print("no rating change")
+                print("no rating change in cf")
+
+            bool2_ = await check_rating_changed_atcoder()
+            if(bool2_):
+                await print_final_standings_atcoder(bot,channel)
+            else:
+                print("no rating change in atcoder")
             # Get the next contest on codeforces, atcoder and codechef
             list_=[]
             list_.append(await next_contest(1))
@@ -109,43 +147,68 @@ async def reminder(bot):
             continue
 
 # This is a function that can check if the rating changes of the last contest are released or not
-async def check_rating_changed():
+async def check_rating_changed_codeforces():
     url = "https://codeforces.com/contests"
     r = requests.get(url)   
     soup = BeautifulSoup(r.content, 'html.parser')  
     s = soup.find('div', class_= 'contests-table')  
     _html=str(s)
-    contest_id= await completed_contest(_html)
+    contest_id= await completed_contest_codeforces(_html)
     global counter
-    global previous_contestId
-    if(contest_id==previous_contestId):          # if contest updates already given then end func
+    global previous_contestId_cf
+    if(contest_id==previous_contestId_cf):          # if contest updates already given then end func
         return False
-    else:
-        try:
-            # Find the standings link
-            s1= soup.find('a', href= '/contest/'+str(contest_id)+'/standings')
-            nlist = s1.text
-        except Exception as e:
-            print(e)
-            return False
-        
-        if 'Final standings' in nlist:
-            url = ('https://codeforces.com/contest/'+str(contest_id)+'/standings')
-            r = requests.get(url)  
-            soup = BeautifulSoup(r.content, 'html.parser')  
-            # Again find the top menu where the rating changes link is shown
-            s = soup.find('div', class_= 'second-level-menu')  
-            nlist = s.text
-            # If the rating changes link is present then return True
-            if "Rating Changes" in nlist:
-                previous_contestId=contest_id
-                return True
-            else:
-                return False
-
+    
+    try:
+        # Find the standings link
+        s1= soup.find('a', href= '/contest/'+str(contest_id)+'/standings')
+        nlist = s1.text
+    except Exception as e:
+        print(e)
+        return False
+    
+    if 'Final standings' in nlist:
+        url = ('https://codeforces.com/contest/'+str(contest_id)+'/standings')
+        r = requests.get(url)  
+        soup = BeautifulSoup(r.content, 'html.parser')  
+        # Again find the top menu where the rating changes link is shown
+        s = soup.find('div', class_= 'second-level-menu')  
+        nlist = s.text
+        # If the rating changes link is present then return True
+        if "Rating Changes" in nlist:
+            previous_contestId_cf=contest_id
+            return True
         else:
             return False
 
- 
+    else:
+        return False
 
+ 
+async def check_rating_changed_atcoder():
+    url = "https://clist.by/standings/?search=&resource=93"
+    r = requests.get(url)
+    soup = BeautifulSoup(r.content, 'html.parser')
+    s = soup.find('div',id='standings_list')
+    s1 = s.find('tbody')
+    _html=str(s1)
+    contest_id, contest_name= await completed_contest_atcoder(_html)
+    # print(contest_id)
+    # print(contest_name)
+    # contest_id = "48033616" #hardcoded for testing
+    # contest_name = "atcoder-beginner-contest-332-48033616"
+    global counter
+    global previous_contestId_ac
+    if(contest_id==previous_contestId_ac):          # if contest updates already given then end func
+        return False
+    previous_contestId_ac=contest_id
+    url = ('https://clist.by/standings/'+str(contest_name)+'/')
+    r = requests.get(url)
+    soup = BeautifulSoup(r.content, 'html.parser')
+    s = soup.find('select',id='rating')
+    if s==None:
+        return False
+    return True
+    
+    
         
