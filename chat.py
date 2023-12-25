@@ -53,7 +53,7 @@ async def start_chat(ctx,bot):
         if len(new_prompt)<=3:
             prompt+="Now change the topic of conversation."
         
-        response = model.generate_content(prompt + " Answer in the shortest way possible. " )
+        response = model.generate_content(prompt )
         
         await ctx.channel.send(response.text)
         prompt+=(" Your answer: " + response.text)
