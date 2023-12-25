@@ -30,6 +30,7 @@ async def help():
         [";graph rvp", "Shows the rating vs problem graph of your codeforces account"],
         [";graph pvt", "Shows the problem vs time graph of the your codeforces account"],
         [";performance <handle>", "Shows the contest wise performance of the given handle on codeforces"],
+        [";chat", "Ask the bot anything and start a chat. Type ;end to end the chat."],
 
     ]
     content=''

@@ -7,3 +7,4 @@ firebase_admin
 quickchart.io
 nest_asyncio
 table2ascii
+google-generativeai

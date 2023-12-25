@@ -21,6 +21,7 @@ Finally, we created various functions that would enhance a user's experience on 
 7. **Stalk**: One user can stalk any other user on the judge using this feature, which provides the problems solved by that user and their rating
 8. **Rating Change**: Provides the rating changes and results of a specific contest queried
 9. **Graphs**: Provides graphs pertaining to various features such as performance, problems solved over time and ratings of problems solved over time
+10. **Chat**: Enables chatting with bot using Google-Gemini AI model.
 
 The commands for all these features and their usage can be retrieved by executing the command ```;help``` in the server.
 
@@ -40,6 +41,7 @@ Install the required dependencies:
 7. [quickchart.io](https://pypi.org/project/quickchart-io/)
 8. [nest_asyncio](https://pypi.org/project/nest-asyncio/)
 9. [table2ascii](https://table2ascii.readthedocs.io/en/stable/)
+10.[google-generativeai](https://pypi.org/project/google-generativeai/)
 
 Finally, the bot can be started by running the ``main.py`` file.
 
@@ -52,6 +54,7 @@ The process.env file used in the bot:
 **TOKEN**: Each bot, upon its creation, is given a `token` by Discord which is used by `discord.py` in running the bot. <br>
 **GUILD**: It is the `id` of the `channel` one wants the bot to run on. <br>
 **CLIST_TOKEN**: It is the token that is required for making a `clist api` call, it can be availed by making an account on [clist.by](https://clist.by/)
+**GOOGLE_API**: It is the token that is required for making a `google-gemini api` call, it can be availed by making an account on [ai.google.dev](https://ai.google.dev/?utm_source=google&utm_medium=cpc&utm_campaign=brand_core_brand&gad_source=1)
 
 # Working
 ![image](https://github.com/Sparsh752/TLE_Python/assets/21035646/69b33f10-a6cd-46a4-9ecd-5b543f158bd3)<br>
