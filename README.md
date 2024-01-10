@@ -41,7 +41,7 @@ Install the required dependencies:
 7. [quickchart.io](https://pypi.org/project/quickchart-io/)
 8. [nest_asyncio](https://pypi.org/project/nest-asyncio/)
 9. [table2ascii](https://table2ascii.readthedocs.io/en/stable/)
-10.[google-generativeai](https://pypi.org/project/google-generativeai/)
+10. [google-generativeai](https://pypi.org/project/google-generativeai/)
 
 Finally, the bot can be started by running the ``main.py`` file.
 
@@ -70,8 +70,17 @@ The process.env file used in the bot:
 
 
 # Credits
+Project(2023) update and modifications were done by:
+1. [Dev Shah](https://github.com/DevvvvvShah)
+2. [Shreyans Garg](https://github.com/ShreyansGarg)
+3. [Soumya Savarn](https://github.com/SoumyaSavarn)
+4. [Mohd. Faiz]((https://github.com/FAIZMOHD1))
+5. [Tanmay Mittal](https://github.com/Tanmay7404)
+6. [Ashutosh Bala]((https://github.com/ArtValor))
+7. [Arush Mathur]((https://github.com/arushmathur))
+8. [Dhyey Patel]((https://github.com/CosmicNoise2907))
 
-This project was made by:
+Project(2022) was started by :
 1. [Sparsh Mittal](https://github.com/Sparsh752)
 2. [Adittya Gupta](https://github.com/Adittya-Gupta)
 3. [Yash Raj Singh](https://github.com/Yash-jar)
