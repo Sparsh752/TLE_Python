@@ -11,85 +11,63 @@ async def remove_rating_roles(username):
     print("All roles removed")
 
 #This function will add the rating role to the user based on the rating
-async def rating_role(id, rating,bot,channel):
+async def rating_role(id, rating,bot,channel, msg):
     #Fetch the guild from the environment variable
-    GUILD=os.environ.get('GUILD') 
+    GUILD=os.environ.get('GUILD')
     guild = await bot.fetch_guild(GUILD)
     #Get the user from the id and guild then fetch the username
     user = await guild.query_members(user_ids=[id])
     username=user[0]
-    msg = await channel.send(f"Fetching rating changes")
+    if (msg is None):
+        msg = await channel.send(f"Fetching rating changes")
     #Now based on the rating add the role to the user
     if (rating < 800):
         await remove_rating_roles(username)
         return
     elif (rating < 1200):
         role = get(username.guild.roles, name="Newbie")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        print("Role added")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="Newbie")
     elif (rating < 1400):
         role = get(username.guild.roles, name="Pupil")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="Pupil")
     elif (rating < 1600):
         role = get(username.guild.roles, name="Specialist")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="Specialist")
     elif (rating < 1900):
         role = get(username.guild.roles, name="Expert")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="Expert")
     elif (rating < 2100):
         role = get(username.guild.roles, name="Candidate Master")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="Candidate Master")
     elif (rating < 2300):
         role = get(username.guild.roles, name="Master")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="Master")
     elif (rating < 2400):
         role = get(username.guild.roles, name="International Master")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="International Master")
     elif (rating < 2600):
         role = get(username.guild.roles, name="Grandmaster")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="Grandmaster")
     elif (rating < 3000):
         role = get(username.guild.roles, name="International Grandmaster")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="International Grandmaster")
     else:
         role = get(username.guild.roles, name="Legendary Grandmaster")
-        await remove_rating_roles(username)
-        await username.add_roles(role)
-        print("Role added")
-        await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
-        return
+        if role is None:
+            role = await username.guild.create_role(name="Legendary Grandmaster")
+    if (role in username.roles):
+        return msg
+    await remove_rating_roles(username)
+    await username.add_roles(role)
+    print("Role added")
+    await msg.edit(content=f"{username.mention} is a <@&{role.id}>")
+    return None
